@@ -57,7 +57,7 @@ def verify(compile_only: bool = False) -> dict:
         try:
             run("xcrun", "simctl", "boot", device)
             print(f"Booting isolated iOS {runtime['version']} simulator", flush=True)
-            run("xcrun", "simctl", "bootstatus", device, "-b", timeout=300)
+            subprocess.run(["xcrun", "simctl", "bootstatus", device, "-b", "-d"], check=True, timeout=600)
             run("xcrun", "simctl", "install", device, str(app))
             run("xcrun", "simctl", "launch", device, BUNDLE_ID)
             container = Path(run("xcrun", "simctl", "get_app_container", device, BUNDLE_ID, "data"))

@@ -31,7 +31,7 @@ Initial local verification: 2026-10-02. No interview-success or human lookup-spe
 
 ## Architectural adjustments
 
-`examples/` replaces the proposed `snippets/` directory to avoid SwiftPM's automatic standalone snippet target discovery on case-insensitive macOS. The native fixture uses Xcode's compiler/SDK and a temporary simulator app rather than a generated Xcode project. This keeps the fixture dependency-free while running actual native code. CI may use a different installed stable Xcode version and records its exact toolchain; it still enforces Swift 6 mode and the same iOS 17 deployment target.
+`examples/` replaces the proposed `snippets/` directory to avoid SwiftPM's automatic standalone snippet target discovery on case-insensitive macOS. The native fixture uses Xcode's compiler/SDK and a temporary simulator app rather than a generated Xcode project. This keeps the fixture dependency-free while running actual native code. CI uses GitHub's `xcode-27` image to match the locally verified major toolchain, while enforcing Swift 6 mode and the same iOS 17 deployment target. GitHub still labels this runner image public preview; its installed toolchain is recorded on every run. The earlier `macos-26` image passed compilation but repeatedly stalled at simulator boot. Boot progress is streamed and bounded; deployment still requires all native behavior checks.
 
 The plan's 22 proposed work units are grouped into coherent real commits, with corrective commits for issues observed during verification. No private planning exports are included. No license, alternate icon, custom domain, or additional feature backlog is silently selected.
 
