@@ -37,7 +37,7 @@
       {{SECTIONS}}
       <section class="costs" id="costs" aria-labelledby="costs-heading">
         <h2 id="costs-heading">The costs to remember</h2>
-        <table><caption>n = stored elements; k = inspected elements. Hashing costs depend on the key.</caption><thead><tr><th scope="col">Operation</th><th scope="col">Time</th><th scope="col">The catch</th></tr></thead><tbody>
+        <table><caption>n = stored elements; k = inspected elements. Bounds assume constant-time element comparison/copy unless stated otherwise; hashing costs depend on the key.</caption><thead><tr><th scope="col">Operation</th><th scope="col">Time</th><th scope="col">The catch</th></tr></thead><tbody>
           <tr><th scope="row">Array append / popLast</th><td>O(1) amortized / O(1)</td><td>Shared storage can copy O(n) on mutation.</td></tr>
           <tr><th scope="row">Array removeFirst</th><td>O(n)</td><td>Shifts elements. Use a head cursor for BFS.</td></tr>
           <tr><th scope="row">Dictionary / Set lookup</th><td>O(1) expected</td><td>O(n) worst case; hashing is not free.</td></tr>

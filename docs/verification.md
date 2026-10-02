@@ -11,6 +11,7 @@ Initial local verification: 2026-10-02. No interview-success or human lookup-spe
 - Nine Python test groups pass: exact displayed source, manifest rejection, escaped HTML, unique/resolvable anchors, deterministic output, contrast, all-visible content, public-only output, and dependency/privacy budgets.
 - Chromium/Chrome browser checks pass at 1440, 720, and 320 CSS pixels, in light and dark appearance: zero axe violations in the tested rules, no document overflow, no console errors, and no external runtime requests.
 - Ten representative native `window.find` lookups succeed across the three domains. These are browser execution checks, not timed human usability trials.
+- Safari's actual Command-F interface finds UIKit source from the top of the same document (four UIHostingController matches), without opening or switching any content panel.
 - Copy succeeds with exact source bytes; denied clipboard access, disabled JavaScript, and blocked storage leave content usable. Hash links and history navigation work.
 - Local load uses four same-origin resources; observed layout-shift total is zero in the controlled browser run. This is a lab observation, not a field-performance guarantee.
 - Initial public artifact is about 28.3 KB gzip in aggregate; optional JavaScript is below 0.4 KB gzip. Build checks enforce 150 KB aggregate / 10 KB JavaScript budgets. Exact sizes are printed on every build.

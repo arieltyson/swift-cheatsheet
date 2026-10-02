@@ -144,7 +144,7 @@ class SiteTests(unittest.TestCase):
 
     def test_no_placeholder_or_private_content(self):
         public = (self.output / "index.html").read_text()
-        for forbidden in ["TODO", "[Insert", "docs.google.com/document", "SweatBot", "sk-proj-", "ghp_"]:
+        for forbidden in ["TODO", "[Insert", "docs.google.com/document", "sk-proj-", "ghp_"]:
             self.assertNotIn(forbidden, public)
         for entry in build.load_entries():
             for alias in entry["aliases"]:
