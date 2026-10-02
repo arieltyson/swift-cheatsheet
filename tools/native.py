@@ -59,7 +59,8 @@ def verify(compile_only: bool = False) -> dict:
             run("xcrun", "simctl", "boot", device)
             print(f"Booting isolated iOS {runtime['version']} simulator", flush=True)
             subprocess.run(["xcrun", "simctl", "bootstatus", device, "-b", "-d"], check=True, timeout=600)
-            run("xcrun", "simctl", "install", device, str(app))
+            # A fresh device finishes first-boot setup before it installs
+            run("xcrun", "simctl", "install", device, str(app), timeout=600)
             run("xcrun", "simctl", "launch", device, BUNDLE_ID)
             container = Path(run("xcrun", "simctl", "get_app_container", device, BUNDLE_ID, "data"))
             result_path = container / "Documents/native-results.json"
