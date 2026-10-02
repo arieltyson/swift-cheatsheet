@@ -227,6 +227,13 @@ def render_styles() -> str:
     return css_variables(tokens) + styles
 
 
+def icon_url() -> str:
+    """Return the favicon path with a content hash, so browsers that
+    cached an older icon at the same path fetch the new one."""
+    digest = hashlib.sha256((WEB / "favicon.svg").read_bytes())
+    return f"favicon.svg?v={digest.hexdigest()[:8]}"
+
+
 def render_page(site: Site) -> str:
     template = (WEB / "template.html").read_text(encoding="utf-8")
     styles = render_styles()
@@ -244,6 +251,8 @@ def render_page(site: Site) -> str:
             "toc": render_toc(site),
             "part-nav": render_part_nav(site),
             "jump-index": jump_index(site),
+            "icon": icon_url(),
+            "brand-icon": icon_url(),
             "script": (WEB / "app.js").read_text(encoding="utf-8"),
             "theme-script": (WEB / "theme.js").read_text(
                 encoding="utf-8"

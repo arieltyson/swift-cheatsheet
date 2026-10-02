@@ -130,6 +130,11 @@ class BuiltPageTests(unittest.TestCase):
             self.assertIn(sha256_source(code), policy.group(1))
         self.assertIn("default-src 'none'", policy.group(1))
 
+    def test_icon_url_is_versioned(self) -> None:
+        self.assertRegex(
+            self.page, r'<link rel="icon" href="favicon.svg\?v=[0-9a-f]{8}"'
+        )
+
     def test_icon_tile_is_swift_orange(self) -> None:
         # The link and highlight tokens are derived from this colour
         icon = (WEB / "favicon.svg").read_text(encoding="utf-8")
