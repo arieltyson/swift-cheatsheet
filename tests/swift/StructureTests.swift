@@ -185,3 +185,14 @@ func bruteForceWinner(_ cells: [Mark?], size: Int) -> Mark? {
   }
   #expect(TicTacToe(size: 1).size == 3)
 }
+
+@Test func errorsAreTypedAndSpecific() throws {
+  #expect(try parseCents("0.01") == 1)
+  #expect(try withdraw("10", from: 1_000) == 0)
+  #expect(throws: TransferError.invalidAmount("0")) {
+    try parseCents("0")
+  }
+  #expect(throws: TransferError.insufficientFunds(needed: 1)) {
+    try withdraw("10.01", from: 1_000)
+  }
+}

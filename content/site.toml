@@ -49,6 +49,47 @@ code = ["dsa/Language.swift:Job", "dsa/Language.swift:demoComparable"]
 gotcha = "Tuples compare element by element, so `(a.priority, a.name) < (b.priority, b.name)` breaks ties for free."
 
 [[part.section]]
+id = "errors"
+title = "Error handling"
+group = "Syntax"
+
+[[part.section.entry]]
+id = "custom-errors"
+title = "Custom errors: enum, throw & LocalizedError"
+aliases = ["Error enum", "custom error", "throw", "throws", "typed throws", "LocalizedError", "errorDescription", "localizedDescription"]
+code = ["dsa/Errors.swift:TransferError", "dsa/Errors.swift:parseCents", "dsa/Errors.swift:withdraw"]
+availability = "Typed throws need Swift 6"
+use_when = "An enum conforming to `Error` lists every way an operation fails; associated values carry the details."
+gotcha = "Plain `throws` is the default and easiest to evolve. Use `throws(MyError)` when callers must handle one exact error type."
+
+[[part.section.entry]]
+id = "do-catch"
+title = "do, catch & pattern matching"
+aliases = ["do catch", "catch let", "catch as", "error case", "handle error", "rethrow"]
+code = ["dsa/Errors.swift:demoDoCatch"]
+gotcha = "Catches run top to bottom, so put specific cases first. A `do` without a final plain `catch` must itself be in a throwing function."
+
+[[part.section.entry]]
+id = "try-variants"
+title = "try?, try! & typed catch"
+aliases = ["try?", "try!", "optional try", "force try", "ignore error"]
+code = ["dsa/Errors.swift:demoTryVariants"]
+gotcha = "`try?` discards why it failed; use it only when the reason does not matter. `try!` crashes, so keep it for input you control."
+
+[[part.section.entry]]
+id = "defer"
+title = "defer: cleanup on every exit"
+aliases = ["defer", "cleanup", "finally", "close on error"]
+code = ["dsa/Errors.swift:demoDefer"]
+
+[[part.section.entry]]
+id = "result-type"
+title = "Result<Success, Failure>"
+aliases = ["Result", "success failure", "get()", "completion Result", "store an error"]
+code = ["dsa/Errors.swift:demoResult"]
+use_when = "Storing an outcome or passing it to a completion handler. In async code, prefer `throws`."
+
+[[part.section]]
 id = "arrays"
 title = "Arrays & sorting"
 group = "Syntax"
