@@ -90,6 +90,6 @@ Add the example to `examples/`, its checks to `tests/`, and its entry to `conten
 
 ## License 🪪
 
-No license has been chosen yet, so all rights are reserved. JetBrains Mono is used under the SIL Open Font License 1.1 (`web/fonts/OFL.txt`).
+This project is licensed under the MIT License. See `LICENSE` for details. JetBrains Mono is used under the SIL Open Font License 1.1 (`web/fonts/OFL.txt`).
 
 </div>
