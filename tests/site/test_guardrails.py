@@ -95,9 +95,10 @@ class ManifestCoverageTests(unittest.TestCase):
             for name in top_level_names(path.read_text()):
                 if name.startswith("demo"):
                     self.assertIn(f", {name})", dsa_tests, name)
-        concurrency_tests = (
-            ROOT / "tests/concurrency/ConcurrencyTests.swift"
-        ).read_text()
+        concurrency_tests = "".join(
+            path.read_text()
+            for path in (ROOT / "tests/concurrency").glob("*.swift")
+        )
         for path in sorted((SNIPPETS / "concurrency").glob("*.swift")):
             for name in top_level_names(path.read_text()):
                 if name.startswith("demo"):

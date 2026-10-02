@@ -1069,6 +1069,27 @@ use_when = "Async work tied to a view. SwiftUI cancels the task when the view di
 gotcha = "Cancellation is cooperative: check `Task.isCancelled` or call `try Task.checkCancellation()` after each await."
 
 [[part.section]]
+id = "loading-data"
+title = "Loading data from a URL"
+
+[[part.section.entry]]
+id = "load-and-show"
+title = "Load, then show loading, list, empty or error"
+aliases = ["fetch and display", "load data", "network list", "ProgressView", "ContentUnavailableView", "loading state", "error state", "refreshable", "pull to refresh", "retry", "view model"]
+code = ["swiftui/Loading.swift:Article", "swiftui/Loading.swift:ArticlesModel", "swiftui/Loading.swift:ArticlesScreen"]
+availability = "iOS 17+"
+use_when = "Any screen backed by a request. One enum for the phase makes impossible states, like loading and failed at once, impossible."
+gotcha = "`.task` cancels the request when the view disappears, which throws `CancellationError`; ignore it rather than showing an error. The model is `@MainActor`, so assigning `phase` after `await` is safe."
+
+[[part.section.entry]]
+id = "async-image"
+title = "Images from a URL with AsyncImage"
+aliases = ["AsyncImage", "remote image", "image from URL", "placeholder", "thumbnail"]
+code = ["swiftui/Loading.swift:ArticleRow"]
+availability = "iOS 15+"
+gotcha = "AsyncImage does not cache across launches and reloads when a list cell is recreated. For long scrolling lists, load through a cache or `URLCache`."
+
+[[part.section]]
 id = "building-ui"
 title = "Building UI"
 
@@ -1338,6 +1359,43 @@ code = ["concurrency/Isolation.swift:SearchModel", "concurrency/Isolation.swift:
 availability = "iOS 13+ · @concurrent needs Swift 6.2"
 use_when = "Any type that owns UI state is `@MainActor`. Mark CPU-heavy async functions `@concurrent` to move them off the main actor."
 gotcha = "In Swift 6.2, a nonisolated async function runs on the caller's actor by default. Without `@concurrent`, heavy work called from the main actor stays on it."
+
+[[part.section]]
+id = "networking"
+title = "Networking & JSON"
+group = "Networking"
+intro = "To show the data on screen, see SwiftUI, Loading data from a URL."
+
+[[part.section.entry]]
+id = "decode-json"
+title = "Decode JSON with Codable"
+aliases = ["Codable", "Decodable", "JSONDecoder", "CodingKeys", "snake case", "parse JSON", "date decoding", "keyNotFound", "DecodingError"]
+code = ["concurrency/Networking.swift:Repo", "concurrency/Networking.swift:demoDecoding"]
+availability = "iOS 10+ for .iso8601"
+gotcha = "If every key is snake_case, skip CodingKeys and set `decoder.keyDecodingStrategy = .convertFromSnakeCase`. When decoding fails, print the error itself: `DecodingError` names the missing key and its path."
+
+[[part.section.entry]]
+id = "encode-json"
+title = "Encode JSON"
+aliases = ["Encodable", "JSONEncoder", "sortedKeys", "prettyPrinted", "request body", "round trip"]
+code = ["concurrency/Networking.swift:demoEncoding"]
+
+[[part.section.entry]]
+id = "url-session"
+title = "GET with URLSession & async/await"
+aliases = ["URLSession", "fetch from URL", "data(from:)", "HTTP status", "network request", "API client", "read from URL", "download JSON"]
+code = ["concurrency/Networking.swift:APIError", "concurrency/Networking.swift:APIClient"]
+availability = "iOS 15+"
+use_when = "Any JSON API. Taking the session as a property lets tests swap in a stub `URLProtocol`."
+gotcha = "`URLSession` does not throw for 404 or 500: those are normal responses. Check `HTTPURLResponse.statusCode` yourself. For POST, build a `URLRequest`, set `httpMethod`, `httpBody` and the Content-Type header, and call `session.data(for:)`."
+
+[[part.section.entry]]
+id = "url-components"
+title = "Build URLs with query items"
+aliases = ["URLComponents", "URLQueryItem", "query string", "percent encoding", "url parameters"]
+code = ["concurrency/Networking.swift:searchURL"]
+availability = "iOS 8+"
+gotcha = "Never build a query by joining strings: spaces and `&` in user input break the URL."
 
 [[part.section]]
 id = "callbacks"
