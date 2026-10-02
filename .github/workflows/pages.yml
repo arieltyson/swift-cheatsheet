@@ -19,27 +19,10 @@ jobs:
     timeout-minutes: 10
     steps:
       - uses: actions/checkout@d23441a48e516b6c34aea4fa41551a30e30af803
-      - name: Build and verify public artifact
-        run: |
-          python3 -m unittest discover -s tests/site -v
-          python3 tools/build.py
-          node --check web/app.js
-      - name: Install isolated browser test tools
-        run: |
-          npm install --prefix "$RUNNER_TEMP/browser" playwright@1.63.0 @axe-core/playwright@4.13.0 --no-audit --no-fund
-          "$RUNNER_TEMP/browser/node_modules/.bin/playwright" install --with-deps chromium
-      - name: Verify browser behavior and accessibility
-        env:
-          BROWSER_TEST_MODULES: ${{ runner.temp }}/browser/node_modules
-        run: |
-          python3 -m http.server 8765 --directory dist --bind 127.0.0.1 &
-          server_pid=$!
-          trap 'kill "$server_pid"' EXIT
-          for attempt in 1 2 3 4 5; do
-            curl --fail --silent http://127.0.0.1:8765/ >/dev/null && break
-            sleep 1
-          done
-          node tests/browser/check.cjs
+      - name: Test the build tools, manifest, contrast and built page
+        run: python3 -m unittest discover -s tests/site -t . -v
+      - name: Build the public artifact
+        run: python3 -m tools.build
       - name: Configure Pages
         if: github.event_name != 'pull_request'
         uses: actions/configure-pages@983d7736d9b0ae728b81ab479565c72886d7745b

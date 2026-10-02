@@ -1,0 +1,1104 @@
+# Parts -> sections -> entries. Every entry shows either tested code
+# from examples/ (code = ["path.swift:name"]) or a table. Functions
+# named demo* are shown as their body only; assert lines become
+# `expression  // result`.
+
+# ---------------------------------------------------------------------
+[[part]]
+id = "dsa"
+title = "Pure DSA Swift"
+
+[[part.section]]
+id = "language"
+title = "Language essentials"
+group = "Syntax"
+
+[[part.section.entry]]
+id = "optionals"
+title = "Optionals, if let & guard"
+aliases = ["nil", "unwrap", "nil coalescing", "??", "guard let", "optional binding", "Int from String"]
+code = ["dsa/Language.swift:demoOptionals", "dsa/Language.swift:firstEven"]
+time = "O(n)"
+space = "O(1)"
+gotcha = "Never force-unwrap (`!`) a value that can legitimately be missing. Use `guard let` to exit early."
+
+[[part.section.entry]]
+id = "value-semantics"
+title = "struct vs class"
+aliases = ["value type", "reference type", "copy on write", "identity", "==="]
+code = ["dsa/Language.swift:demoValueSemantics"]
+gotcha = "Arrays, dictionaries, sets and strings are values: copying is O(1) until one copy is mutated, then O(n)."
+
+[[part.section.entry]]
+id = "closures"
+title = "Closures"
+aliases = ["lambda", "$0", "trailing closure", "sorted by", "higher order"]
+code = ["dsa/Language.swift:demoClosures"]
+
+[[part.section.entry]]
+id = "enums"
+title = "Enums with associated values"
+aliases = ["enum", "switch", "pattern matching", "associated value", "computed property"]
+code = ["dsa/Language.swift:Shape", "dsa/Language.swift:demoEnums"]
+
+[[part.section.entry]]
+id = "comparable"
+title = "A Comparable, Hashable type"
+aliases = ["Comparable", "Hashable", "custom sort", "tuple comparison", "<", "protocol conformance"]
+code = ["dsa/Language.swift:Job", "dsa/Language.swift:demoComparable"]
+gotcha = "Tuples compare element by element, so `(a.priority, a.name) < (b.priority, b.name)` breaks ties for free."
+
+[[part.section]]
+id = "arrays"
+title = "Arrays & sorting"
+group = "Syntax"
+
+[[part.section.entry]]
+id = "create-arrays"
+title = "Create arrays & grids"
+aliases = ["repeating", "2d array", "matrix", "grid", "range to array"]
+code = ["dsa/Arrays.swift:demoCreateArrays"]
+
+[[part.section.entry]]
+id = "array-operations"
+title = "append, remove & insert"
+aliases = ["push", "pop", "popLast", "removeFirst", "insert at", "swapAt"]
+code = ["dsa/Arrays.swift:demoArrayOperations"]
+gotcha = "`removeLast()` crashes on an empty array; `popLast()` returns nil. `removeFirst()` and `insert(_:at: 0)` are O(n)."
+
+[[part.section.entry]]
+id = "sort"
+title = "sorted & sort"
+aliases = ["sort descending", "sort strings", "case insensitive", "reversed"]
+code = ["dsa/Arrays.swift:demoSorting"]
+gotcha = "`sorted()` returns a copy; `sort()` sorts in place. Both are O(n log n); neither is guaranteed stable."
+
+[[part.section.entry]]
+id = "sort-keys"
+title = "Sort by several keys"
+aliases = ["multi key sort", "tie break", "custom comparator", "sort tuples"]
+code = ["dsa/Arrays.swift:demoSortKeys"]
+
+[[part.section.entry]]
+id = "transforms"
+title = "map, filter, reduce & compactMap"
+aliases = ["flatMap", "reduce into", "sum", "transform", "parse ints"]
+code = ["dsa/Arrays.swift:demoTransforms"]
+gotcha = "Use `reduce(into:)` to build arrays or dictionaries. `reduce` with `+ [x]` copies on every step: O(n^2)."
+
+[[part.section.entry]]
+id = "array-search"
+title = "contains, first(where:) & min/max"
+aliases = ["firstIndex", "lastIndex", "allSatisfy", "count where", "search array"]
+code = ["dsa/Arrays.swift:demoSearchArrays"]
+
+[[part.section.entry]]
+id = "iteration"
+title = "enumerated, zip & stride"
+aliases = ["loop with index", "indices", "reverse loop", "step", "pairs"]
+code = ["dsa/Arrays.swift:demoIteration"]
+
+[[part.section.entry]]
+id = "slices"
+title = "ArraySlice, prefix & suffix"
+aliases = ["subarray", "slice indices", "dropFirst", "prefix", "suffix"]
+code = ["dsa/Arrays.swift:demoSlices"]
+gotcha = "A slice keeps the original indices: `values[1...2][0]` crashes. Use `slice.first` or wrap it in `Array(...)`."
+
+[[part.section]]
+id = "strings"
+title = "Strings & characters"
+group = "Syntax"
+
+[[part.section.entry]]
+id = "string-basics"
+title = "String basics"
+aliases = ["count", "lowercased", "hasPrefix", "contains", "split", "joined", "replacing", "reverse string"]
+code = ["dsa/Strings.swift:demoStringBasics"]
+
+[[part.section.entry]]
+id = "string-indexing"
+title = "Indexing a String"
+aliases = ["String.Index", "subscript", "character at", "substring", "Array(text)"]
+code = ["dsa/Strings.swift:demoStringIndexing"]
+time = "O(k) to offset by k; O(n) to convert once"
+space = "O(n) for Array(text)"
+gotcha = "`text[2]` does not compile. Characters vary in width, so offsetting an index is O(k)."
+
+[[part.section.entry]]
+id = "characters"
+title = "Character checks"
+aliases = ["isLetter", "isNumber", "asciiValue", "wholeNumberValue", "isalnum", "char code"]
+code = ["dsa/Strings.swift:demoCharacters"]
+
+[[part.section.entry]]
+id = "build-strings"
+title = "Building strings & interpolation"
+aliases = ["string interpolation", "concatenate", "repeating", "filter letters", "palindrome cleanup"]
+code = ["dsa/Strings.swift:demoBuildStrings"]
+
+[[part.section.entry]]
+id = "letter-counts"
+title = "Letter counts & anagram keys"
+aliases = ["anagram", "frequency array", "26 letters", "group anagrams"]
+code = ["dsa/Strings.swift:demoLetterCounts"]
+
+[[part.section]]
+id = "dictionaries"
+title = "Dictionaries & sets"
+group = "Syntax"
+
+[[part.section.entry]]
+id = "dictionary"
+title = "Dictionary"
+aliases = ["hash map", "default value", "removeValue", "keys", "values", "map"]
+code = ["dsa/Dictionaries.swift:demoDictionary"]
+gotcha = "Iteration order is random and changes between runs. Sort keys before printing or comparing."
+
+[[part.section.entry]]
+id = "counting"
+title = "Count occurrences"
+aliases = ["frequency", "counter", "histogram", "most common", "top k frequent", "uniquingKeysWith"]
+code = ["dsa/Dictionaries.swift:demoCounting"]
+
+[[part.section.entry]]
+id = "grouping"
+title = "Group values by key"
+aliases = ["group by", "group anagrams", "Dictionary(grouping:)", "bucket"]
+code = ["dsa/Dictionaries.swift:demoGrouping"]
+
+[[part.section.entry]]
+id = "set"
+title = "Set & set operations"
+aliases = ["unique", "dedupe", "union", "intersection", "subtracting", "visited", "insert"]
+code = ["dsa/Dictionaries.swift:demoSet"]
+
+[[part.section.entry]]
+id = "hashable-keys"
+title = "Coordinates as keys"
+aliases = ["Hashable struct", "visited grid", "point key", "tuple key"]
+code = ["dsa/Dictionaries.swift:GridPoint", "dsa/Dictionaries.swift:demoHashableKeys"]
+gotcha = "Tuples cannot be dictionary keys or set elements. Declare a small `Hashable` struct instead."
+
+[[part.section]]
+id = "formatting"
+title = "Formatting & money"
+group = "Syntax"
+intro = "`import Foundation`. Pass a locale when the exact output matters; the default follows the device."
+
+[[part.section.entry]]
+id = "format-money"
+title = "Format money: dollars and cents"
+aliases = ["money", "currency", "price", "USD", "CAD", "formatted", "FormatStyle", "two decimals"]
+code = ["dsa/Formatting.swift:demoMoney"]
+availability = "macOS 12+ · iOS 15+"
+gotcha = "`String(format: \"%.2f\", x)` works, but FormatStyle handles currency symbols, grouping and signs for you."
+
+[[part.section.entry]]
+id = "money-in-cents"
+title = "Store money as integer cents or Decimal"
+aliases = ["float precision", "0.1 + 0.2", "Decimal", "cents to dollars", "quotientAndRemainder"]
+code = ["dsa/Formatting.swift:demoCents"]
+use_when = "Any calculation with money. Never use Double for amounts you add up."
+
+[[part.section.entry]]
+id = "number-formats"
+title = "Decimals, separators & percent"
+aliases = ["precision", "fractionLength", "grouping", "percentage", "thousands separator"]
+code = ["dsa/Formatting.swift:demoNumberFormats"]
+availability = "macOS 12+ · iOS 15+"
+
+[[part.section.entry]]
+id = "padding-radix"
+title = "Padding, binary & hex"
+aliases = ["pad left", "zero pad", "radix", "base 2", "base 16", "parse binary"]
+code = ["dsa/Formatting.swift:demoPaddingAndRadix"]
+
+[[part.section.entry]]
+id = "rounding"
+title = "Rounding"
+aliases = ["round half", "round to 2 decimals", "floor", "ceil", "truncate", "toNearestOrEven"]
+code = ["dsa/Formatting.swift:demoRounding"]
+gotcha = "`rounded()` rounds half away from zero (2.5 to 3); Python and banking round half to even."
+
+[[part.section]]
+id = "numbers"
+title = "Numbers & math"
+group = "Syntax"
+
+[[part.section.entry]]
+id = "integer-division"
+title = "Integer division & modulo"
+aliases = ["floor division", "remainder", "negative modulo", "ceil division", "quotientAndRemainder"]
+code = ["dsa/Numbers.swift:demoIntegerDivision"]
+
+[[part.section.entry]]
+id = "overflow"
+title = "Overflow & mod 1e9+7"
+aliases = ["Int.max", "overflow trap", "&+", "wrapping", "addingReportingOverflow", "1e9+7"]
+code = ["dsa/Numbers.swift:demoOverflow"]
+gotcha = "Overflow crashes instead of wrapping. Int is 64-bit, so `a * b` fits whenever both are below about 3 * 10^9."
+
+[[part.section.entry]]
+id = "math"
+title = "Math helpers"
+aliases = ["abs", "min", "max", "square root", "squareRoot", "pi", "infinity"]
+code = ["dsa/Numbers.swift:demoMath"]
+
+[[part.section.entry]]
+id = "gcd"
+title = "gcd & lcm"
+aliases = ["greatest common divisor", "least common multiple", "euclid"]
+code = ["dsa/Numbers.swift:gcd", "dsa/Numbers.swift:demoGcd"]
+time = "O(log min(a, b))"
+space = "O(1)"
+
+[[part.section]]
+id = "complexity"
+title = "Operation costs"
+group = "Data structures"
+
+[[part.section.entry]]
+id = "constraints"
+title = "Input size to target complexity"
+aliases = ["constraints", "time limit", "big o target"]
+
+[part.section.entry.table]
+header = ["Input size n", "Target", "Typical approach"]
+rows = [
+  ["n <= 10", "O(n!)", "Permutations, backtracking"],
+  ["n <= 20", "O(2^n)", "Subsets, bitmask DP"],
+  ["n <= 500", "O(n^3)", "Triple loop, interval DP"],
+  ["n <= 5,000", "O(n^2)", "All pairs, 2D DP"],
+  ["n <= 10^6", "O(n log n)", "Sort, heap, binary search"],
+  ["n <= 10^8", "O(n)", "One pass, two pointers, Dictionary"],
+  ["Larger", "O(log n) or O(1)", "Binary search, math"],
+]
+
+[[part.section.entry]]
+id = "array-costs"
+title = "Array costs"
+aliases = ["array complexity", "removeFirst cost"]
+
+[part.section.entry.table]
+header = ["Operation", "Code", "Time"]
+rows = [
+  ["Read, write", "`values[i]`, `values[i] = x`", "O(1)"],
+  ["Add or remove at the end", "`append`, `popLast`", "O(1) amortized"],
+  ["Add or remove at the front", "`removeFirst()`, `insert(_:at: 0)`", "O(n)"],
+  ["Search", "`contains`, `firstIndex(of:)`", "O(n)"],
+  ["Sort", "`sorted()`, `sort()`", "O(n log n)"],
+  ["Slice", "`values[a..<b]`", "O(1), shares storage"],
+  ["Copy then mutate", "`var copy = values; copy.append(x)`", "O(n) once"],
+]
+
+[[part.section.entry]]
+id = "dictionary-costs"
+title = "Dictionary, Set & String costs"
+aliases = ["hash map complexity", "set complexity", "string complexity"]
+
+[part.section.entry.table]
+header = ["Operation", "Code", "Time"]
+rows = [
+  ["Get, set, remove", "`counts[key]`, `counts[key] = v`", "O(1), worst O(n)"],
+  ["Membership", "`set.contains(x)`", "O(1), worst O(n)"],
+  ["Union, intersection", "`a.union(b)`", "O(len(a) + len(b))"],
+  ["String length", "`text.count`", "O(n)"],
+  ["Character at offset k", "`text.index(text.startIndex, offsetBy: k)`", "O(k)"],
+  ["Convert for random access", "`Array(text)`", "O(n) once, then O(1)"],
+]
+
+[[part.section.entry]]
+id = "heap-costs"
+title = "Heap costs"
+aliases = ["priority queue complexity", "heap big o"]
+
+[part.section.entry.table]
+header = ["Operation", "Code", "Time"]
+rows = [
+  ["Push, pop", "`heap.push(x)`, `heap.pop()`", "O(log n)"],
+  ["Peek at the first element", "`heap.peek`", "O(1)"],
+  ["Build from an array", "`Heap(values, by: <)`", "O(n)"],
+  ["Find or remove any element", "Not supported", "Scan is O(n)"],
+]
+
+[[part.section]]
+id = "stack-queue"
+title = "Stack & queue"
+group = "Data structures"
+
+[[part.section.entry]]
+id = "stack"
+title = "Stack with an array"
+aliases = ["lifo", "push pop", "peek", "last"]
+code = ["dsa/StackQueue.swift:demoStack"]
+
+[[part.section.entry]]
+id = "head-index-queue"
+title = "Queue with a head index"
+aliases = ["fifo", "bfs queue", "avoid removeFirst", "queue without class"]
+code = ["dsa/StackQueue.swift:demoHeadIndexQueue"]
+use_when = "BFS and other one-off queues where every item fits in memory at once."
+
+[[part.section.entry]]
+id = "queue-struct"
+title = "Queue struct"
+aliases = ["fifo", "enqueue", "dequeue", "deque", "o(1) queue"]
+code = ["dsa/StackQueue.swift:Queue", "dsa/StackQueue.swift:demoQueue"]
+time = "O(1) amortized per operation"
+space = "O(n)"
+
+[[part.section.entry]]
+id = "valid-brackets"
+title = "Balanced brackets"
+aliases = ["valid parentheses", "matching brackets", "stack template"]
+code = ["dsa/StackQueue.swift:isBalanced"]
+time = "O(n)"
+space = "O(n)"
+
+[[part.section]]
+id = "heap"
+title = "Heap (priority queue)"
+group = "Data structures"
+intro = "Swift has no built-in heap. This one takes a comparison like `sorted(by:)`, so the same struct is a min-heap, a max-heap or a heap of tuples."
+
+[[part.section.entry]]
+id = "heap-struct"
+title = "Heap struct"
+aliases = ["priority queue", "min heap", "binary heap", "heapify", "sift down"]
+code = ["dsa/Heap.swift:Heap"]
+time = "O(log n) push and pop, O(1) peek, O(n) build"
+space = "O(n)"
+
+[[part.section.entry]]
+id = "min-max-heap"
+title = "Min-heap & max-heap"
+aliases = ["max heap", "largest first", "smallest first", "kth largest"]
+code = ["dsa/Heap.swift:demoHeap"]
+
+[[part.section.entry]]
+id = "heap-tuples"
+title = "Priorities & tie-breakers"
+aliases = ["tuple heap", "task scheduler", "custom priority", "Comparable heap"]
+code = ["dsa/Heap.swift:demoHeapOfTuples"]
+
+[[part.section]]
+id = "linked-list"
+title = "Linked list"
+group = "Data structures"
+
+[[part.section.entry]]
+id = "list-node"
+title = "ListNode"
+aliases = ["node class", "singly linked list"]
+code = ["dsa/LinkedList.swift:ListNode"]
+gotcha = "LeetCode declares `public class ListNode` with `val` and `next`; the logic below is the same."
+
+[[part.section.entry]]
+id = "build-linked-list"
+title = "Build & read a linked list"
+aliases = ["array to linked list", "print linked list", "dummy head"]
+code = ["dsa/LinkedList.swift:buildList", "dsa/LinkedList.swift:listValues"]
+time = "O(n)"
+space = "O(n)"
+
+[[part.section.entry]]
+id = "reverse-linked-list"
+title = "Reverse a linked list"
+aliases = ["reverse list", "in place reversal", "previous current next"]
+code = ["dsa/LinkedList.swift:reverseList"]
+time = "O(n)"
+space = "O(1)"
+
+[[part.section.entry]]
+id = "middle-node"
+title = "Middle node (fast & slow pointers)"
+aliases = ["tortoise and hare", "find middle"]
+code = ["dsa/LinkedList.swift:middleNode"]
+time = "O(n)"
+space = "O(1)"
+
+[[part.section.entry]]
+id = "linked-list-cycle"
+title = "Detect a cycle"
+aliases = ["floyd", "loop detection", "==="]
+code = ["dsa/LinkedList.swift:hasCycle"]
+time = "O(n)"
+space = "O(1)"
+gotcha = "Compare nodes with `===` (same object), not their values."
+
+[[part.section.entry]]
+id = "merge-sorted-lists"
+title = "Merge two sorted lists"
+aliases = ["merge linked lists", "dummy node"]
+code = ["dsa/LinkedList.swift:mergeSorted"]
+time = "O(n + m)"
+space = "O(1)"
+
+[[part.section]]
+id = "binary-tree"
+title = "Binary tree & BST"
+group = "Data structures"
+
+[[part.section.entry]]
+id = "tree-node"
+title = "TreeNode"
+aliases = ["binary tree node", "tree class"]
+code = ["dsa/Tree.swift:TreeNode"]
+
+[[part.section.entry]]
+id = "build-tree"
+title = "Build a tree from a level-order list"
+aliases = ["array to tree", "leetcode tree input", "deserialize"]
+code = ["dsa/Tree.swift:buildTree"]
+time = "O(n)"
+space = "O(n)"
+use_when = "Testing your own solution with LeetCode-style input like `[1, nil, 2, 3]`."
+
+[[part.section.entry]]
+id = "tree-traversals"
+title = "Preorder, inorder & postorder"
+aliases = ["dfs traversal", "tree walk", "nested function", "sorted order of bst"]
+code = ["dsa/Tree.swift:traversals"]
+time = "O(n)"
+space = "O(h) stack, h = height"
+gotcha = "Inorder traversal of a BST visits values in sorted order."
+
+[[part.section.entry]]
+id = "inorder-iterative"
+title = "Inorder without recursion"
+aliases = ["iterative traversal", "explicit stack", "kth smallest in bst"]
+code = ["dsa/Tree.swift:inorderIterative"]
+time = "O(n)"
+space = "O(h)"
+
+[[part.section.entry]]
+id = "level-order"
+title = "Level order (BFS)"
+aliases = ["breadth first", "levels", "right side view", "zigzag"]
+code = ["dsa/Tree.swift:levelOrder"]
+time = "O(n)"
+space = "O(w), w = widest level"
+
+[[part.section.entry]]
+id = "max-depth"
+title = "Maximum depth"
+aliases = ["height", "tree height"]
+code = ["dsa/Tree.swift:maxDepth"]
+time = "O(n)"
+space = "O(h)"
+
+[[part.section.entry]]
+id = "bst"
+title = "BST insert & validate"
+aliases = ["binary search tree", "is valid bst", "bounds"]
+code = ["dsa/Tree.swift:bstInsert", "dsa/Tree.swift:isValidBST"]
+time = "O(h) insert, O(n) validate"
+space = "O(h)"
+gotcha = "Checking a node only against its children is wrong. Every node must fit the bounds set by all its ancestors."
+
+[[part.section]]
+id = "trie"
+title = "Trie"
+group = "Data structures"
+
+[[part.section.entry]]
+id = "trie-class"
+title = "Trie (prefix tree)"
+aliases = ["prefix tree", "autocomplete", "word search", "startsWith"]
+code = ["dsa/Trie.swift:Trie", "dsa/Trie.swift:demoTrie"]
+time = "O(m) per operation, m = word length"
+space = "O(total characters inserted)"
+
+[[part.section]]
+id = "union-find"
+title = "Union-find"
+group = "Data structures"
+
+[[part.section.entry]]
+id = "union-find-struct"
+title = "Union-find (disjoint set)"
+aliases = ["disjoint set", "dsu", "connected components", "redundant connection", "kruskal"]
+code = ["dsa/UnionFind.swift:UnionFind", "dsa/UnionFind.swift:demoUnionFind"]
+time = "O(α(n)) amortized, effectively O(1)"
+space = "O(n)"
+
+[[part.section]]
+id = "graphs"
+title = "Graphs"
+group = "Data structures"
+
+[[part.section.entry]]
+id = "adjacency-list"
+title = "Adjacency lists from edges"
+aliases = ["graph representation", "edge list", "neighbors", "weighted graph"]
+code = ["dsa/Graph.swift:buildGraph", "dsa/Graph.swift:buildWeightedGraph"]
+time = "O(V + E)"
+space = "O(V + E)"
+
+[[part.section.entry]]
+id = "grid-neighbors"
+title = "Grid neighbors"
+aliases = ["4 directions", "in bounds", "up down left right", "matrix"]
+code = ["dsa/Graph.swift:gridNeighbors", "dsa/Graph.swift:demoGraphs"]
+time = "O(1) per cell"
+space = "O(1)"
+
+[[part.section]]
+id = "binary-search"
+title = "Binary search"
+group = "Algorithms"
+intro = "`low + (high - low) / 2` never overflows. The loop condition and the update must agree: `low <= high` with `middle ± 1`, or `low < high` with `high = middle`."
+
+[[part.section.entry]]
+id = "binary-search-exact"
+title = "Find an exact value"
+aliases = ["binary search", "search sorted array", "log n"]
+code = ["dsa/BinarySearch.swift:binarySearch"]
+time = "O(log n)"
+space = "O(1)"
+
+[[part.section.entry]]
+id = "lower-upper-bound"
+title = "Lower & upper bound"
+aliases = ["first occurrence", "last occurrence", "insert position", "count in range", "bisect"]
+code = ["dsa/BinarySearch.swift:lowerBound", "dsa/BinarySearch.swift:upperBound"]
+time = "O(log n)"
+space = "O(1)"
+
+[[part.section.entry]]
+id = "binary-search-answer"
+title = "Search on the answer"
+aliases = ["minimize maximum", "smallest feasible", "koko eating bananas", "capacity to ship"]
+code = ["dsa/BinarySearch.swift:firstTrue", "dsa/BinarySearch.swift:minEatingSpeed"]
+time = "O(n log m), m = size of the answer range"
+space = "O(1)"
+use_when = "\"Find the smallest x such that ...\" and if x works, every larger x works too."
+
+[[part.section]]
+id = "two-pointers"
+title = "Two pointers"
+group = "Algorithms"
+
+[[part.section.entry]]
+id = "pair-sum-sorted"
+title = "Pair with a target sum (sorted)"
+aliases = ["two sum sorted", "converging pointers"]
+code = ["dsa/TwoPointers.swift:pairWithSum"]
+time = "O(n)"
+space = "O(1)"
+use_when = "The input is sorted. For unsorted input, use a Dictionary of seen values."
+
+[[part.section.entry]]
+id = "three-sum"
+title = "Three sum"
+aliases = ["3sum", "triplets", "skip duplicates"]
+code = ["dsa/TwoPointers.swift:threeSum"]
+time = "O(n^2)"
+space = "O(n) for the sorted copy"
+
+[[part.section.entry]]
+id = "remove-duplicates"
+title = "Remove duplicates in place"
+aliases = ["read write pointer", "inout", "dedupe sorted array"]
+code = ["dsa/TwoPointers.swift:removeDuplicates"]
+time = "O(n)"
+space = "O(1)"
+
+[[part.section.entry]]
+id = "valid-palindrome"
+title = "Valid palindrome"
+aliases = ["palindrome check", "ignore punctuation"]
+code = ["dsa/TwoPointers.swift:isPalindrome"]
+time = "O(n)"
+space = "O(n) for the letters array"
+
+[[part.section]]
+id = "sliding-window"
+title = "Sliding window"
+group = "Algorithms"
+
+[[part.section.entry]]
+id = "fixed-window"
+title = "Fixed-size window"
+aliases = ["window of size k", "moving sum", "rolling"]
+code = ["dsa/SlidingWindow.swift:maxWindowSum"]
+time = "O(n)"
+space = "O(1)"
+
+[[part.section.entry]]
+id = "variable-window"
+title = "Variable window: grow, then shrink while invalid"
+aliases = ["at most k distinct", "longest substring", "minimum window", "shrink window"]
+code = ["dsa/SlidingWindow.swift:longestWithKDistinct"]
+time = "O(n)"
+space = "O(k)"
+
+[[part.section.entry]]
+id = "longest-unique-substring"
+title = "Longest substring without repeats"
+aliases = ["no repeating characters", "last seen index"]
+code = ["dsa/SlidingWindow.swift:longestUniqueSubstring"]
+time = "O(n)"
+space = "O(k), k = alphabet size"
+
+[[part.section]]
+id = "prefix-sums"
+title = "Prefix sums"
+group = "Algorithms"
+
+[[part.section.entry]]
+id = "prefix-sum-array"
+title = "Prefix sums & range sums"
+aliases = ["cumulative sum", "running total", "range sum query"]
+code = ["dsa/PrefixSums.swift:prefixSums", "dsa/PrefixSums.swift:demoRangeSum"]
+time = "O(n) to build, O(1) per range"
+space = "O(n)"
+
+[[part.section.entry]]
+id = "subarray-sum-k"
+title = "Count subarrays that sum to k"
+aliases = ["subarray sum equals k", "prefix sum dictionary"]
+code = ["dsa/PrefixSums.swift:countSubarraysWithSum"]
+time = "O(n)"
+space = "O(n)"
+use_when = "Subarray sums with negative numbers, where a sliding window does not work."
+
+[[part.section]]
+id = "monotonic-stack"
+title = "Monotonic stack"
+group = "Algorithms"
+
+[[part.section.entry]]
+id = "next-greater"
+title = "Next greater element"
+aliases = ["daily temperatures", "next larger", "stock span"]
+code = ["dsa/MonotonicStack.swift:nextGreater"]
+time = "O(n)"
+space = "O(n)"
+gotcha = "Each index is pushed and popped once, so the inner while loop is still O(n) overall."
+
+[[part.section]]
+id = "intervals"
+title = "Intervals"
+group = "Algorithms"
+
+[[part.section.entry]]
+id = "merge-intervals"
+title = "Merge overlapping intervals"
+aliases = ["overlap", "union of ranges", "insert interval"]
+code = ["dsa/Intervals.swift:mergeIntervals"]
+time = "O(n log n)"
+space = "O(n)"
+
+[[part.section.entry]]
+id = "meeting-rooms"
+title = "Minimum meeting rooms"
+aliases = ["meeting rooms ii", "max overlap", "concurrent intervals"]
+code = ["dsa/Intervals.swift:minMeetingRooms"]
+time = "O(n log n)"
+space = "O(n)"
+use_when = "The largest number of intervals open at once. Uses `Heap` from the Heap section."
+
+[[part.section]]
+id = "graph-search"
+title = "BFS & DFS"
+group = "Algorithms"
+
+[[part.section.entry]]
+id = "bfs-graph"
+title = "BFS on a graph"
+aliases = ["breadth first search", "level by level", "nearest first"]
+code = ["dsa/GraphSearch.swift:bfsOrder"]
+time = "O(V + E)"
+space = "O(V)"
+gotcha = "Mark a node visited when you enqueue it, not when you dequeue it."
+
+[[part.section.entry]]
+id = "bfs-grid"
+title = "Shortest path in a grid"
+aliases = ["maze", "unweighted shortest path", "fewest steps", "rotting oranges"]
+code = ["dsa/GraphSearch.swift:shortestPathGrid"]
+time = "O(rows * cols)"
+space = "O(rows * cols)"
+use_when = "Every move costs the same. Uses `gridNeighbors` from the Graphs section."
+
+[[part.section.entry]]
+id = "dfs-recursive"
+title = "DFS, recursive"
+aliases = ["depth first search", "nested function", "explore"]
+code = ["dsa/GraphSearch.swift:dfsRecursive"]
+time = "O(V + E)"
+space = "O(V)"
+
+[[part.section.entry]]
+id = "dfs-iterative"
+title = "DFS, iterative"
+aliases = ["explicit stack", "no recursion"]
+code = ["dsa/GraphSearch.swift:dfsIterative"]
+time = "O(V + E)"
+space = "O(V + E)"
+
+[[part.section.entry]]
+id = "number-of-islands"
+title = "Number of islands"
+aliases = ["connected components in grid", "flood fill", "count regions"]
+code = ["dsa/GraphSearch.swift:countIslands"]
+time = "O(rows * cols)"
+space = "O(rows * cols)"
+
+[[part.section]]
+id = "topological-sort"
+title = "Topological sort"
+group = "Algorithms"
+
+[[part.section.entry]]
+id = "kahns-algorithm"
+title = "Kahn's algorithm"
+aliases = ["topological sort", "course schedule", "dependencies", "in-degree", "cycle in directed graph"]
+code = ["dsa/TopologicalSort.swift:topologicalOrder"]
+time = "O(V + E)"
+space = "O(V + E)"
+gotcha = "Course Schedule gives pairs as `[course, prerequisite]`, so the edge is `(prerequisite, course)`."
+
+[[part.section]]
+id = "dijkstra"
+title = "Dijkstra's shortest path"
+group = "Algorithms"
+
+[[part.section.entry]]
+id = "dijkstra-heap"
+title = "Dijkstra with a heap"
+aliases = ["shortest path", "weighted graph", "network delay", "cheapest route"]
+code = ["dsa/Dijkstra.swift:dijkstra"]
+time = "O((V + E) log V)"
+space = "O(V + E)"
+use_when = "Shortest paths from one source with non-negative weights. Uses `Heap`; equal weights only need BFS."
+gotcha = "Negative weights break Dijkstra. Record `previous[neighbor] = node` when a distance improves to rebuild the path."
+
+[[part.section]]
+id = "backtracking"
+title = "Backtracking"
+group = "Algorithms"
+intro = "Choose, explore, unchoose. Appending `path` stores a copy, because arrays are values."
+
+[[part.section.entry]]
+id = "subsets"
+title = "Subsets"
+aliases = ["power set", "choose or skip"]
+code = ["dsa/Backtracking.swift:subsets"]
+time = "O(n * 2^n)"
+space = "O(n) besides the output"
+
+[[part.section.entry]]
+id = "combinations"
+title = "Combinations of size k"
+aliases = ["n choose k", "combination sum", "start index"]
+code = ["dsa/Backtracking.swift:combinations"]
+time = "O(k * C(n, k))"
+space = "O(k) besides the output"
+
+[[part.section.entry]]
+id = "permutations"
+title = "Permutations"
+aliases = ["all orderings", "used array"]
+code = ["dsa/Backtracking.swift:permutations"]
+time = "O(n * n!)"
+space = "O(n) besides the output"
+
+[[part.section]]
+id = "dynamic-programming"
+title = "Dynamic programming"
+group = "Algorithms"
+
+[[part.section.entry]]
+id = "memo-top-down"
+title = "Top-down with a dictionary memo"
+aliases = ["memoization", "cache", "recursion with memo"]
+code = ["dsa/DynamicProgramming.swift:climbStairsMemo"]
+time = "O(n)"
+space = "O(n)"
+
+[[part.section.entry]]
+id = "climbing-stairs"
+title = "Bottom-up with O(1) space"
+aliases = ["climbing stairs", "fibonacci", "rolling variables"]
+code = ["dsa/DynamicProgramming.swift:climbStairs"]
+time = "O(n)"
+space = "O(1)"
+
+[[part.section.entry]]
+id = "house-robber"
+title = "House robber"
+aliases = ["no adjacent", "take or skip"]
+code = ["dsa/DynamicProgramming.swift:houseRobber"]
+time = "O(n)"
+space = "O(1)"
+
+[[part.section.entry]]
+id = "coin-change"
+title = "Coin change (fewest coins)"
+aliases = ["minimum coins", "unbounded knapsack", "make change"]
+code = ["dsa/DynamicProgramming.swift:coinChange"]
+time = "O(amount * coins)"
+space = "O(amount)"
+
+[[part.section.entry]]
+id = "knapsack"
+title = "0/1 knapsack"
+aliases = ["partition equal subset sum", "each item once", "capacity"]
+code = ["dsa/DynamicProgramming.swift:knapsack"]
+time = "O(n * capacity)"
+space = "O(capacity)"
+gotcha = "Loop the capacity downward for 0/1 (each item once). Upward lets an item be reused."
+
+[[part.section.entry]]
+id = "grid-paths"
+title = "Grid paths (one row of state)"
+aliases = ["unique paths", "2d dp", "rolling row"]
+code = ["dsa/DynamicProgramming.swift:uniqueGridPaths"]
+time = "O(rows * cols)"
+space = "O(cols)"
+
+[[part.section.entry]]
+id = "lcs"
+title = "Longest common subsequence"
+aliases = ["lcs", "edit distance", "two strings dp", "2d table"]
+code = ["dsa/DynamicProgramming.swift:longestCommonSubsequence"]
+time = "O(n * m)"
+space = "O(n * m)"
+
+[[part.section.entry]]
+id = "lis"
+title = "Longest increasing subsequence"
+aliases = ["lis", "patience sorting", "tails array"]
+code = ["dsa/DynamicProgramming.swift:longestIncreasingSubsequence"]
+time = "O(n log n)"
+space = "O(n)"
+use_when = "Uses `lowerBound` from the Binary search section."
+
+[[part.section]]
+id = "sorting-selection"
+title = "Sorting & selection"
+group = "Algorithms"
+
+[[part.section.entry]]
+id = "merge-sort"
+title = "Merge sort"
+aliases = ["divide and conquer", "stable sort", "sort implementation"]
+code = ["dsa/Sorting.swift:mergeSort"]
+time = "O(n log n)"
+space = "O(n)"
+
+[[part.section.entry]]
+id = "quickselect"
+title = "k-th largest (quickselect)"
+aliases = ["kth largest element", "selection", "median", "partition"]
+code = ["dsa/Sorting.swift:kthLargest"]
+time = "O(n) average, O(n^2) worst"
+space = "O(n)"
+
+[[part.section.entry]]
+id = "top-k-heap"
+title = "Top k with a size-k heap"
+aliases = ["k largest", "top k elements", "k closest"]
+code = ["dsa/Sorting.swift:topKLargest"]
+time = "O(n log k)"
+space = "O(k)"
+
+[[part.section]]
+id = "bits"
+title = "Bit manipulation"
+group = "Algorithms"
+
+[[part.section.entry]]
+id = "bit-tricks"
+title = "Bit tricks"
+aliases = ["bitwise", "and or xor", "shift", "nonzeroBitCount", "popcount", "power of two"]
+code = ["dsa/Bits.swift:demoBits"]
+gotcha = "`<<` and `>>` bind tighter than `&` and `|` in Swift, unlike C. `value & 1 == 0` works as written."
+
+[[part.section.entry]]
+id = "bitmask-subsets"
+title = "Subsets as bitmasks"
+aliases = ["bitmask", "mask", "enumerate subsets"]
+code = ["dsa/Bits.swift:demoBitmaskSubsets"]
+
+[[part.section.entry]]
+id = "single-number"
+title = "Single number (XOR)"
+aliases = ["xor trick", "appears once", "missing number"]
+code = ["dsa/Bits.swift:singleNumber"]
+time = "O(n)"
+space = "O(1)"
+
+# ---------------------------------------------------------------------
+[[part]]
+id = "swiftui"
+title = "SwiftUI"
+
+[[part.section]]
+id = "data-flow"
+title = "State & data flow"
+
+[[part.section.entry]]
+id = "state-binding"
+title = "@State & @Binding"
+aliases = ["state", "binding", "two way", "child view", "$ projection", "source of truth"]
+code = ["swiftui/State.swift:CounterScreen", "swiftui/State.swift:CounterControl"]
+availability = "iOS 13+"
+use_when = "Simple values owned by one view. The child gets a `@Binding` to read and write the parent's state."
+gotcha = "Mark `@State` private. Passing a new initial value later does not reset it; the view keeps its own storage."
+
+[[part.section.entry]]
+id = "observable"
+title = "@Observable, @Environment & @Bindable"
+aliases = ["Observation", "model", "environment", "Bindable", "shared state", "view model"]
+code = ["swiftui/Observation.swift:StudySession", "swiftui/Observation.swift:SessionScreen", "swiftui/Observation.swift:SessionEditor"]
+availability = "iOS 17+"
+use_when = "A model shared by several views. The owner keeps it in `@State`; children read it from the environment."
+gotcha = "Views only re-render for properties their `body` actually reads. Use `@Bindable` to get `$` bindings."
+
+[[part.section.entry]]
+id = "observable-object"
+title = "Older code: ObservableObject"
+aliases = ["StateObject", "ObservedObject", "Published", "legacy", "Combine"]
+code = ["swiftui/LegacyOwnership.swift:LegacyCounter", "swiftui/LegacyOwnership.swift:LegacyOwner", "swiftui/LegacyOwnership.swift:LegacyChild"]
+availability = "iOS 14+"
+use_when = "Existing codebases before iOS 17. `@StateObject` owns the model; `@ObservedObject` borrows it."
+gotcha = "`@ObservedObject` in the owner recreates the model on every parent update. The owner must use `@StateObject`."
+
+[[part.section]]
+id = "lists-navigation"
+title = "Lists & navigation"
+
+[[part.section.entry]]
+id = "navigation-stack"
+title = "List, NavigationStack & sheets"
+aliases = ["NavigationStack", "navigationDestination", "path", "sheet", "Identifiable", "dismiss", "List"]
+code = ["swiftui/Navigation.swift:StudyTopic", "swiftui/Navigation.swift:TopicsScreen", "swiftui/Navigation.swift:TopicSheet"]
+availability = "iOS 16+"
+gotcha = "List rows need a stable `id`. Using an array index as the id breaks animations and state when rows move."
+
+[[part.section]]
+id = "layout"
+title = "Layout & accessibility"
+
+[[part.section.entry]]
+id = "stacks-layout"
+title = "Stacks, frames & Dynamic Type"
+aliases = ["VStack", "HStack", "frame", "padding", "Label", "font", "accessibility", "44 points"]
+code = ["swiftui/Layout.swift:ReviewSummary"]
+availability = "iOS 14+"
+gotcha = "Use text styles (`.headline`, `.body`), never fixed point sizes, so text follows the user's size setting."
+
+[[part.section]]
+id = "async-work"
+title = "Async work"
+
+[[part.section.entry]]
+id = "task-modifier"
+title = ".task(id:) & cancellation"
+aliases = ["task", "async", "await", "debounce", "search", "cancellation", "Task.sleep"]
+code = ["swiftui/Tasks.swift:TopicSearchScreen"]
+availability = "iOS 15+"
+use_when = "Async work tied to a view. SwiftUI cancels the task when the view disappears or the id changes."
+gotcha = "Cancellation is cooperative: check `Task.isCancelled` or call `try Task.checkCancellation()` after each await."
+
+[[part.section]]
+id = "uikit-in-swiftui"
+title = "UIKit inside SwiftUI"
+
+[[part.section.entry]]
+id = "representables"
+title = "UIViewRepresentable & UIViewControllerRepresentable"
+aliases = ["wrap UIKit", "makeUIView", "updateUIView", "UIActivityViewController", "bridge"]
+code = ["swiftui/Bridges.swift:ActivityIndicator", "swiftui/Bridges.swift:ShareSheet"]
+availability = "iOS 13+"
+gotcha = "`updateUIView` runs on every SwiftUI update. Make it idempotent and keep one-time setup in `makeUIView`."
+
+# ---------------------------------------------------------------------
+[[part]]
+id = "uikit"
+title = "UIKit"
+
+[[part.section]]
+id = "lifecycle"
+title = "Lifecycle"
+
+[[part.section.entry]]
+id = "view-controller-lifecycle"
+title = "View controller & view lifecycle"
+aliases = ["viewDidLoad", "viewWillAppear", "viewDidLayoutSubviews", "layoutSubviews", "lifecycle order"]
+code = ["uikit/Lifecycle.swift:LifecycleController", "uikit/Lifecycle.swift:RoundedPanel"]
+availability = "iOS 10+"
+use_when = "Order: `viewDidLoad` once, then `viewWillAppear`, `viewDidAppear` on every appearance; layout methods run many times."
+gotcha = "Frames are not final in `viewDidLoad`. Read sizes in `viewDidLayoutSubviews` or `layoutSubviews`."
+
+[[part.section]]
+id = "auto-layout"
+title = "Auto Layout"
+
+[[part.section.entry]]
+id = "constraints-priorities"
+title = "Anchors, safe area & priorities"
+aliases = ["NSLayoutConstraint", "safeAreaLayoutGuide", "UIStackView", "hugging", "compression resistance", "translatesAutoresizingMaskIntoConstraints"]
+code = ["uikit/AutoLayout.swift:ProfileController"]
+availability = "iOS 11+"
+gotcha = "Forgetting `translatesAutoresizingMaskIntoConstraints = false` creates conflicting constraints at run time."
+
+[[part.section]]
+id = "lists"
+title = "Lists & cells"
+
+[[part.section.entry]]
+id = "diffable"
+title = "Diffable data source & stable IDs"
+aliases = ["UICollectionViewDiffableDataSource", "snapshot", "CellRegistration", "reconfigureItems", "compositional layout list"]
+code = ["uikit/Diffable.swift:TopicsController"]
+availability = "iOS 15+"
+gotcha = "Snapshot items are identifiers, not models. Rename by updating the model and calling `reconfigureItems`."
+
+[[part.section.entry]]
+id = "cell-reuse"
+title = "Cell reuse & async images"
+aliases = ["prepareForReuse", "dequeueReusableCell", "wrong image", "cancel task", "reused cell"]
+code = ["uikit/AsyncReuse.swift:ThumbnailCell"]
+availability = "iOS 14+"
+gotcha = "A reused cell can receive an image meant for its previous row. Cancel in `prepareForReuse` and check the id before applying."
+
+[[part.section]]
+id = "delegation"
+title = "Delegation & memory"
+
+[[part.section.entry]]
+id = "delegate-pattern"
+title = "Delegate protocol & weak references"
+aliases = ["delegate", "weak", "retain cycle", "ARC", "AnyObject", "protocol"]
+code = ["uikit/Delegation.swift:TopicPickerDelegate", "uikit/Delegation.swift:TopicPickerController", "uikit/Delegation.swift:PracticeCoordinator"]
+availability = "Any iOS"
+gotcha = "A strong delegate creates a retain cycle with its owner. The protocol must be `AnyObject` so the property can be `weak`."
+
+[[part.section]]
+id = "navigation"
+title = "Navigation & presentation"
+
+[[part.section.entry]]
+id = "push-present"
+title = "Push, present & sheets"
+aliases = ["pushViewController", "present", "dismiss", "UINavigationController", "sheetPresentationController", "detents", "modal"]
+code = ["uikit/UIKitNavigation.swift:NavigationExampleController"]
+availability = "iOS 15+"
+gotcha = "Present from the visible controller; pushing needs a `navigationController`, which is nil outside a navigation stack."
+
+[[part.section]]
+id = "swiftui-in-uikit"
+title = "SwiftUI inside UIKit"
+
+[[part.section.entry]]
+id = "hosting-controller"
+title = "UIHostingController as a child"
+aliases = ["UIHostingController", "addChild", "didMove", "embed SwiftUI", "bridge"]
+code = ["uikit/Hosting.swift:HostingExampleController"]
+availability = "iOS 13+"
+gotcha = "Call `addChild` before adding the view and `didMove(toParent:)` after, or appearance callbacks are skipped."

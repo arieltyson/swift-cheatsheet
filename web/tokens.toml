@@ -1,0 +1,28 @@
+# Every colour on the page, defined once as [light, dark].
+# The build turns these into CSS custom properties with light-dark(),
+# and tests/site/test_contrast.py asserts every pairing (decision 002).
+#
+# Link and highlight come from Swift orange (#F05138), darkened or
+# tinted until they pass WCAG AA on every background.
+
+[color]
+bg = ["#FAFAF7", "#111214"]
+surface = ["#F1F0EB", "#18191C"]
+code-bg = ["#FFFFFF", "#0B0C0E"]
+border = ["#DCDAD2", "#2A2C30"]
+border-strong = ["#B9B6AB", "#4A4D53"]
+text = ["#1B1B18", "#E8E6E1"]
+text-muted = ["#55554F", "#A3A19B"]
+link = ["#B8391C", "#FF8A6E"]
+# Dark uses Swift orange at 30% opacity over the dark background.
+highlight = ["#FCE1D9", "#F051384D"]
+# Behind the jump-list dialog. Not text, so not contrast tested.
+backdrop = ["#1B1B1833", "#00000099"]
+
+[syntax]
+kw = ["#A0306E", "#F29AC4"]
+str = ["#2F7A3A", "#A3D9A0"]
+num = ["#94560A", "#F0B46A"]
+com = ["#66665E", "#9A988F"]
+fn = ["#1F5FA8", "#8CBDF5"]
+bi = ["#00717A", "#72D3D8"]
