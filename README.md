@@ -8,7 +8,7 @@
 
 ## Project Description 🎨
 
-Swift CheatSheet is a single-page reference for iOS coding interviews: <https://arieltyson.github.io/swift-cheatsheet/>. It has three sections. **Pure DSA Swift** covers the syntax that is easy to forget under pressure (collections, strings and `String.Index`, dollars and cents with `FormatStyle`, overflow), the structures Swift does not ship (a heap and an O(1) queue), and tested templates for the common algorithms, from binary search to Dijkstra. **SwiftUI** and **UIKit** cover state ownership, navigation, layout, cell reuse, delegation and interoperability. Every DSA result shown on the page is checked by `swift test`, and every UI example is compiled against the iOS SDK in strict Swift 6 mode and exercised on a simulator. All content is plain text on one page, so Cmd+F always works, and `/` opens a jump list.
+Swift CheatSheet is a single-page reference for iOS coding interviews: <https://arieltyson.github.io/swift-cheatsheet/>. It has four sections. **Pure DSA Swift** covers the syntax that is easy to forget under pressure (collections, strings and `String.Index`, dollars and cents with `FormatStyle`, overflow), the structures Swift does not ship (a heap and an O(1) queue), and tested templates for the common algorithms, from binary search to Dijkstra. **SwiftUI** and **UIKit** cover state ownership, re-renders, navigation, layout, cell reuse, delegation and interoperability. **Concurrency & debugging** covers modern Swift concurrency (`async let`, task groups, cancellation, actors, `@MainActor`, `@concurrent`, continuations, `AsyncStream`), callbacks with `DispatchGroup`, Combine, retain cycles, and which Xcode tool finds which bug. Every DSA result shown on the page is checked by `swift test`, and every UI example is compiled against the iOS SDK in strict Swift 6 mode and exercised on a simulator. All content is plain text on one page, so Cmd+F always works, and `/` opens a jump list.
 
 ## Screenshots:
 
@@ -29,7 +29,7 @@ Swift CheatSheet is a single-page reference for iOS coding interviews: <https://
 ### Frameworks
 
 - [x] **Swift 6.4, Swift 6 language mode**: every example
-- [x] **Swift Testing**: runs every demo's asserts and checks each algorithm against brute force
+- [x] **Swift Testing**: runs every demo's asserts, checks each algorithm against brute force, and checks that parallel code really runs in parallel
 - [x] **iOS SDK + Simulator**: strict concurrency type-checking and behaviour checks for SwiftUI and UIKit examples
 - [x] **Python standard library**: a Swift lexer, highlighter and static site build
 - [x] **HTML, CSS and vanilla JavaScript**: one page, no framework
@@ -62,6 +62,7 @@ Swift CheatSheet is a single-page reference for iOS coding interviews: <https://
 - 🧰 **Pure DSA Swift**: syntax, collections, formatting, a heap, and algorithm templates
 - 📱 **SwiftUI**: `@State`, `@Observable`, navigation, layout, `.task(id:)`, UIKit bridges
 - 🧱 **UIKit**: lifecycle, Auto Layout, diffable lists, cell reuse, delegation, presentation, hosting SwiftUI
+- 🧵 **Concurrency & debugging**: tasks, task groups, actors, Combine, `DispatchGroup`, memory leaks, Xcode debugging tools
 - ⏱️ **Complexity or availability on every entry**
 - 📋 **Copy buttons**, 🌗 **light and dark**, 🔒 **no tracking**
 

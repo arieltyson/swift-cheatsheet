@@ -56,3 +56,13 @@ Decision: only types that need it (an `@Observable` model, an
 keep `@MainActor`.
 Consequence: less noise in every UI example. Strict Swift 6 type
 checking with warnings as errors still passes.
+
+## 07: A fourth section for concurrency and debugging
+
+Context: iOS debugging interviews test parallel fetching in three
+styles (callbacks, Combine, async/await), thread safety and leaks.
+Decision: add a Concurrency & debugging section, in its own SwiftPM
+target (macOS 15 for `Mutex`). Its tests also check timing, so an
+example labelled parallel cannot silently run serially.
+Consequence: four header links instead of three. Entries for Swift 6.2
+features state the version they need.

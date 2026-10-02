@@ -1006,6 +1006,19 @@ use_when = "Async work tied to a view. SwiftUI cancels the task when the view di
 gotcha = "Cancellation is cooperative: check `Task.isCancelled` or call `try Task.checkCancellation()` after each await."
 
 [[part.section]]
+id = "updates"
+title = "Re-renders & side effects"
+
+[[part.section.entry]]
+id = "side-effects"
+title = "Where side effects belong"
+aliases = ["body re-render", "onAppear", "onChange", "EnvironmentObject", "invalidation", "side effect in body", "_printChanges"]
+code = ["swiftui/Updates.swift:Profile", "swiftui/Updates.swift:ProfileHeader"]
+availability = "iOS 17+"
+use_when = "Work that should happen once or when a value changes: put it in `.onAppear`, `.task` or `.onChange`, never directly in `body`."
+gotcha = "Any `@Published` change re-renders every view observing that `ObservableObject`, including through `@EnvironmentObject`. Call `Self._printChanges()` in `body` to see why a view updated."
+
+[[part.section]]
 id = "uikit-in-swiftui"
 title = "UIKit inside SwiftUI"
 
@@ -1102,3 +1115,243 @@ aliases = ["UIHostingController", "addChild", "didMove", "embed SwiftUI", "bridg
 code = ["uikit/Hosting.swift:HostingExampleController"]
 availability = "iOS 13+"
 gotcha = "Call `addChild` before adding the view and `didMove(toParent:)` after, or appearance callbacks are skipped."
+
+# ---------------------------------------------------------------------
+[[part]]
+id = "concurrency"
+title = "Concurrency & debugging"
+
+[[part.section]]
+id = "async-await"
+title = "async/await & Task"
+group = "Swift concurrency"
+
+[[part.section.entry]]
+id = "async-functions"
+title = "async, await & throws"
+aliases = ["async await", "try await", "async throws", "suspend", "await"]
+code = ["concurrency/AsyncAwait.swift:fetchPage", "concurrency/AsyncAwait.swift:FetchError", "concurrency/AsyncAwait.swift:fetchUser", "concurrency/AsyncAwait.swift:demoAsyncAwait"]
+availability = "iOS 13+"
+gotcha = "`await` marks a point where the function may pause and let other work run. It does not block the thread."
+
+[[part.section.entry]]
+id = "tasks"
+title = "Task, value & result"
+aliases = ["Task", "unstructured task", "task value", "Task.detached", "task name", "start async from sync"]
+code = ["concurrency/AsyncAwait.swift:demoTasks"]
+availability = "iOS 13+ · names need Swift 6.2"
+use_when = "Starting async work from synchronous code, such as a button action. Inside async code, prefer `async let` or a task group."
+gotcha = "`Task {}` inherits the current actor; `Task.detached` does not, and is rarely what you want. Swift 6.2 adds `Task.immediate` (iOS 26+) to start running synchronously."
+
+[[part.section]]
+id = "structured-concurrency"
+title = "async let & task groups"
+group = "Swift concurrency"
+
+[[part.section.entry]]
+id = "async-let"
+title = "async let: a fixed number in parallel"
+aliases = ["parallel", "concurrent requests", "fetch in parallel", "three requests", "async let"]
+code = ["concurrency/StructuredConcurrency.swift:fetchThreePages"]
+time = "max of the three calls, not their sum"
+space = "O(n) items"
+use_when = "A known, small number of independent calls. They start at `async let` and are awaited where you use them."
+gotcha = "Awaiting each call on its own line (`let a = await f(); let b = await g()`) runs them one after another."
+
+[[part.section.entry]]
+id = "task-group"
+title = "withTaskGroup: any number in parallel"
+aliases = ["TaskGroup", "addTask", "for await", "parallel map", "dynamic concurrency", "keep order"]
+code = ["concurrency/StructuredConcurrency.swift:fetchPages"]
+time = "slowest child, not the sum"
+space = "O(n)"
+gotcha = "Results arrive in completion order, not submission order. Return the index with each result and reorder at the end."
+
+[[part.section.entry]]
+id = "throwing-task-group"
+title = "withThrowingTaskGroup: fail fast"
+aliases = ["throwing group", "first error", "cancel siblings", "for try await"]
+code = ["concurrency/StructuredConcurrency.swift:fetchUsers"]
+availability = "iOS 13+"
+gotcha = "When a child throws and the error leaves the group, the remaining children are cancelled automatically."
+
+[[part.section.entry]]
+id = "limited-task-group"
+title = "Limit how many run at once"
+aliases = ["max concurrent", "throttle", "concurrency limit", "group.next"]
+code = ["concurrency/StructuredConcurrency.swift:countItems"]
+time = "O(n / limit) rounds"
+space = "O(limit) in flight"
+gotcha = "`withDiscardingTaskGroup` (iOS 17+) is for children whose results you ignore; it frees each one as it finishes."
+
+[[part.section]]
+id = "cancellation"
+title = "Cancellation & timeouts"
+group = "Swift concurrency"
+
+[[part.section.entry]]
+id = "cooperative-cancellation"
+title = "Cooperative cancellation"
+aliases = ["cancel", "Task.isCancelled", "checkCancellation", "CancellationError", "stop task"]
+code = ["concurrency/Cancellation.swift:countFinishedPages", "concurrency/Cancellation.swift:demoCancellation"]
+availability = "iOS 13+"
+gotcha = "`cancel()` only sets a flag. Work stops only where the code checks it, or where an API like `Task.sleep` throws."
+
+[[part.section.entry]]
+id = "timeout"
+title = "Timeout with a task group race"
+aliases = ["timeout", "race", "first to finish", "cancelAll", "deadline"]
+code = ["concurrency/Cancellation.swift:withTimeout", "concurrency/Cancellation.swift:demoTimeout"]
+availability = "iOS 16+"
+
+[[part.section]]
+id = "bridging"
+title = "Callbacks to async & streams"
+group = "Swift concurrency"
+
+[[part.section.entry]]
+id = "continuations"
+title = "withCheckedContinuation"
+aliases = ["callback to async", "wrap completion handler", "continuation", "bridge", "resume"]
+code = ["concurrency/Bridging.swift:requestPage", "concurrency/Bridging.swift:page"]
+availability = "iOS 13+"
+gotcha = "Resume exactly once on every path. Twice crashes; never leaves the caller waiting forever. Use the throwing variant for errors."
+
+[[part.section.entry]]
+id = "async-stream"
+title = "AsyncStream & for await"
+aliases = ["AsyncStream", "makeStream", "yield", "for await", "async sequence", "values over time"]
+code = ["concurrency/Bridging.swift:countdown", "concurrency/Bridging.swift:demoAsyncStream"]
+availability = "iOS 13+"
+gotcha = "Call `finish()`, or every `for await` loop over the stream waits forever."
+
+[[part.section]]
+id = "actors"
+title = "Actors & isolation"
+group = "Swift concurrency"
+
+[[part.section.entry]]
+id = "actor"
+title = "actor: shared state without data races"
+aliases = ["actor", "data race", "thread safe", "isolation", "reentrancy", "Sendable"]
+code = ["concurrency/Isolation.swift:BankAccount", "concurrency/Isolation.swift:demoActor"]
+availability = "iOS 13+"
+gotcha = "Actors are re-entrant: state can change at every `await` inside an actor method. Re-check conditions after awaiting."
+
+[[part.section.entry]]
+id = "main-actor"
+title = "@MainActor & @concurrent"
+aliases = ["MainActor", "main thread", "UI update", "concurrent", "background work", "approachable concurrency", "off main"]
+code = ["concurrency/Isolation.swift:SearchModel", "concurrency/Isolation.swift:rankMatches", "concurrency/Isolation.swift:demoMainActor"]
+availability = "iOS 13+ · @concurrent needs Swift 6.2"
+use_when = "Any type that owns UI state is `@MainActor`. Mark CPU-heavy async functions `@concurrent` to move them off the main actor."
+gotcha = "In Swift 6.2, a nonisolated async function runs on the caller's actor by default. Without `@concurrent`, heavy work called from the main actor stays on it."
+
+[[part.section]]
+id = "callbacks"
+title = "Callbacks & Dispatch"
+group = "Older APIs"
+
+[[part.section.entry]]
+id = "dispatch-group"
+title = "DispatchGroup: wait for parallel callbacks"
+aliases = ["DispatchGroup", "enter leave notify", "completion handler", "parallel callbacks", "GCD"]
+code = ["concurrency/Callbacks.swift:PageStore", "concurrency/Callbacks.swift:fetchPagesWithCallbacks"]
+availability = "iOS 18+ for Mutex"
+gotcha = "Calling `completion` right after the loop returns before any callback fires. And appending to a shared array from callbacks is a data race: guard it."
+
+[[part.section.entry]]
+id = "mutex"
+title = "Mutex for synchronous shared state"
+aliases = ["Mutex", "lock", "NSLock", "thread safe counter", "Synchronization", "concurrentPerform"]
+code = ["concurrency/Callbacks.swift:HitCounter", "concurrency/Callbacks.swift:demoMutex"]
+availability = "iOS 18+"
+gotcha = "Before iOS 18, use `NSLock` with `lock()` and `defer { unlock() }`, or a serial `DispatchQueue`."
+
+[[part.section]]
+id = "combine"
+title = "Combine"
+group = "Older APIs"
+intro = "`import Combine`. Still common in existing apps; new code usually uses async/await and `@Observable`."
+
+[[part.section.entry]]
+id = "subjects"
+title = "PassthroughSubject & CurrentValueSubject"
+aliases = ["subject", "send", "sink", "publisher", "current value"]
+code = ["concurrency/CombineBasics.swift:demoSubjects"]
+availability = "iOS 13+"
+
+[[part.section.entry]]
+id = "cancellables"
+title = "Keep subscriptions alive"
+aliases = ["AnyCancellable", "store in", "Set<AnyCancellable>", "subscription ends", "sink not called"]
+code = ["concurrency/CombineBasics.swift:demoCancellables"]
+availability = "iOS 13+"
+gotcha = "A subscription lives exactly as long as its `AnyCancellable`. Store it in a property, or nothing arrives."
+
+[[part.section.entry]]
+id = "combine-operators"
+title = "map, filter & collect"
+aliases = ["operators", "removeDuplicates", "collect", "pipeline", "transform"]
+code = ["concurrency/CombineBasics.swift:demoOperators"]
+availability = "iOS 13+"
+gotcha = "Add `.receive(on: DispatchQueue.main)` before a `sink` that updates UI."
+
+[[part.section.entry]]
+id = "combine-errors"
+title = "tryMap, catch & errors"
+aliases = ["catch", "tryMap", "replaceError", "Fail", "error handling", "stream ends"]
+code = ["concurrency/CombineBasics.swift:demoErrorHandling"]
+availability = "iOS 13+"
+
+[[part.section.entry]]
+id = "combine-parallel"
+title = "Future & MergeMany: parallel requests"
+aliases = ["Future", "Deferred", "MergeMany", "Zip", "combine parallel", "callback to publisher"]
+code = ["concurrency/CombineBasics.swift:pagePublisher", "concurrency/CombineBasics.swift:pagesPublisher"]
+availability = "iOS 13+"
+gotcha = "A bare `Future` starts work as soon as it is created. Wrap it in `Deferred` to start on subscribe. For exactly two or three publishers, `Publishers.Zip3` also works."
+
+[[part.section]]
+id = "memory"
+title = "Memory & leaks"
+group = "Debugging"
+
+[[part.section.entry]]
+id = "retain-cycles"
+title = "Retain cycles in closures"
+aliases = ["retain cycle", "memory leak", "weak self", "unowned", "closure capture", "deinit"]
+code = ["concurrency/Memory.swift:Downloader", "concurrency/Memory.swift:LeakyDownloader", "concurrency/Memory.swift:demoRetainCycles"]
+gotcha = "Prefer `[weak self]`. `[unowned self]` crashes if the closure outlives its owner. Add `deinit { print(...) }` to confirm an object is freed."
+
+[[part.section.entry]]
+id = "repeating-work"
+title = "Repeating work without leaking"
+aliases = ["Timer", "invalidate", "repeating", "polling", "timer leak", "loop task"]
+code = ["concurrency/Memory.swift:Ticker"]
+availability = "iOS 16+"
+gotcha = "A repeating `Timer` keeps its closure, and anything it captures, alive until `invalidate()`. Capture `[weak self]` and invalidate when stopping and in `deinit`."
+
+[[part.section]]
+id = "debugging-tools"
+title = "Debugging tools"
+group = "Debugging"
+
+[[part.section.entry]]
+id = "xcode-tools"
+title = "Which Xcode tool finds which bug"
+aliases = ["debugger", "lldb", "po", "memory graph", "instruments", "leaks", "thread sanitizer", "main thread checker", "view hierarchy", "breakpoint"]
+
+[part.section.entry.table]
+header = ["Symptom", "Tool", "How"]
+rows = [
+  ["Wrong value, unclear flow", "Breakpoint + LLDB", "`po value`, `p value`, `expr value = 1`; edit a breakpoint to log and continue"],
+  ["Crash with no clear line", "Exception and Swift Error breakpoints", "Breakpoint navigator, +, then Exception / Swift Error Breakpoint"],
+  ["Object never freed", "Memory Graph Debugger", "Debug bar, Debug Memory Graph; purple ! marks leaks, follow the strong references"],
+  ["Memory grows over time", "Instruments: Leaks, Allocations", "Product, Profile; repeat the action and look for growth"],
+  ["UI updated off the main thread", "Main Thread Checker", "Scheme, Run, Diagnostics (on by default); breaks on the call"],
+  ["Data race, random corruption", "Thread Sanitizer", "Scheme, Run, Diagnostics, Thread Sanitizer"],
+  ["View missing, clipped or covered", "View Hierarchy Debugger", "Debug bar, Debug View Hierarchy; rotate the 3D stack"],
+  ["SwiftUI view updates too often", "`Self._printChanges()`, SwiftUI instrument", "Call it in `body`; it prints which property changed"],
+  ["Slow or stuttering", "Instruments: Time Profiler, Hangs", "Find the heaviest stack on the main thread"],
+]

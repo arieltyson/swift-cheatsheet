@@ -44,8 +44,7 @@ func demoClosures() {
   assert(values.map { $0 * 2 } == [6, 2, 4])
   let isLarge: (Int) -> Bool = { value in value > 2 }
   assert(values.filter(isLarge) == [3])
-  var total = 0
-  values.forEach { total += $0 }
+  let total = values.reduce(0) { sum, value in sum + value }
   assert(total == 6)
 }
 

@@ -13,6 +13,7 @@ ALLOWED_IMPORTS = {
     "dsa": {"Foundation"},
     "swiftui": {"SwiftUI", "Observation", "Foundation", "UIKit"},
     "uikit": {"UIKit", "Foundation", "SwiftUI"},
+    "concurrency": {"Foundation", "Dispatch", "Combine", "Synchronization"},
 }
 DECLARATIONS = {"func", "struct", "class", "enum", "protocol", "typealias"}
 MAX_LINE_LENGTH = 72
@@ -83,16 +84,24 @@ class ManifestCoverageTests(unittest.TestCase):
         for path in example_files():
             relative = path.relative_to(SNIPPETS).as_posix()
             for name in top_level_names(path.read_text()):
-                self.assertIn(
-                    (relative, name), shown, f"{relative}:{name}"
+                self.assertTrue(
+                    (relative, name) in shown,
+                    f"{relative}:{name} is not in site.toml",
                 )
 
     def test_every_demo_runs_in_swift_test(self) -> None:
-        tests = (ROOT / "tests/swift/DemoTests.swift").read_text()
+        dsa_tests = (ROOT / "tests/swift/DemoTests.swift").read_text()
         for path in sorted((SNIPPETS / "dsa").glob("*.swift")):
             for name in top_level_names(path.read_text()):
                 if name.startswith("demo"):
-                    self.assertIn(f", {name})", tests, name)
+                    self.assertIn(f", {name})", dsa_tests, name)
+        concurrency_tests = (
+            ROOT / "tests/concurrency/ConcurrencyTests.swift"
+        ).read_text()
+        for path in sorted((SNIPPETS / "concurrency").glob("*.swift")):
+            for name in top_level_names(path.read_text()):
+                if name.startswith("demo"):
+                    self.assertIn(f"{name}()", concurrency_tests, name)
 
 
 if __name__ == "__main__":

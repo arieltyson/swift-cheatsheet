@@ -81,7 +81,7 @@ class ParseSiteTests(unittest.TestCase):
         data = site_with(
             {"id": "find", "title": "Find", "code": ["search.py:find"]}
         )
-        with self.assertRaisesRegex(ManifestError, "time/space"):
+        with self.assertRaisesRegex(ManifestError, "time/space or"):
             parse_site(data, self.root)
 
     def test_allows_demo_without_complexity(self) -> None:

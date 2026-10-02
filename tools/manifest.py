@@ -199,9 +199,10 @@ def _parse_entry(
             f"{where}: give both time and space, or neither"
         )
     is_reference = all(ref.is_demo or ref.is_type for ref in code)
-    if code and not is_reference and time is None:
+    has_fact = time is not None or "availability" in entry
+    if code and not is_reference and not has_fact:
         raise ManifestError(
-            f"{where}: algorithm entries need time/space"
+            f"{where}: functions need time/space or availability"
         )
 
     aliases = entry.get("aliases", [])
