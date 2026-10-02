@@ -2,6 +2,8 @@
 
 A small, fast interview reference for **Pure DSA Swift**, **SwiftUI**, and **UIKit**. All content is rendered together: native ⌘F / Ctrl+F searches every example without opening panels.
 
+[Website](https://arieltyson.github.io/swift-cheatsheet/) · [Report an issue](https://github.com/arieltyson/swift-cheatsheet/issues) · [Verification record](docs/verification.md)
+
 ## Architecture
 
 - `examples/`: original, compilable Swift examples; the displayed code is read directly from these files.
@@ -18,11 +20,31 @@ Requires Python 3.11+ and Swift 6.0+. Native examples require Xcode and an iOS s
 ```sh
 python3 tools/build.py
 python3 -m unittest discover -s tests/site -v
-swift test
+swift test --scratch-path /tmp/swift-cheatsheet-build
+python3 tools/native.py
 python3 -m http.server 8000 --directory dist --bind 127.0.0.1
 ```
 
 Open http://127.0.0.1:8000. Website usage does not require Python, Swift, or JavaScript.
+
+The separate Swift build directory avoids macOS Desktop/Finder extended attributes interfering with test bundle signing. `tools/native.py` type-checks all 14 native examples under strict Swift 6 concurrency, creates a temporary simulator app, runs 23 behavior checks, and removes only its own simulator afterward. `--compile-only` explicitly skips simulator behavior checks.
+
+Optional browser verification uses isolated development dependencies, not website packages:
+
+```sh
+npm install --prefix /tmp/swift-cheatsheet-browser playwright@1.63.0 @axe-core/playwright@4.13.0
+/tmp/swift-cheatsheet-browser/node_modules/.bin/playwright install chromium
+BROWSER_TEST_MODULES=/tmp/swift-cheatsheet-browser/node_modules \
+  SITE_URL=http://127.0.0.1:8000/ node tests/browser/check.cjs
+```
+
+Set `BROWSER_CHANNEL=chrome` to use an installed Chrome. Screenshots and browser reports go to ignored `artifacts/`. Swift formatting uses the toolchain's built-in `swift format`; there is no formatter package.
+
+## Publishing
+
+GitHub Pages uses GitHub Actions. `.github/workflows/pages.yml` verifies the static artifact and browser behavior on Linux, and Swift/native examples on macOS. Deployment depends on both jobs. Pull requests validate without publishing; a successful push to `main` publishes only `dist/`. Actions are pinned to reviewed commit SHAs. Pages write and OIDC permissions exist only in the deployment job.
+
+All site assets use relative paths so the same artifact works under `/swift-cheatsheet/` or another project subpath. The site has no external runtime requests. Source links are contacted only when followed.
 
 ## Content rules
 
@@ -35,3 +57,5 @@ Explain actual time, auxiliary space, and output space rather than claiming univ
 The initial release covers essential language/collection/formatting syntax, core data structures and algorithm patterns, and focused native UI examples. Trie, union-find, topological sort, monotonic stacks, advanced graph structures, and larger DP collections remain deliberate follow-up scope.
 
 No third-party license is selected on the owner's behalf. This is an independent reference, not an Apple product.
+
+Privacy and accessibility statements are visible at the bottom of the site, with maintained notes in `docs/privacy.md` and `docs/accessibility.md`. Do not confuse automated checks with a full conformance assessment.
