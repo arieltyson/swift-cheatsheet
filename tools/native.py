@@ -14,8 +14,9 @@ ROOT = Path(__file__).resolve().parents[1]
 BUNDLE_ID = "dev.swiftcheatsheet.validation"
 
 
-def run(*arguments: str) -> str:
-    return subprocess.check_output(arguments, text=True).strip()
+def run(*arguments: str, timeout: int = 180) -> str:
+    print("Running:", " ".join(arguments), flush=True)
+    return subprocess.check_output(arguments, text=True, timeout=timeout).strip()
 
 
 def verify(compile_only: bool = False) -> dict:
@@ -23,13 +24,15 @@ def verify(compile_only: bool = False) -> dict:
     architecture = "arm64" if platform.machine() == "arm64" else "x86_64"
     sdk = run("xcrun", "--sdk", "iphonesimulator", "--show-sdk-path")
     compiler = ["xcrun", "--sdk", "iphonesimulator", "swiftc", "-sdk", sdk, "-target", f"{architecture}-apple-ios17.0-simulator", "-swift-version", "6", "-strict-concurrency=complete", "-warnings-as-errors"]
-    subprocess.run(compiler + ["-typecheck"] + list(map(str, sources)), check=True)
+    print(f"Type-checking {len(sources)} native examples", flush=True)
+    subprocess.run(compiler + ["-typecheck"] + list(map(str, sources)), check=True, timeout=300)
     if compile_only:
         return {"typechecked": len(sources), "sdk": sdk}
     with tempfile.TemporaryDirectory(prefix="swift-cheatsheet-native-") as temporary:
         app = Path(temporary) / "NativeFixture.app"
         app.mkdir()
-        subprocess.run(compiler + ["-parse-as-library"] + list(map(str, sources)) + [str(ROOT / "tests/native/Fixture.swift"), "-o", str(app / "NativeFixture")], check=True)
+        print("Building simulator fixture", flush=True)
+        subprocess.run(compiler + ["-parse-as-library"] + list(map(str, sources)) + [str(ROOT / "tests/native/Fixture.swift"), "-o", str(app / "NativeFixture")], check=True, timeout=300)
         metadata = {
             "CFBundleIdentifier": BUNDLE_ID, "CFBundleExecutable": "NativeFixture",
             "CFBundleName": "NativeFixture", "CFBundlePackageType": "APPL",
@@ -53,7 +56,8 @@ def verify(compile_only: bool = False) -> dict:
         device = run("xcrun", "simctl", "create", f"SwiftCheatSheet-{uuid.uuid4().hex[:8]}", device_type, runtime["identifier"])
         try:
             run("xcrun", "simctl", "boot", device)
-            run("xcrun", "simctl", "bootstatus", device, "-b")
+            print(f"Booting isolated iOS {runtime['version']} simulator", flush=True)
+            run("xcrun", "simctl", "bootstatus", device, "-b", timeout=300)
             run("xcrun", "simctl", "install", device, str(app))
             run("xcrun", "simctl", "launch", device, BUNDLE_ID)
             container = Path(run("xcrun", "simctl", "get_app_container", device, BUNDLE_ID, "data"))
@@ -69,8 +73,10 @@ def verify(compile_only: bool = False) -> dict:
                 raise AssertionError(f"Native checks failed: {failed}")
             return {"typechecked": len(sources), "runtime": runtime["version"], "checks": results}
         finally:
-            subprocess.run(["xcrun", "simctl", "shutdown", device], capture_output=True)
-            subprocess.run(["xcrun", "simctl", "delete", device], check=True)
+            try:
+                subprocess.run(["xcrun", "simctl", "shutdown", device], capture_output=True, timeout=60)
+            finally:
+                subprocess.run(["xcrun", "simctl", "delete", device], check=True, timeout=60)
 
 
 if __name__ == "__main__":
