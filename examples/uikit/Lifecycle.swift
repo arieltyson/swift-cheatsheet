@@ -1,6 +1,5 @@
 import UIKit
 
-@MainActor
 final class LifecycleController: UIViewController {
   let statusLabel = UILabel()
 
@@ -29,7 +28,6 @@ final class LifecycleController: UIViewController {
   }
 }
 
-@MainActor
 final class RoundedPanel: UIView {
   override func layoutSubviews() {
     super.layoutSubviews()

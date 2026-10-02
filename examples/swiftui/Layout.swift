@@ -1,6 +1,5 @@
 import SwiftUI
 
-@MainActor
 struct ReviewSummary: View {
   let completed: Int
   let review: () -> Void

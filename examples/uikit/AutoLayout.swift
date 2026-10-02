@@ -1,6 +1,5 @@
 import UIKit
 
-@MainActor
 final class ProfileController: UIViewController {
   let titleLabel = UILabel()
   let nameField = UITextField()
@@ -17,7 +16,8 @@ final class ProfileController: UIViewController {
     nameField.adjustsFontForContentSizeCategory = true
     nameField.borderStyle = .roundedRect
     titleLabel.setContentHuggingPriority(.defaultHigh, for: .horizontal)
-    titleLabel.setContentCompressionResistancePriority(.required, for: .horizontal)
+    titleLabel.setContentCompressionResistancePriority(
+      .required, for: .horizontal)
     nameField.setContentHuggingPriority(.defaultLow, for: .horizontal)
     let row = UIStackView(arrangedSubviews: [titleLabel, nameField])
     row.spacing = 12
@@ -25,9 +25,12 @@ final class ProfileController: UIViewController {
     view.addSubview(row)
     let safeArea = view.safeAreaLayoutGuide
     NSLayoutConstraint.activate([
-      row.leadingAnchor.constraint(equalTo: safeArea.leadingAnchor, constant: 16),
-      row.trailingAnchor.constraint(equalTo: safeArea.trailingAnchor, constant: -16),
-      row.topAnchor.constraint(equalTo: safeArea.topAnchor, constant: 16),
+      row.leadingAnchor.constraint(
+        equalTo: safeArea.leadingAnchor, constant: 16),
+      row.trailingAnchor.constraint(
+        equalTo: safeArea.trailingAnchor, constant: -16),
+      row.topAnchor.constraint(
+        equalTo: safeArea.topAnchor, constant: 16),
     ])
   }
 }

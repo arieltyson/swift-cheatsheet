@@ -2,10 +2,10 @@ import UIKit
 
 @MainActor
 protocol TopicPickerDelegate: AnyObject {
-  func topicPicker(_ picker: TopicPickerController, didSelect topic: String)
+  func topicPicker(
+    _ picker: TopicPickerController, didSelect topic: String)
 }
 
-@MainActor
 final class TopicPickerController: UIViewController {
   weak var delegate: (any TopicPickerDelegate)?
 
@@ -21,7 +21,9 @@ final class PracticeCoordinator: TopicPickerDelegate {
 
   init() { picker.delegate = self }
 
-  func topicPicker(_ picker: TopicPickerController, didSelect topic: String) {
+  func topicPicker(
+    _ picker: TopicPickerController, didSelect topic: String
+  ) {
     selectedTopic = topic
   }
 }

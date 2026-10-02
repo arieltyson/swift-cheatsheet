@@ -1,6 +1,5 @@
 import UIKit
 
-@MainActor
 final class NavigationExampleController: UIViewController {
   func pushDetail() {
     let detail = UIViewController()
@@ -21,7 +20,9 @@ final class NavigationExampleController: UIViewController {
     )
     let navigation = UINavigationController(rootViewController: review)
     navigation.modalPresentationStyle = .pageSheet
-    navigation.sheetPresentationController?.detents = [.medium(), .large()]
+    navigation.sheetPresentationController?.detents = [
+      .medium(), .large(),
+    ]
     present(navigation, animated: true)
   }
 }

@@ -1,6 +1,5 @@
 import SwiftUI
 
-@MainActor
 struct CounterScreen: View {
   @State private var count = 0
 
@@ -14,7 +13,6 @@ struct CounterScreen: View {
   }
 }
 
-@MainActor
 struct CounterControl: View {
   @Binding var count: Int
 

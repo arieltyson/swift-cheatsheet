@@ -5,7 +5,6 @@ struct StudyTopic: Identifiable, Hashable {
   let title: String
 }
 
-@MainActor
 struct TopicsScreen: View {
   private let topics = [
     StudyTopic(id: 1, title: "Arrays"),
@@ -33,7 +32,6 @@ struct TopicsScreen: View {
   }
 }
 
-@MainActor
 struct TopicSheet: View {
   let topic: StudyTopic
   @Environment(\.dismiss) private var dismiss

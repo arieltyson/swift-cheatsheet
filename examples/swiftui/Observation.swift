@@ -7,7 +7,6 @@ final class StudySession {
   var completed = false
 }
 
-@MainActor
 struct SessionScreen: View {
   @State private var session = StudySession()
 
@@ -17,7 +16,6 @@ struct SessionScreen: View {
   }
 }
 
-@MainActor
 struct SessionEditor: View {
   @Environment(StudySession.self) private var session
 

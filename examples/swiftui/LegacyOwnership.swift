@@ -5,7 +5,6 @@ final class LegacyCounter: ObservableObject {
   @Published var count = 0
 }
 
-@MainActor
 struct LegacyOwner: View {
   @StateObject private var model = LegacyCounter()
 
@@ -14,7 +13,6 @@ struct LegacyOwner: View {
   }
 }
 
-@MainActor
 struct LegacyChild: View {
   @ObservedObject var model: LegacyCounter
 

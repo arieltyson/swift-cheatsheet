@@ -1,6 +1,5 @@
 import SwiftUI
 
-@MainActor
 struct TopicSearchScreen: View {
   @State private var query = ""
   @State private var results: [String] = []

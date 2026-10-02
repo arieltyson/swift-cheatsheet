@@ -1,6 +1,5 @@
 import UIKit
 
-@MainActor
 final class ThumbnailCell: UITableViewCell {
   private var representedID: Int?
   private var loadTask: Task<Void, Never>?

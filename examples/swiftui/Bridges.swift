@@ -1,7 +1,6 @@
 import SwiftUI
 import UIKit
 
-@MainActor
 struct ActivityIndicator: UIViewRepresentable {
   var isAnimating: Bool
 
@@ -10,17 +9,25 @@ struct ActivityIndicator: UIViewRepresentable {
   }
 
   func updateUIView(_ view: UIActivityIndicatorView, context: Context) {
-    if isAnimating { view.startAnimating() } else { view.stopAnimating() }
+    if isAnimating {
+      view.startAnimating()
+    } else {
+      view.stopAnimating()
+    }
   }
 }
 
-@MainActor
 struct ShareSheet: UIViewControllerRepresentable {
   let text: String
 
-  func makeUIViewController(context: Context) -> UIActivityViewController {
-    UIActivityViewController(activityItems: [text], applicationActivities: nil)
+  func makeUIViewController(context: Context)
+    -> UIActivityViewController
+  {
+    UIActivityViewController(
+      activityItems: [text], applicationActivities: nil)
   }
 
-  func updateUIViewController(_ controller: UIActivityViewController, context: Context) {}
+  func updateUIViewController(
+    _ controller: UIActivityViewController, context: Context
+  ) {}
 }
