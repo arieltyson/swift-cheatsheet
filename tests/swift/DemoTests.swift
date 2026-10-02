@@ -7,7 +7,10 @@ import Testing
 @Test(
   arguments: [
     ("Arrays", demoArrayOperations), ("BoardIndex", demoBoardIndex),
-    ("DoCatch", demoDoCatch), ("TryVariants", demoTryVariants),
+    ("Protocols", demoProtocols),
+    ("Extensions", demoExtensions), ("Generics", demoGenerics),
+    ("LRUCache", demoLRUCache), ("DoCatch", demoDoCatch),
+    ("TryVariants", demoTryVariants),
     ("Defer", demoDefer), ("Result", demoResult),
     ("TicTacToe", demoTicTacToe),
     ("BitmaskSubsets", demoBitmaskSubsets),

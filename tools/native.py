@@ -20,7 +20,8 @@ def run(*arguments: str, timeout: int = 180) -> str:
 
 
 def verify(compile_only: bool = False) -> dict:
-    sources = sorted((ROOT / "examples/swiftui").glob("*.swift")) + sorted((ROOT / "examples/uikit").glob("*.swift"))
+    # examples/app holds the tested logic the SwiftUI screens build on
+    sources = [path for folder in ("app", "swiftui", "uikit") for path in sorted((ROOT / "examples" / folder).glob("*.swift"))]
     architecture = "arm64" if platform.machine() == "arm64" else "x86_64"
     sdk = run("xcrun", "--sdk", "iphonesimulator", "--show-sdk-path")
     compiler = ["xcrun", "--sdk", "iphonesimulator", "swiftc", "-sdk", sdk, "-target", f"{architecture}-apple-ios17.0-simulator", "-swift-version", "6", "-strict-concurrency=complete", "-warnings-as-errors"]

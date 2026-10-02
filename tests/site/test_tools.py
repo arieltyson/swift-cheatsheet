@@ -84,6 +84,11 @@ final class Box<Value> {
 }
 
 typealias Pair = (first: Int, second: Int)
+
+/// Shared behaviour.
+extension Box {
+  var isSet: Bool { true }
+}
 """
 
 
@@ -114,6 +119,11 @@ class ExtractTests(unittest.TestCase):
         box = self.extract("Box")
         self.assertTrue(box.startswith("@MainActor\nfinal class Box<Value> {"))
         self.assertTrue(box.endswith("\n}"))
+
+    def test_type_includes_its_extensions(self) -> None:
+        box = self.extract("Box")
+        self.assertIn("}\n\n/// Shared behaviour.\nextension Box {", box)
+        self.assertTrue(box.endswith("var isSet: Bool { true }\n}"))
 
     def test_typealias(self) -> None:
         self.assertEqual(

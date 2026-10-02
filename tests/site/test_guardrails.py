@@ -11,7 +11,8 @@ from tools.source import extract
 
 ALLOWED_IMPORTS = {
     "dsa": {"Foundation"},
-    "swiftui": {"SwiftUI", "Observation", "Foundation", "UIKit"},
+    "swiftui": {"SwiftUI", "Observation", "Foundation", "UIKit", "SwiftData"},
+    "app": {"Foundation", "Observation"},
     "uikit": {"UIKit", "Foundation", "SwiftUI"},
     "concurrency": {"Foundation", "Dispatch", "Combine", "Synchronization"},
 }
@@ -95,14 +96,15 @@ class ManifestCoverageTests(unittest.TestCase):
             for name in top_level_names(path.read_text()):
                 if name.startswith("demo"):
                     self.assertIn(f", {name})", dsa_tests, name)
-        concurrency_tests = "".join(
-            path.read_text()
-            for path in (ROOT / "tests/concurrency").glob("*.swift")
-        )
-        for path in sorted((SNIPPETS / "concurrency").glob("*.swift")):
-            for name in top_level_names(path.read_text()):
-                if name.startswith("demo"):
-                    self.assertIn(f"{name}()", concurrency_tests, name)
+        for folder in ("concurrency", "app"):
+            tests = "".join(
+                path.read_text()
+                for path in (ROOT / "tests" / folder).glob("*.swift")
+            )
+            for path in sorted((SNIPPETS / folder).glob("*.swift")):
+                for name in top_level_names(path.read_text()):
+                    if name.startswith("demo"):
+                        self.assertIn(f"{name}()", tests, name)
 
 
 if __name__ == "__main__":

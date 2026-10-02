@@ -196,3 +196,35 @@ func bruteForceWinner(_ cells: [Mark?], size: Int) -> Mark? {
     try withdraw("10.01", from: 1_000)
   }
 }
+
+@Test func lruCacheMatchesAnOrderedListModel() {
+  for _ in 0..<300 {
+    let capacity = Int.random(in: 1...4)
+    let cache = LRUCache<Int, Int>(capacity: capacity)
+    // Model: (key, value) pairs, most recent first; O(n), obviously right
+    var model: [(key: Int, value: Int)] = []
+    for _ in 0..<40 {
+      let key = Int.random(in: 0...5)
+      if Bool.random() {
+        let expected = model.first { $0.key == key }?.value
+        #expect(cache.get(key) == expected)
+        if let index = model.firstIndex(where: { $0.key == key }) {
+          model.insert(model.remove(at: index), at: 0)
+        }
+      } else {
+        let value = Int.random(in: 0...99)
+        cache.put(key, value)
+        model.removeAll { $0.key == key }
+        model.insert((key, value), at: 0)
+        if model.count > capacity { model.removeLast() }
+      }
+      #expect(cache.keys == model.map(\.key))
+      #expect(cache.count == model.count)
+    }
+  }
+}
+
+@Test func genericsWorkAcrossTypes() {
+  #expect(mostCommon([Int]()) == nil)
+  #expect(mostCommon(["x", "y", "y"]) == "y")
+}

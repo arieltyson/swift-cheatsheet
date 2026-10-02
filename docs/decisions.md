@@ -66,3 +66,15 @@ target (macOS 15 for `Mutex`). Its tests also check timing, so an
 example labelled parallel cannot silently run serially.
 Consequence: four header links instead of three. Entries for Swift 6.2
 features state the version they need.
+
+## 08: A fifth section for architecture and data
+
+Context: practical iOS rounds ask how code is structured, tested,
+stored and cached, not only how it is written.
+Decision: add Architecture & data. Its logic lives in an `AppExamples`
+SwiftPM target that `swift test` covers, and `tools/native.py` compiles
+the same files with the SwiftUI screens, so the feed and image screens
+use exactly the tested paginator and image loader. A type now shows its
+top-level extensions, so protocol default implementations appear with
+the protocol.
+Consequence: five header links; they wrap onto two lines on phones.

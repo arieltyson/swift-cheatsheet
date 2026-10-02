@@ -90,6 +90,42 @@ code = ["dsa/Errors.swift:demoResult"]
 use_when = "Storing an outcome or passing it to a completion handler. In async code, prefer `throws`."
 
 [[part.section]]
+id = "protocols"
+title = "Protocols & generics"
+group = "Syntax"
+
+[[part.section.entry]]
+id = "protocol-defaults"
+title = "Protocols & default implementations"
+aliases = ["protocol", "protocol extension", "default implementation", "protocol oriented", "static dispatch", "dynamic dispatch", "any"]
+code = ["dsa/Protocols.swift:Describable", "dsa/Protocols.swift:Book", "dsa/Protocols.swift:Movie", "dsa/Protocols.swift:demoProtocols"]
+use_when = "Several types share a capability. Prefer a protocol over a base class: structs and enums can conform too."
+gotcha = "Only methods declared in the protocol dispatch dynamically. A method that exists only in the extension always runs the extension version through `any Describable`, a classic interview question."
+
+[[part.section.entry]]
+id = "extensions"
+title = "Extensions & constrained extensions"
+aliases = ["extension", "extend Int", "where Element ==", "computed property extension", "add method to type"]
+code = ["dsa/Protocols.swift:demoExtensions"]
+gotcha = "Extensions add methods, computed properties and conformances, but never stored properties."
+
+[[part.section.entry]]
+id = "generic-functions"
+title = "Generic functions & where clauses"
+aliases = ["generics", "generic function", "where clause", "type parameter", "Sequence", "Hashable constraint"]
+code = ["dsa/Protocols.swift:mostCommon"]
+time = "O(n)"
+space = "O(k) distinct values"
+
+[[part.section.entry]]
+id = "associated-types"
+title = "Associated types, some & any"
+aliases = ["associatedtype", "some", "any", "opaque type", "existential", "some vs any", "protocol with associated type", "PAT"]
+code = ["dsa/Protocols.swift:Store", "dsa/Protocols.swift:MemoryStore", "dsa/Protocols.swift:addAll", "dsa/Protocols.swift:makeStore", "dsa/Protocols.swift:demoGenerics"]
+availability = "Swift 5.7+ for any with associated types"
+gotcha = "`some Store`: one concrete type, fixed at compile time, fast. `any Store`: a box that can hold different types at run time, at the cost of dynamic dispatch and lost type information. Default to `some`; reach for `any` when you need a mixed collection."
+
+[[part.section]]
 id = "arrays"
 title = "Arrays & sorting"
 group = "Syntax"
@@ -550,6 +586,20 @@ aliases = ["prefix tree", "autocomplete", "word search", "startsWith"]
 code = ["dsa/Trie.swift:Trie", "dsa/Trie.swift:demoTrie"]
 time = "O(m) per operation, m = word length"
 space = "O(total characters inserted)"
+
+[[part.section]]
+id = "lru-cache"
+title = "LRU cache"
+group = "Data structures"
+
+[[part.section.entry]]
+id = "lru"
+title = "LRU cache: dictionary + linked list"
+aliases = ["LRU", "least recently used", "cache eviction", "doubly linked list", "get put O(1)", "design cache"]
+code = ["dsa/LRUCache.swift:LRUCache", "dsa/LRUCache.swift:demoLRUCache"]
+time = "O(1) get and put"
+space = "O(capacity)"
+gotcha = "Make one direction of the list `weak`, or neighbouring nodes keep each other alive. In an app, `NSCache` evicts for you under memory pressure, but not strictly least recently used."
 
 [[part.section]]
 id = "union-find"
@@ -1056,6 +1106,46 @@ availability = "iOS 14+"
 gotcha = "Use text styles (`.headline`, `.body`), never fixed point sizes, so text follows the user's size setting."
 
 [[part.section]]
+id = "forms"
+title = "Forms & input"
+
+[[part.section.entry]]
+id = "form-focus"
+title = "Form, @FocusState & validation"
+aliases = ["Form", "TextField", "SecureField", "FocusState", "keyboard", "onSubmit", "submitLabel", "validation", "dismiss keyboard", "sign up", "login form"]
+code = ["swiftui/Forms.swift:SignUpForm"]
+availability = "iOS 15+"
+use_when = "Any input screen. Derive validity from the fields as computed properties instead of storing it."
+gotcha = "Setting the focus state to nil hides the keyboard. `.textContentType` lets the system offer saved emails and strong passwords."
+
+[[part.section]]
+id = "animation"
+title = "Animation & gestures"
+
+[[part.section.entry]]
+id = "with-animation"
+title = "withAnimation & transitions"
+aliases = ["animation", "withAnimation", "transition", "spring", "insert remove animation", "expand collapse"]
+code = ["swiftui/Animation.swift:ExpandingCard"]
+availability = "iOS 17+ for .spring(duration:)"
+gotcha = "Transitions animate only when the change happens inside `withAnimation` or the container has `.animation(_:value:)`. Respect Reduce Motion with `@Environment(\\.accessibilityReduceMotion)`."
+
+[[part.section.entry]]
+id = "drag-gesture"
+title = "DragGesture: swipe to dismiss"
+aliases = ["gesture", "DragGesture", "swipe", "offset", "drag", "onEnded", "tinder card"]
+code = ["swiftui/Animation.swift:SwipeToDismissCard"]
+availability = "iOS 13+"
+gotcha = "Gestures are invisible to VoiceOver. Add an `.accessibilityAction` that does the same thing."
+
+[[part.section.entry]]
+id = "matched-geometry"
+title = "matchedGeometryEffect"
+aliases = ["matchedGeometryEffect", "Namespace", "hero animation", "shared element", "sliding indicator", "custom segmented control"]
+code = ["swiftui/Animation.swift:SegmentedPicker"]
+availability = "iOS 14+"
+
+[[part.section]]
 id = "async-work"
 title = "Async work"
 
@@ -1088,6 +1178,73 @@ aliases = ["AsyncImage", "remote image", "image from URL", "placeholder", "thumb
 code = ["swiftui/Loading.swift:ArticleRow"]
 availability = "iOS 15+"
 gotcha = "AsyncImage does not cache across launches and reloads when a list cell is recreated. For long scrolling lists, load through a cache or `URLCache`."
+
+[[part.section.entry]]
+id = "infinite-scroll"
+title = "Infinite scroll"
+aliases = ["infinite scroll", "pagination", "load more", "next page", "feed", "endless list", "onAppear last row"]
+code = ["swiftui/Feed.swift:Post", "swiftui/Feed.swift:FeedScreen", "swiftui/Feed.swift:PostsAPI"]
+availability = "iOS 17+"
+use_when = "Feeds and search results. The tested `Paginator` is in Architecture & data, Pagination."
+gotcha = "Each row's `.task` asks the paginator to load; it ignores every row but the last, and ignores calls while a page is loading. Load a few rows early, by checking the third-last item, for smoother scrolling."
+
+[[part.section.entry]]
+id = "cached-image"
+title = "Cached images in reused rows"
+aliases = ["image cache", "cached image", "list images flicker", "wrong image in cell", "NSCache SwiftUI", "UIImage from data"]
+code = ["swiftui/Feed.swift:CachedImage", "swiftui/Feed.swift:PostRow"]
+availability = "iOS 15+"
+gotcha = "`sharedImageLoader` is one app-wide `ImageLoader()` (Architecture & data, Caching). `.task(id: url)` cancels the old load when a reused row gets a new URL, so a row never shows another post's image."
+
+
+[[part.section]]
+id = "saved-data"
+title = "Saving data in SwiftUI"
+intro = "For UserDefaults, files and where each kind of data belongs, see Architecture & data, Saving data."
+
+[[part.section.entry]]
+id = "app-storage"
+title = "@AppStorage"
+aliases = ["AppStorage", "UserDefaults in SwiftUI", "settings", "persist toggle"]
+code = ["swiftui/SavedData.swift:SettingsScreen"]
+availability = "iOS 14+"
+gotcha = "Only for small values: Bool, Int, Double, String, URL, Data. Never for tokens or passwords; those belong in the Keychain."
+
+[[part.section.entry]]
+id = "swiftdata"
+title = "SwiftData: @Model, @Query & modelContext"
+aliases = ["SwiftData", "Model", "Query", "modelContext", "modelContainer", "Core Data", "database", "persist objects", "onDelete"]
+code = ["swiftui/SavedData.swift:Note", "swiftui/SavedData.swift:NotesScreen"]
+availability = "iOS 17+"
+use_when = "Structured data the user creates or that must survive offline: notes, drafts, cached feeds. Core Data is the older equivalent."
+gotcha = "Changes save automatically, so there is no explicit save call. The container comes from `.modelContainer(for:)` on the scene; see App & scene lifecycle."
+
+[[part.section]]
+id = "app-lifecycle"
+title = "App & scene lifecycle"
+
+[[part.section.entry]]
+id = "scene-phase"
+title = "App, WindowGroup & scenePhase"
+aliases = ["App", "@main", "WindowGroup", "scenePhase", "app lifecycle", "background", "foreground", "active inactive"]
+code = ["swiftui/AppLifecycle.swift:NotesApp"]
+availability = "iOS 14+"
+gotcha = "Need push notifications or other AppDelegate callbacks? Add `@UIApplicationDelegateAdaptor(AppDelegate.self) var delegate` to the App."
+
+[[part.section.entry]]
+id = "lifecycle-states"
+title = "Lifecycle states & what to do in each"
+aliases = ["app states", "sceneDidEnterBackground", "applicationDidBecomeActive", "AppDelegate", "SceneDelegate", "launch", "terminate"]
+
+[part.section.entry.table]
+header = ["State", "When", "Do", "UIKit callback"]
+rows = [
+  ["Launch", "Process starts", "Set up services, read saved state; keep it fast", "`application(_:didFinishLaunchingWithOptions:)`"],
+  ["`.active`", "On screen, receiving touches", "Refresh stale data, resume timers and video", "`sceneDidBecomeActive`"],
+  ["`.inactive`", "Visible but interrupted: app switcher, call, alert", "Pause games and playback", "`sceneWillResignActive`"],
+  ["`.background`", "Not visible, a few seconds of run time", "Save state, stop work, schedule BGTasks", "`sceneDidEnterBackground`"],
+  ["Suspended / terminated", "Frozen in memory, then killed without warning", "Nothing runs: anything unsaved is lost", "None reliable"],
+]
 
 [[part.section]]
 id = "building-ui"
@@ -1228,6 +1385,178 @@ aliases = ["UIHostingController", "addChild", "didMove", "embed SwiftUI", "bridg
 code = ["uikit/Hosting.swift:HostingExampleController"]
 availability = "iOS 13+"
 gotcha = "Call `addChild` before adding the view and `didMove(toParent:)` after, or appearance callbacks are skipped."
+
+# ---------------------------------------------------------------------
+[[part]]
+id = "architecture"
+title = "Architecture & data"
+
+[[part.section]]
+id = "patterns"
+title = "Architecture patterns"
+group = "Structure"
+
+[[part.section.entry]]
+id = "mvc-mvvm-tca"
+title = "MVC, MVVM, TCA & VIPER"
+aliases = ["architecture", "MVC", "MVVM", "TCA", "Composable Architecture", "VIPER", "Redux", "massive view controller", "coordinator"]
+
+[part.section.entry.table]
+header = ["Pattern", "Shape", "Good for", "Watch out for"]
+rows = [
+  ["MVC", "View controller owns views and talks to the model", "Small UIKit screens, Apple sample code", "Massive view controllers: networking, formatting and layout in one class"],
+  ["MVVM", "View model holds state and logic; the view renders it", "SwiftUI by default (`@Observable` view model); testable without UI", "View models that grow into god objects; split by feature"],
+  ["TCA", "State struct, Action enum, Reducer function, Store; effects return actions", "Large teams wanting one predictable data flow and exhaustive tests (Ramp, among others)", "Third-party library, boilerplate, learning curve"],
+  ["VIPER", "View, Interactor, Presenter, Entity, Router", "Very large UIKit codebases with strict module boundaries", "Five files per screen; heavy for small features"],
+  ["Coordinator", "An object owns navigation flow, not the view controllers", "UIKit apps with deep links and reusable screens", "Extra layer; SwiftUI's `NavigationStack(path:)` covers most needs"],
+]
+
+[[part.section.entry]]
+id = "dependency-injection"
+title = "Dependency injection with a protocol"
+aliases = ["dependency injection", "DI", "protocol service", "view model", "testable", "inject", "mock", "repository"]
+code = ["app/Services.swift:RepoService", "app/Services.swift:LiveRepoService", "app/Services.swift:ReposViewModel"]
+availability = "iOS 17+"
+use_when = "Anything a view model talks to that is slow, random or external: network, disk, clock, location."
+gotcha = "Pass dependencies through `init`, not a global singleton: the test can then hand in a fake, and the type's needs are visible in its signature."
+
+[[part.section]]
+id = "testing"
+title = "Testing"
+group = "Structure"
+
+[[part.section.entry]]
+id = "fake-service"
+title = "Test a view model with a fake"
+aliases = ["unit test", "fake", "mock", "stub", "test double", "test view model", "async test"]
+code = ["app/Services.swift:FakeRepoService", "app/Services.swift:demoViewModelWithFake"]
+availability = "iOS 17+"
+gotcha = "In a test target, the same checks read `@MainActor @Test func showsError() async { ...; #expect(model.errorMessage != nil) }`. Test both the success and the failure path."
+
+[[part.section.entry]]
+id = "testing-syntax"
+title = "Swift Testing & XCTest"
+aliases = ["Swift Testing", "XCTest", "@Test", "#expect", "#require", "XCTAssertEqual", "XCTestCase", "parameterized test", "confirmation", "expectation", "setUp", "UI test"]
+
+[part.section.entry.table]
+header = ["Task", "Swift Testing (Xcode 16+)", "XCTest"]
+rows = [
+  ["Declare a test", "`import Testing` then `@Test func adds() { }`", "`final class MathTests: XCTestCase { func testAdds() { } }`"],
+  ["Check a value", "`#expect(total == 6)`", "`XCTAssertEqual(total, 6)`"],
+  ["Stop if nil", "`let user = try #require(users.first)`", "`let user = try XCTUnwrap(users.first)`"],
+  ["Expect an error", "`#expect(throws: TransferError.self) { try f() }`", "`XCTAssertThrowsError(try f())`"],
+  ["Async code", "`@Test func loads() async throws { }`", "`func testLoads() async throws { }`"],
+  ["Many inputs", "`@Test(arguments: [1, 2, 3]) func valid(n: Int)`", "Loop inside one test"],
+  ["Setup and teardown", "`init()` and `deinit` of a `@Suite struct` or class", "`setUp()` and `tearDown()`"],
+  ["Callback fired", "`await confirmation { done in ... done() }`", "`expectation(description:)`, `fulfillment(of:timeout:)`"],
+  ["UI tests", "Not supported: use XCTest", "`XCUIApplication().launch()`, `app.buttons[\"Save\"].tap()`"],
+]
+
+[[part.section]]
+id = "persistence"
+title = "Saving data"
+group = "Data"
+intro = "For @AppStorage and SwiftData, see SwiftUI, Saving data in SwiftUI."
+
+[[part.section.entry]]
+id = "where-to-store"
+title = "Where to store what"
+aliases = ["persistence", "storage", "Keychain", "UserDefaults vs", "Core Data", "SwiftData", "file system", "secure storage", "token storage"]
+
+[part.section.entry.table]
+header = ["Data", "Store in", "Why"]
+rows = [
+  ["Small settings, flags", "`UserDefaults` / `@AppStorage`", "Simple key-value; loaded into memory at launch"],
+  ["Tokens, passwords, keys", "Keychain (`SecItemAdd`, or a small wrapper)", "Encrypted, survives reinstall; UserDefaults is a plain file"],
+  ["A Codable document or cached response", "JSON file in Documents or Caches", "Simple; Caches may be purged by the system"],
+  ["Many related records, queries, offline", "SwiftData (iOS 17+) or Core Data", "Indexed queries, relationships, migrations"],
+  ["Images and responses this session", "`NSCache`, `URLCache`", "Memory caches the system shrinks under pressure"],
+  ["Shared with widgets or extensions", "App Group container", "The only location both processes can read"],
+]
+
+[[part.section.entry]]
+id = "user-defaults"
+title = "UserDefaults"
+aliases = ["UserDefaults", "set forKey", "bool forKey", "standard", "preferences"]
+code = ["app/Persistence.swift:demoUserDefaults"]
+
+[[part.section.entry]]
+id = "file-store"
+title = "Save Codable to a file"
+aliases = ["FileManager", "documents directory", "write to file", "save JSON", "load JSON", "atomic write", "Codable file"]
+code = ["app/Persistence.swift:FileStore", "app/Persistence.swift:demoFileStore"]
+availability = "iOS 16+ for URL.documentsDirectory"
+gotcha = "File I/O blocks; for large files, call it off the main actor. Use `.atomic` so a crash mid-write never leaves a corrupt file."
+
+[[part.section]]
+id = "caching"
+title = "Caching"
+group = "Data"
+
+[[part.section.entry]]
+id = "image-loader"
+title = "Image cache with shared in-flight requests"
+aliases = ["image cache", "NSCache", "image loader", "dedupe requests", "in-flight", "actor cache", "Kingfisher", "SDWebImage"]
+code = ["app/ImageLoader.swift:ImageLoader"]
+availability = "iOS 13+"
+time = "O(1) cache hit"
+space = "up to countLimit images"
+use_when = "Lists of remote images. Ten rows asking for one URL cause one download. In SwiftUI see Loading data, Cached images in reused rows."
+gotcha = "The actor makes `inFlight` safe from data races. Cache decoded images, not just data, when decoding shows up in Time Profiler. For your own LRU, see Pure DSA Swift, LRU cache."
+
+[[part.section]]
+id = "pagination"
+title = "Pagination"
+group = "Data"
+
+[[part.section.entry]]
+id = "paginator"
+title = "Paginator: load the next page once"
+aliases = ["pagination", "Paginator", "next page", "hasMore", "cursor", "offset", "duplicate requests", "load more"]
+code = ["app/Pagination.swift:Page", "app/Pagination.swift:Paginator"]
+availability = "iOS 17+"
+gotcha = "Many APIs return a cursor (`next_cursor`) instead of page numbers; store that instead of `nextPage`. Cursors stay correct when new items are inserted at the top."
+
+[[part.section]]
+id = "system-design"
+title = "Mobile system design"
+group = "Design"
+
+[[part.section.entry]]
+id = "design-steps"
+title = "How to run a mobile design interview"
+aliases = ["system design", "mobile system design", "design interview", "requirements", "design steps"]
+
+[part.section.entry.table]
+header = ["Step", "Cover", "Time"]
+rows = [
+  ["1. Requirements", "Core features, offline needs, scale, platforms; agree what is out of scope", "5 min"],
+  ["2. API", "Endpoints and models: `GET /feed?cursor=`, response JSON, pagination, auth", "5 min"],
+  ["3. Client architecture", "Layers: View, ViewModel, Repository, API client, cache, store; draw the boxes", "10 min"],
+  ["4. Data flow", "Walk one feature end to end: open feed, scroll, like a post", "10 min"],
+  ["5. Deep dives", "Caching, offline, images, pagination, real-time, errors and retries", "10 min"],
+  ["6. Trade-offs", "What you chose and why; what breaks at 10x; metrics and logging", "5 min"],
+]
+
+[[part.section.entry]]
+id = "design-building-blocks"
+title = "Building blocks for feed-style apps"
+aliases = ["feed design", "design instagram", "offline first", "optimistic update", "prefetch", "websocket", "push notifications", "retry backoff", "real time"]
+
+[part.section.entry.table]
+header = ["Problem", "Answer"]
+rows = [
+  ["Endless feed", "Cursor pagination; load the next page near the end; dedupe by ID"],
+  ["Fast first screen", "Show the cached feed from disk, then refresh from the network"],
+  ["Images", "Memory cache plus disk cache, shared in-flight requests, downsample to view size, prefetch next rows"],
+  ["Offline actions", "Save to a local queue, show them at once, send when back online"],
+  ["Likes and edits", "Optimistic update: change the UI now, roll back if the request fails"],
+  ["Real-time updates", "WebSocket or server-sent events while open; push notifications when closed"],
+  ["Flaky network", "Retry with exponential backoff and a cap; idempotency keys for payments"],
+  ["Large lists", "Lazy stacks or diffable data sources, stable IDs, no work in `body`"],
+  ["Sensitive data", "Keychain for tokens, HTTPS only, no secrets in logs or UserDefaults"],
+  ["Knowing it works", "Logging, crash reporting, performance metrics, feature flags for safe rollout"],
+]
 
 # ---------------------------------------------------------------------
 [[part]]

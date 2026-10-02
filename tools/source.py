@@ -1,7 +1,8 @@
 """Extract a Swift declaration's source by name, as the page shows it.
 
 Attributes, modifiers and /// comments above a declaration are kept.
-Functions named demo* are shown as their body only.
+Functions named demo* are shown as their body only. A type is followed
+by its top-level extensions, so default implementations show with it.
 """
 
 import textwrap
@@ -54,12 +55,39 @@ def extract_from_source(source: str, ref: CodeRef) -> str:
     if ref.is_demo:
         body = source[body_start + 1 : end - 1]
         return textwrap.dedent(body).strip("\n")
+    snippets = [_declaration_source(source, tokens, code, first, end)]
+    if ref.is_type:
+        for index in _find_all(code, ref.name, {"extension"}):
+            _, extension_end = _extent(source, code, index)
+            snippets.append(
+                _declaration_source(
+                    source, tokens, code, code[index], extension_end
+                )
+            )
+    return "\n\n".join(snippets)
+
+
+def _declaration_source(
+    source: str,
+    tokens: list[Token],
+    code: list[Token],
+    first: Token,
+    end: int,
+) -> str:
     start = _leading_comment_start(tokens, first)
     line_start = source.rfind("\n", 0, start) + 1
     return source[line_start:end]
 
 
 def _find_declaration(code: list[Token], name: str) -> int:
+    matches = _find_all(code, name, DECLARATIONS)
+    return matches[0] if matches else -1
+
+
+def _find_all(
+    code: list[Token], name: str, keywords: set[str]
+) -> list[int]:
+    found = []
     depth = 0
     for index, token in enumerate(code):
         if token.kind == "punctuation" and token.text in CLOSERS:
@@ -68,12 +96,12 @@ def _find_declaration(code: list[Token], name: str) -> int:
             depth -= 1
         elif (
             depth == 0
-            and token.text in DECLARATIONS
+            and token.text in keywords
             and index + 1 < len(code)
             and code[index + 1].text == name
         ):
-            return index
-    return -1
+            found.append(index)
+    return found
 
 
 def _first_modifier(code: list[Token], keyword_index: int) -> int:

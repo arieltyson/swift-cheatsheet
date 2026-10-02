@@ -10,6 +10,7 @@ let package = Package(
   targets: [
     .target(name: "InterviewExamples", path: "examples/dsa"),
     .target(name: "ConcurrencyExamples", path: "examples/concurrency"),
+    .target(name: "AppExamples", path: "examples/app"),
     .testTarget(
       name: "InterviewExamplesTests",
       dependencies: ["InterviewExamples"],
@@ -19,6 +20,11 @@ let package = Package(
       name: "ConcurrencyExamplesTests",
       dependencies: ["ConcurrencyExamples"],
       path: "tests/concurrency"
+    ),
+    .testTarget(
+      name: "AppExamplesTests",
+      dependencies: ["AppExamples"],
+      path: "tests/app"
     ),
   ],
   swiftLanguageModes: [.v6]
