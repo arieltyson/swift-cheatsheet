@@ -24,3 +24,8 @@ Consequence: the public artifact never contains the fixture, private planning do
 Context: the initial task was document-only; the later implementation request explicitly authorized a new GitHub repository and real pushed commits.
 Decision: create a separate public `swift-cheatsheet` repository and publish only the verified static artifact through GitHub Pages.
 Consequence: unrelated workspace repositories and source Google Docs stay untouched.
+
+## 06 — Avoid SwiftPM's reserved snippets directory
+Context: on case-insensitive macOS, SwiftPM discovers `snippets/` as the reserved `Snippets/` directory and creates independent executable targets, breaking shared helpers and UIKit validation.
+Decision: use `examples/` instead of the proposed `snippets/` folder. Use unique Swift basenames in the combined native validation target.
+Consequence: the original architecture remains intact without depending on a deprecated build engine or hidden compiler switches.

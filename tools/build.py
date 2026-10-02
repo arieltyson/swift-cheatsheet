@@ -58,7 +58,7 @@ def load_entries() -> list[dict]:
             raise ValueError(f"Duplicate anchor: {entry['id']}")
         seen.add(entry["id"])
         source_path = (ROOT / entry["file"]).resolve()
-        domain_root = (ROOT / "snippets" / entry["domain"]).resolve()
+        domain_root = (ROOT / "examples" / entry["domain"]).resolve()
         if not source_path.is_relative_to(domain_root) or source_path.suffix != ".swift":
             raise ValueError("Snippet path outside its domain")
         source = source_path.read_text()
@@ -79,7 +79,7 @@ def load_entries() -> list[dict]:
         for dependency in entry.get("dependencies", []):
             if dependency not in identifiers:
                 raise ValueError(f"Missing dependency: {dependency}")
-    actual = {str(filename.relative_to(ROOT)) for filename in (ROOT / "snippets").rglob("*.swift")}
+    actual = {str(filename.relative_to(ROOT)) for filename in (ROOT / "examples").rglob("*.swift")}
     if actual != {entry["file"] for entry in entries}:
         raise ValueError("Every snippet must have exactly one entry")
     return entries

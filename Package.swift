@@ -6,7 +6,7 @@ let package = Package(
     platforms: [.macOS(.v13)],
     products: [.library(name: "InterviewExamples", targets: ["InterviewExamples"])],
     targets: [
-        .target(name: "InterviewExamples", path: "snippets/dsa"),
+        .target(name: "InterviewExamples", path: "examples/dsa"),
         .testTarget(
             name: "InterviewExamplesTests",
             dependencies: ["InterviewExamples"],

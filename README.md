@@ -4,7 +4,7 @@ A small, fast interview reference for **Pure DSA Swift**, **SwiftUI**, and **UIK
 
 ## Architecture
 
-- `snippets/`: original, compilable Swift examples; the displayed code is read directly from these files.
+- `examples/`: original, compilable Swift examples; the displayed code is read directly from these files.
 - `content/entries.json`: visible aliases, answers, assumptions, complexity, availability, and official sources.
 - `web/`: semantic HTML, token-driven CSS, and optional clipboard enhancement. No runtime dependencies.
 - `tools/`: deterministic Python standard-library build and verification.
