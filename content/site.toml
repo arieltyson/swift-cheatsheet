@@ -545,6 +545,28 @@ time = "O(1) per cell"
 space = "O(1)"
 
 [[part.section]]
+id = "boards"
+title = "Grids & boards"
+group = "Data structures"
+
+[[part.section.entry]]
+id = "board-index"
+title = "Flat index to row & column"
+aliases = ["2d to 1d", "row * size + col", "flatten grid", "index / size", "index % size", "board array"]
+code = ["dsa/Board.swift:demoBoardIndex"]
+use_when = "Storing an n x n board in one array: simpler to copy, compare and index than nested arrays."
+
+[[part.section.entry]]
+id = "tic-tac-toe"
+title = "N x N tic-tac-toe: O(1) win check & undo"
+aliases = ["tic tac toe", "game board", "winner check", "undo move", "row column diagonal", "n by n", "board game"]
+code = ["dsa/Board.swift:Mark", "dsa/Board.swift:TicTacToe", "dsa/Board.swift:demoTicTacToe"]
+time = "O(1) per move and undo"
+space = "O(n^2) cells, O(n) line sums"
+use_when = "Any n-in-a-row board. Keep a sum per row, column and diagonal instead of rescanning the board after each move."
+gotcha = "The simpler check, scanning only the last move's row, column and two diagonals, is O(n) per move and is also a fine interview answer."
+
+[[part.section]]
 id = "binary-search"
 title = "Binary search"
 group = "Algorithms"
@@ -1004,6 +1026,35 @@ code = ["swiftui/Tasks.swift:TopicSearchScreen"]
 availability = "iOS 15+"
 use_when = "Async work tied to a view. SwiftUI cancels the task when the view disappears or the id changes."
 gotcha = "Cancellation is cooperative: check `Task.isCancelled` or call `try Task.checkCancellation()` after each await."
+
+[[part.section]]
+id = "building-ui"
+title = "Building UI"
+
+[[part.section.entry]]
+id = "grid-board"
+title = "An n x n grid of tappable cells"
+aliases = ["LazyVGrid", "GridItem", "Grid", "board view", "square cells", "aspectRatio", "contentShape", "tic tac toe UI", "border"]
+code = ["swiftui/Building.swift:BoardGridView"]
+availability = "iOS 17+"
+use_when = "A board or gallery with a column count chosen at run time. For small fixed layouts, `Grid` and `GridRow` (iOS 16+) are simpler."
+gotcha = "Use `Button`, not `.onTapGesture`, so cells work with VoiceOver and the keyboard. `.contentShape(.rect)` makes empty space tappable."
+
+[[part.section.entry]]
+id = "switch-screens"
+title = "Switch screens with state"
+aliases = ["root view", "setup screen", "new game", "reset", "withAnimation", "transition", "conditional view", "Stepper"]
+code = ["swiftui/Building.swift:GameRootView"]
+availability = "iOS 14+"
+use_when = "A flow like setup, then game, then back to setup, where a navigation stack would add an unwanted back button."
+
+[[part.section.entry]]
+id = "styled-text"
+title = "Mixed text styles, disabled buttons & #Preview"
+aliases = ["bold part of text", "Text concatenation", "Text +", "disabled", "Preview", "next turn label"]
+code = ["swiftui/Building.swift:TurnFooter"]
+availability = "iOS 17+ for #Preview"
+gotcha = "`Text(\"a\") + Text(\"b\").bold()` is deprecated in iOS 26; interpolate the styled Text instead. Preview with `#Preview { TurnFooter(player: \"X\", canUndo: false) {} }`."
 
 [[part.section]]
 id = "updates"

@@ -139,3 +139,49 @@ let balanced: [Int?] = [4, 2, 6, 1, 3, 5, 7]
   #expect(gridNeighbors(rows: 3, cols: 3, row: 1, col: 1).count == 4)
   #expect(gridNeighbors(rows: 1, cols: 1, row: 0, col: 0).isEmpty)
 }
+
+/// The slow, obviously correct check: scan every row, column and
+/// diagonal for a line of one mark.
+func bruteForceWinner(_ cells: [Mark?], size: Int) -> Mark? {
+  var lines: [[Int]] = []
+  for i in 0..<size {
+    lines.append((0..<size).map { i * size + $0 })
+    lines.append((0..<size).map { $0 * size + i })
+  }
+  lines.append((0..<size).map { $0 * size + $0 })
+  lines.append((0..<size).map { $0 * size + (size - 1 - $0) })
+  for line in lines {
+    if let mark = cells[line[0]], line.allSatisfy({ cells[$0] == mark })
+    {
+      return mark
+    }
+  }
+  return nil
+}
+
+@Test func ticTacToeMatchesBruteForceAndUndoRestores() {
+  for _ in 0..<300 {
+    let size = Int.random(in: 3...6)
+    var game = TicTacToe(size: size)
+    var snapshots: [(cells: [Mark?], current: Mark)] = []
+    for index in (0..<(size * size)).shuffled() {
+      let before = (game.cells, game.current)
+      guard game.play(row: index / size, col: index % size) else {
+        break
+      }
+      snapshots.append(before)
+      #expect(game.winner == bruteForceWinner(game.cells, size: size))
+      if game.winner != nil { break }
+    }
+    #expect(
+      game.isDraw == (game.winner == nil && !game.cells.contains(nil)))
+    while let snapshot = snapshots.popLast() {
+      game.undo()
+      #expect(game.cells == snapshot.cells)
+      #expect(game.current == snapshot.current)
+      #expect(game.winner == bruteForceWinner(game.cells, size: size))
+    }
+    #expect(!game.canUndo)
+  }
+  #expect(TicTacToe(size: 1).size == 3)
+}

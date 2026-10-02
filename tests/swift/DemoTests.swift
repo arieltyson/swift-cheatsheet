@@ -6,7 +6,8 @@ import Testing
 // builds in debug, where assert is checked.
 @Test(
   arguments: [
-    ("Arrays", demoArrayOperations),
+    ("Arrays", demoArrayOperations), ("BoardIndex", demoBoardIndex),
+    ("TicTacToe", demoTicTacToe),
     ("BitmaskSubsets", demoBitmaskSubsets),
     ("Bits", demoBits), ("BuildStrings", demoBuildStrings),
     ("Cents", demoCents), ("Characters", demoCharacters),
