@@ -85,7 +85,8 @@ footer p { color: var(--muted); font-size: .875rem; }
 .footer-line { display: flex; justify-content: space-between; gap: 1rem; }
 .skip-link { position: absolute; top: -8rem; left: 1rem; padding: .75rem 1rem; background: var(--surface); z-index: 2; }
 .skip-link:focus { top: .5rem; }
-.copy-status:not(:empty) { position: fixed; bottom: 1rem; right: 1rem; max-width: calc(100% - 2rem); background: var(--surface); color: var(--text); border: 2px solid var(--accent); padding: .75rem 1rem; border-radius: .25rem; }
+.copy-actions { display: flex; align-items: center; justify-content: flex-end; flex-wrap: wrap; gap: .25rem .75rem; margin-left: 1rem; }
+.copy-status { color: var(--text); font-size: .875rem; }
 [id] { scroll-margin-top: 1.5rem; }
 @media (max-width: 65rem) {
   .site-header, .section-nav { padding-left: 1.5rem; padding-right: 1.5rem; }

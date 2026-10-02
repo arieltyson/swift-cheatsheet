@@ -13,7 +13,7 @@
 <body id="top">
   <a class="skip-link" href="#main">Skip to reference</a>
   <header class="site-header">
-    <a class="wordmark" href="#top"><span aria-hidden="true">{s}</span> Swift CheatSheet<span class="edition">FIELD NOTES / 01</span></a>
+    <a class="wordmark" href="#top"><span aria-hidden="true">{s}</span> Swift CheatSheet<span class="edition">INTERVIEW REFERENCE</span></a>
     <p class="shortcut">Find anything <kbd>⌘</kbd> <kbd>F</kbd> <span class="windows">or Ctrl+F</span></p>
   </header>
   <nav class="section-nav" aria-label="Reference sections">
@@ -29,11 +29,12 @@
     </aside>
     <main id="main" tabindex="-1">
       <div class="intro">
-        <p class="eyebrow">A PERSONAL INTERVIEW REFERENCE</p>
-        <h1>Less searching.<br>More Swift.</h1>
-        <p>Exact syntax, useful patterns, and the details worth remembering. Everything is here—use your browser’s find.</p>
+        <p class="eyebrow">{{COUNT}} ENTRIES · NOTHING HIDDEN</p>
+        <h1>Swift interview reference.</h1>
+        <p>Exact syntax, useful patterns, and the details worth remembering. Browse the index or use your browser’s find.</p>
         <div class="intro-meta"><span>Swift 6 mode</span><span>Standard frameworks only</span><a href="#costs">Collection costs ↗</a></div>
       </div>
+      {{SECTIONS}}
       <section class="costs" id="costs" aria-labelledby="costs-heading">
         <h2 id="costs-heading">The costs to remember</h2>
         <table><caption>n = stored elements; k = inspected elements. Hashing costs depend on the key.</caption><thead><tr><th scope="col">Operation</th><th scope="col">Time</th><th scope="col">The catch</th></tr></thead><tbody>
@@ -44,14 +45,12 @@
           <tr><th scope="row">String offset index</th><td>O(k)</td><td>Characters have variable width; not integer subscripts.</td></tr>
         </tbody></table>
       </section>
-      {{SECTIONS}}
       <footer>
         <section id="privacy"><h2>Privacy, simply.</h2><p>No analytics, accounts, cookies, remote fonts, or saved searches. Copy writes to your clipboard only when you ask; this page never reads it. Appearance follows your system, without storing a preference. <a href="https://docs.github.com/en/pages/getting-started-with-github-pages/what-is-github-pages">GitHub Pages</a> processes visitor IP addresses for security when hosting this site. Following source links contacts their respective sites.</p></section>
-        <section id="accessibility"><h2>Built to stay readable.</h2><p>Every entry is visible and selectable, even without JavaScript. Use headings, the index, native find, or Tab to navigate. Code wraps at narrow widths. System appearance, reduced motion, forced colors, and enlarged text are supported. Automated checks do not establish full accessibility conformance; report a problem through the repository issue tracker once published.</p></section>
-        <p class="footer-line">Swift CheatSheet <a href="#top">Back to top ↑</a></p>
+        <section id="accessibility"><h2>Built to stay readable.</h2><p>Every entry is visible and selectable, even without JavaScript. Use headings, the index, native find, or Tab to navigate. Code wraps at narrow widths. System appearance, reduced motion, forced colors, and enlarged text are supported. Automated checks do not establish full accessibility conformance; <a href="https://github.com/arieltyson/swift-cheatsheet/issues">report a problem on GitHub</a>.</p></section>
+        <p class="footer-line"><a href="https://github.com/arieltyson/swift-cheatsheet">Source &amp; verification</a> <a href="#top">Back to top ↑</a></p>
       </footer>
     </main>
   </div>
-  <p class="copy-status" role="status" aria-live="polite" aria-atomic="true"></p>
 </body>
 </html>

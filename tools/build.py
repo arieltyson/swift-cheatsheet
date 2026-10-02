@@ -80,7 +80,7 @@ def load_entries() -> list[dict]:
             if dependency not in identifiers:
                 raise ValueError(f"Missing dependency: {dependency}")
     actual = {str(filename.relative_to(ROOT)) for filename in (ROOT / "examples").rglob("*.swift")}
-    if actual != {entry["file"] for entry in entries}:
+    if actual != {entry["file"] for entry in entries} or len(actual) != len(entries):
         raise ValueError("Every snippet must have exactly one entry")
     return entries
 
@@ -97,7 +97,7 @@ def render_entry(entry: dict) -> str:
 <p class="aliases">{escape(' / '.join(entry['aliases']))}</p>
 <p class="answer">{escape(entry['summary'])}</p>
 <p class="requirements">{escape(entry['availability'])} · {escape(entry['prerequisites'])} {dependencies}</p>
-<div class="code-heading"><span>SWIFT</span><button class="copy" type="button" data-copy="code-{identifier}" aria-label="Copy {escape(entry['title'])} code" hidden>Copy code</button></div>
+<div class="code-heading"><span>SWIFT</span><span class="copy-actions"><span class="copy-status" role="status" aria-live="polite" aria-atomic="true"></span><button class="copy" type="button" data-copy="code-{identifier}" aria-label="Copy {escape(entry['title'])} code" hidden>Copy code</button></span></div>
 <pre tabindex="0" aria-label="{escape(entry['title'])} Swift code"><code id="code-{identifier}">{highlight(entry['source'])}</code></pre>
 <p class="expected"><strong>Try it</strong> <code>{escape(entry['expected'])}</code></p>
 {complexity}<p>{escape(entry['note'])}</p>
