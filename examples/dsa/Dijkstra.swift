@@ -1,35 +1,22 @@
-enum PathError: Error, Equatable {
-  case invalidVertex
-  case negativeWeight
-  case distanceOverflow
-}
-
-func dijkstra(_ graph: [[WeightedEdge]], start: Int) throws -> [Int?] {
-  guard graph.indices.contains(start) else { throw PathError.invalidVertex }
-  for neighbors in graph {
-    for edge in neighbors {
-      guard graph.indices.contains(edge.destination) else {
-        throw PathError.invalidVertex
-      }
-      guard edge.weight >= 0 else { throw PathError.negativeWeight }
-    }
-  }
+/// Returns the shortest distance from source to every node, nil if
+/// unreachable. graph[node] = [(to, weight)], all weights >= 0.
+func dijkstra(_ graph: [[(to: Int, weight: Int)]], source: Int)
+  -> [Int?]
+{
   var distances = [Int?](repeating: nil, count: graph.count)
-  var frontier = BinaryHeap<(distance: Int, vertex: Int)>(
-    orderedBefore: { $0.distance < $1.distance }
-  )
-  distances[start] = 0
-  frontier.push((0, start))
-  while let current = frontier.pop() {
-    guard distances[current.vertex] == current.distance else { continue }
-    for edge in graph[current.vertex] {
-      let candidate = current.distance.addingReportingOverflow(edge.weight)
-      guard !candidate.overflow else { throw PathError.distanceOverflow }
-      if let known = distances[edge.destination], known <= candidate.partialValue {
-        continue
+  distances[source] = 0
+  var heap = Heap([(distance: 0, node: source)]) {
+    $0.distance < $1.distance
+  }
+  while let (distance, node) = heap.pop() {
+    // Skip stale entries left behind by a later, shorter path
+    guard distance == distances[node] else { continue }
+    for (neighbor, weight) in graph[node] {
+      let candidate = distance + weight
+      if candidate < distances[neighbor] ?? .max {
+        distances[neighbor] = candidate
+        heap.push((candidate, neighbor))
       }
-      distances[edge.destination] = candidate.partialValue
-      frontier.push((candidate.partialValue, edge.destination))
     }
   }
   return distances

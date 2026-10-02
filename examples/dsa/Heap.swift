@@ -1,56 +1,81 @@
-struct BinaryHeap<Element> {
-  private var elements: [Element]
-  private let orderedBefore: (Element, Element) -> Bool
+/// A binary heap: pop() returns what `areSorted` puts first.
+struct Heap<Element> {
+  private var items: [Element]
+  private let areSorted: (Element, Element) -> Bool
 
   init(
-    _ values: [Element] = [],
-    orderedBefore: @escaping (Element, Element) -> Bool
+    _ items: [Element] = [],
+    by areSorted: @escaping (Element, Element) -> Bool
   ) {
-    elements = values
-    self.orderedBefore = orderedBefore
-    if elements.count > 1 {
-      for parent in stride(from: elements.count / 2 - 1, through: 0, by: -1) {
-        siftDown(from: parent)
-      }
+    self.items = items
+    self.areSorted = areSorted
+    // Heapify bottom-up in O(n)
+    for index in stride(from: items.count / 2 - 1, through: 0, by: -1) {
+      siftDown(from: index)
     }
   }
 
-  var count: Int { elements.count }
-  var peek: Element? { elements.first }
+  var count: Int { items.count }
+  var isEmpty: Bool { items.isEmpty }
+  var peek: Element? { items.first }
 
-  mutating func push(_ value: Element) {
-    elements.append(value)
-    var child = elements.count - 1
+  mutating func push(_ item: Element) {
+    items.append(item)
+    var child = items.count - 1
     while child > 0 {
       let parent = (child - 1) / 2
-      guard orderedBefore(elements[child], elements[parent]) else { break }
-      elements.swapAt(child, parent)
+      guard areSorted(items[child], items[parent]) else { return }
+      items.swapAt(child, parent)
       child = parent
     }
   }
 
   mutating func pop() -> Element? {
-    guard !elements.isEmpty else { return nil }
-    elements.swapAt(0, elements.count - 1)
-    let result = elements.removeLast()
-    if !elements.isEmpty { siftDown(from: 0) }
-    return result
+    guard !items.isEmpty else { return nil }
+    items.swapAt(0, items.count - 1)
+    let top = items.removeLast()
+    siftDown(from: 0)
+    return top
   }
 
   private mutating func siftDown(from index: Int) {
     var parent = index
-    while parent < elements.count / 2 {
-      let left = 2 * parent + 1
-      let right = left + 1
-      var preferred = left
-      if right < elements.count,
-        orderedBefore(elements[right], elements[left])
+    while true {
+      var first = parent
+      for child in [2 * parent + 1, 2 * parent + 2]
+      where child < items.count && areSorted(items[child], items[first])
       {
-        preferred = right
+        first = child
       }
-      guard orderedBefore(elements[preferred], elements[parent]) else { break }
-      elements.swapAt(parent, preferred)
-      parent = preferred
+      guard first != parent else { return }
+      items.swapAt(parent, first)
+      parent = first
     }
   }
+}
+
+func demoHeap() {
+  var minHeap = Heap([5, 1, 4], by: <)
+  minHeap.push(2)
+  assert(minHeap.peek == 1)
+  assert(minHeap.pop() == 1)
+  assert(minHeap.pop() == 2)
+  assert(minHeap.count == 2)
+  // Flip the comparison for a max-heap
+  var maxHeap = Heap([5, 1, 4], by: >)
+  assert(maxHeap.pop() == 5)
+}
+
+func demoHeapOfTuples() {
+  var tasks = Heap<(priority: Int, name: String)>(by: { a, b in
+    (a.priority, a.name) < (b.priority, b.name)
+  })
+  tasks.push((2, "write"))
+  tasks.push((1, "plan"))
+  tasks.push((2, "test"))
+  assert(tasks.pop()?.name == "plan")
+  assert(tasks.pop()?.name == "test")
+  var jobs = Heap<Job>(by: <)
+  jobs.push(Job(priority: 3, name: "ship"))
+  assert(jobs.peek?.name == "ship")
 }

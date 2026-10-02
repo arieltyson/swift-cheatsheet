@@ -2,100 +2,274 @@ import Testing
 
 @testable import InterviewExamples
 
-@Test func binarySearchBoundaries() {
-  for size in 0...40 {
-    let values = (0..<size).map { $0 / 3 }
-    for target in -2...18 {
-      #expect(lowerBound(values, target: target) == (values.firstIndex { $0 >= target } ?? size))
-      #expect(binarySearch(values, target: target) == values.firstIndex(of: target))
+func randomArray(_ count: ClosedRange<Int>, _ values: ClosedRange<Int>)
+  -> [Int]
+{
+  (0..<Int.random(in: count)).map { _ in Int.random(in: values) }
+}
+
+@Test func binarySearchAndBounds() {
+  for _ in 0..<300 {
+    let values = randomArray(0...12, -5...5).sorted()
+    for target in -6...6 {
+      if let index = binarySearch(values, target) {
+        #expect(values[index] == target)
+      } else {
+        #expect(!values.contains(target))
+      }
+      let firstAtLeast =
+        values.firstIndex { $0 >= target } ?? values.count
+      let firstAbove = values.firstIndex { $0 > target } ?? values.count
+      #expect(lowerBound(values, target) == firstAtLeast)
+      #expect(upperBound(values, target) == firstAbove)
     }
   }
-  #expect(binarySearch([Int.min, 0, Int.max], target: Int.max) == 2)
+  #expect(firstTrue(0, 100) { $0 * $0 >= 50 } == 8)
+  #expect(minEatingSpeed([3, 6, 7, 11], 8) == 4)
+  #expect(minEatingSpeed([30, 11, 23, 4, 20], 6) == 23)
 }
 
-@Test func windowsPointersAndPrefixes() {
-  let pair = twoSumSorted([-4, -1, 2, 5], target: 1)
-  #expect(pair?.0 == 0 && pair?.1 == 3)
-  #expect(twoSumSorted([], target: 1) == nil)
-  #expect(twoSumSorted([1], target: 2) == nil)
-  #expect(twoSumSorted([Int.min, Int.min + 1, -1], target: Int.min)?.0 == 1)
-  #expect(twoSumSorted([1, 2, Int.max], target: 3)?.1 == 1)
-  #expect(twoSumSorted([Int.min, Int.max], target: -1)?.1 == 1)
-  #expect(longestUniqueSubstring("abcabcbb") == 3)
-  #expect(longestUniqueSubstring("") == 0)
-  #expect(longestUniqueSubstring("é👨‍👩‍👧‍👦é") == 2)
-  #expect(longestUniqueSubstring("abba") == 2)
-  let prefix = PrefixSums([2, -1, 4, 3])
-  #expect(prefix.sum(in: 1..<3) == 3)
-  #expect(prefix.sum(in: 0..<0) == 0)
-  #expect(prefix.sum(in: 0..<4) == 8)
-  #expect(PrefixSums([]).sum(in: 0..<0) == 0)
-}
-
-@Test func traversalHandlesCyclesAndDisconnectedVertices() {
-  let graph = [[1, 2], [0, 2], [0, 1], []]
-  #expect(breadthFirstDistances(graph, start: 0) == [0, 1, 1, nil])
-  #expect(depthFirstOrder(graph, start: 0) == [0, 1, 2])
-  #expect(breadthFirstDistances([[]], start: 0) == [0])
-}
-
-@Test func shortestPathsAndInvalidInputs() throws {
-  let graph: [[WeightedEdge]] = [
-    [.init(destination: 1, weight: 10), .init(destination: 2, weight: 1)],
-    [.init(destination: 3, weight: 2)],
-    [.init(destination: 1, weight: 1), .init(destination: 3, weight: 9)],
-    [], [],
-  ]
-  #expect(try dijkstra(graph, start: 0) == [0, 2, 1, 4, nil])
-  #expect(try dijkstra([[.init(destination: 0, weight: 0)]], start: 0) == [0])
-  #expect(try dijkstra([[.init(destination: 1, weight: Int.max)], []], start: 0) == [0, Int.max])
-  #expect(throws: PathError.invalidVertex) { try dijkstra([], start: 0) }
-  #expect(throws: PathError.invalidVertex) {
-    try dijkstra([[.init(destination: 1, weight: 2)]], start: 0)
-  }
-  #expect(throws: PathError.negativeWeight) {
-    try dijkstra([[.init(destination: 0, weight: -1)]], start: 0)
-  }
-  #expect(throws: PathError.distanceOverflow) {
-    try dijkstra(
-      [[.init(destination: 1, weight: Int.max)], [.init(destination: 2, weight: 1)], []], start: 0)
-  }
-}
-
-@Test func shortestPathsMatchRelaxationReference() throws {
-  for seed in 0..<25 {
-    let count = 6
-    var graph = Array(repeating: [WeightedEdge](), count: count)
-    for source in 0..<count {
-      for destination in 0..<count where (source * 17 + destination * 13 + seed) % 4 == 0 {
-        graph[source].append(
-          .init(destination: destination, weight: (source + destination + seed) % 7))
+@Test func twoPointers() {
+  #expect(pairWithSum([1, 2, 4, 7, 11], 9)! == (1, 3))
+  #expect(pairWithSum([1, 2], 9) == nil)
+  for _ in 0..<200 {
+    let values = randomArray(0...8, -4...4)
+    var expected = Set<[Int]>()
+    for i in values.indices {
+      for j in values.indices where j > i {
+        for k in values.indices
+        where k > j && values[i] + values[j] + values[k] == 0 {
+          expected.insert([values[i], values[j], values[k]].sorted())
+        }
       }
+    }
+    let actual = threeSum(values)
+    #expect(Set(actual) == expected)
+    #expect(actual.count == expected.count)
+    var sorted = values.sorted()
+    let length = removeDuplicates(&sorted)
+    #expect(Array(sorted[..<length]) == Array(Set(values)).sorted())
+  }
+  #expect(isPalindrome("A man, a plan, a canal: Panama"))
+  #expect(isPalindrome(""))
+  #expect(!isPalindrome("race a car"))
+}
+
+func substrings(_ text: String) -> [String] {
+  let chars = Array(text)
+  var all: [String] = []
+  for start in chars.indices {
+    for end in start..<chars.count {
+      all.append(String(chars[start...end]))
+    }
+  }
+  return all
+}
+
+@Test func slidingWindowsAndPrefixSums() {
+  for _ in 0..<200 {
+    let values = randomArray(1...10, -4...4)
+    for size in 1...values.count {
+      let expected = (0...(values.count - size)).map {
+        values[$0..<($0 + size)].reduce(0, +)
+      }.max()!
+      #expect(maxWindowSum(values, size: size) == expected)
+    }
+    for target in -3...3 {
+      var expected = 0
+      for start in values.indices {
+        var total = 0
+        for end in start..<values.count {
+          total += values[end]
+          if total == target { expected += 1 }
+        }
+      }
+      #expect(countSubarraysWithSum(values, target) == expected)
+    }
+    let text = String(
+      (0..<Int.random(in: 0...12)).map { _ in "abcd".randomElement()! })
+    let all = substrings(text)
+    for k in 0...3 {
+      let expected =
+        all.filter { Set($0).count <= k }.map(\.count).max() ?? 0
+      #expect(longestWithKDistinct(text, k) == expected)
+    }
+    let unique =
+      all.filter { Set($0).count == $0.count }.map(\.count).max() ?? 0
+    #expect(longestUniqueSubstring(text) == unique)
+  }
+  #expect(prefixSums([]) == [0])
+}
+
+@Test func stackAndIntervals() {
+  for _ in 0..<300 {
+    let values = randomArray(0...10, 0...5)
+    let expected = values.indices.map { i in
+      values[(i + 1)...].first { $0 > values[i] } ?? -1
+    }
+    #expect(nextGreater(values) == expected)
+    let intervals = (0..<Int.random(in: 0...8)).map { _ -> [Int] in
+      let start = Int.random(in: 0...10)
+      return [start, start + Int.random(in: 1...5)]
+    }
+    let busiest =
+      (0...16).map { moment in
+        intervals.count { $0[0] <= moment && moment < $0[1] }
+      }.max() ?? 0
+    #expect(minMeetingRooms(intervals) == busiest)
+    let merged = mergeIntervals(intervals)
+    func covered(_ list: [[Int]]) -> Set<Int> {
+      Set(list.flatMap { Array($0[0]...$0[1]) })
+    }
+    #expect(covered(merged) == covered(intervals))
+    for i in merged.indices.dropFirst() {
+      #expect(merged[i - 1][1] < merged[i][0])
+    }
+  }
+  #expect(mergeIntervals([[1, 4], [4, 5]]) == [[1, 5]])
+}
+
+//   0 - 1 - 3
+//   |   |
+//   2   4 - 5
+let sampleGraph = [[1, 2], [0, 3, 4], [0], [1], [1, 5], [4]]
+
+@Test func graphSearch() {
+  #expect(bfsOrder(sampleGraph, start: 0) == [0, 1, 2, 3, 4, 5])
+  #expect(dfsRecursive(sampleGraph, start: 0) == [0, 1, 3, 4, 5, 2])
+  for _ in 0..<200 {
+    let graph = (0..<8).map { _ in randomArray(0...3, 0...7) }
+    #expect(
+      dfsIterative(graph, start: 0) == dfsRecursive(graph, start: 0))
+  }
+  var grid = [[0, 0, 0], [1, 1, 0], [0, 0, 0]]
+  #expect(shortestPathGrid(grid, from: (0, 0), to: (2, 0)) == 6)
+  #expect(shortestPathGrid(grid, from: (0, 0), to: (0, 0)) == 0)
+  grid[1][2] = 1
+  #expect(shortestPathGrid(grid, from: (0, 0), to: (2, 0)) == nil)
+  let islands = ["11000", "11000", "00100", "00011"].map(Array.init)
+  #expect(countIslands(islands) == 3)
+  #expect(countIslands([]) == 0)
+  let large = Array(
+    repeating: Array(repeating: Character("1"), count: 300), count: 300)
+  #expect(countIslands(large) == 1)
+}
+
+@Test func topologicalOrderRespectsEdges() {
+  for _ in 0..<200 {
+    let count = Int.random(in: 1...8)
+    let rank = (0..<count).map { _ in Double.random(in: 0...1) }
+    var edges: [(Int, Int)] = []
+    for a in 0..<count {
+      for b in 0..<count where rank[a] < rank[b] && Bool.random() {
+        edges.append((a, b))
+      }
+    }
+    let order = topologicalOrder(count: count, edges: edges)!
+    #expect(order.sorted() == Array(0..<count))
+    let position = Dictionary(
+      uniqueKeysWithValues: order.enumerated().map { ($1, $0) })
+    for (before, after) in edges {
+      #expect(position[before]! < position[after]!)
+    }
+  }
+  #expect(
+    topologicalOrder(count: 3, edges: [(0, 1), (1, 2), (2, 0)]) == nil)
+  #expect(topologicalOrder(count: 0, edges: []) == [])
+}
+
+@Test func dijkstraMatchesBellmanFord() {
+  for _ in 0..<300 {
+    let count = Int.random(in: 1...8)
+    let edges = (0..<Int.random(in: 0...20)).map { _ in
+      (
+        Int.random(in: 0..<count), Int.random(in: 0..<count),
+        Int.random(in: 0...9)
+      )
     }
     var expected = [Int?](repeating: nil, count: count)
     expected[0] = 0
     for _ in 0..<count {
-      for source in 0..<count {
-        guard let distance = expected[source] else { continue }
-        for edge in graph[source] {
-          expected[edge.destination] = min(
-            expected[edge.destination] ?? Int.max, distance + edge.weight)
+      for (from, to, weight) in edges {
+        if let known = expected[from],
+          known + weight < expected[to] ?? .max
+        {
+          expected[to] = known + weight
         }
       }
     }
-    #expect(try dijkstra(graph, start: 0) == expected)
+    let graph = buildWeightedGraph(count: count, edges: edges)
+    #expect(dijkstra(graph, source: 0) == expected)
   }
 }
 
-@Test func intervalsBacktrackingAndDP() {
-  #expect(mergeIntervals([1...3, 2...6, 8...10, 10...12]) == [1...6, 8...12])
-  #expect(mergeIntervals([]).isEmpty)
-  #expect(mergeIntervals([Int.min...Int.max]) == [Int.min...Int.max])
-  #expect(subsets([1, 2]) == [[], [2], [1], [1, 2]])
-  #expect(subsets([Int]()) == [[]])
-  #expect(minimumCoins([1, 2, 5], amount: 11) == 3)
-  #expect(minimumCoins([2], amount: 3) == nil)
-  #expect(minimumCoins([], amount: 0) == 0)
-  #expect(minimumCoins([], amount: 5) == nil)
-  #expect(minimumCoins([Int.max], amount: 1) == nil)
+@Test func backtracking() {
+  #expect(subsets([1, 2, 3]).count == 8)
+  #expect(Set(subsets([1, 2, 3])).count == 8)
+  #expect(subsets([]) == [[]])
+  #expect(combinations([1, 2, 3, 4], size: 2).count == 6)
+  #expect(Set(combinations([1, 2, 3, 4], size: 2)).count == 6)
+  #expect(Set(permutations([1, 2, 3])).count == 6)
+  #expect(permutations([]) == [[]])
+}
+
+@Test func dynamicProgramming() {
+  for (steps, ways) in [1, 1, 2, 3, 5, 8, 13].enumerated() {
+    #expect(climbStairs(steps) == ways)
+    #expect(climbStairsMemo(steps) == ways)
+  }
+  for _ in 0..<200 {
+    let values = randomArray(0...8, 0...9)
+    var robbed = 0
+    for mask in 0..<(1 << values.count) where mask & (mask >> 1) == 0 {
+      var total = 0
+      for index in values.indices where mask >> index & 1 == 1 {
+        total += values[index]
+      }
+      robbed = max(robbed, total)
+    }
+    #expect(houseRobber(values) == robbed)
+    let count = Int.random(in: 0...6)
+    let weights = (0..<count).map { _ in Int.random(in: 1...6) }
+    let worth = (0..<count).map { _ in Int.random(in: 0...9) }
+    let capacity = Int.random(in: 0...12)
+    let best = (0..<(1 << count)).compactMap { mask -> Int? in
+      let chosen = (0..<count).filter { mask >> $0 & 1 == 1 }
+      let weight = chosen.reduce(0) { $0 + weights[$1] }
+      return weight <= capacity
+        ? chosen.reduce(0) { $0 + worth[$1] } : nil
+    }.max()!
+    #expect(knapsack(weights, worth, capacity: capacity) == best)
+    let sequence = randomArray(0...10, 0...6)
+    var lengths = sequence.map { _ in 1 }
+    for i in sequence.indices {
+      for j in 0..<i where sequence[j] < sequence[i] {
+        lengths[i] = max(lengths[i], lengths[j] + 1)
+      }
+    }
+    #expect(
+      longestIncreasingSubsequence(sequence) == (lengths.max() ?? 0))
+  }
+  #expect(coinChange([1, 2, 5], 11) == 3)
+  #expect(coinChange([2], 3) == -1)
+  #expect(coinChange([1], 0) == 0)
+  #expect(uniqueGridPaths(rows: 3, cols: 7) == 28)
+  #expect(uniqueGridPaths(rows: 1, cols: 1) == 1)
+  #expect(longestCommonSubsequence("abcde", "ace") == 3)
+  #expect(longestCommonSubsequence("", "abc") == 0)
+}
+
+@Test func sortingSelectionAndBits() {
+  for _ in 0..<300 {
+    let values = randomArray(0...15, -5...5)
+    #expect(mergeSort(values) == values.sorted())
+    let ranked = values.sorted(by: >)
+    for k in stride(from: 1, through: values.count, by: 1) {
+      #expect(kthLargest(values, k) == ranked[k - 1])
+    }
+    for k in 0...(values.count + 1) {
+      #expect(topKLargest(values, k) == Array(ranked.prefix(k)))
+    }
+  }
+  #expect(singleNumber([4, 1, 2, 1, 2]) == 4)
 }
