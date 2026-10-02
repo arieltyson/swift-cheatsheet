@@ -1,31 +1,58 @@
 # Decisions
 
-## 01 — One document, three destinations
-Context: browser find must reach every answer under interview time pressure.
-Decision: render all entries into one HTML document. Three section links are anchors, not ARIA tabs or hidden panels.
-Consequence: a longer page, offset by a visible contents list, stable anchors, and native find. No custom search engine is needed.
+Reversals are recorded as new entries, not edits.
 
-## 02 — Source is the reference
-Context: pasted documentation can drift from tests.
-Decision: render entire Swift files from a validated manifest; explicitly link helper dependencies. Keep tests separate.
-Consequence: no handwritten duplicate snippet text and no runtime Swift execution in the browser.
+## 01: One document, three sections
 
-## 03 — Small static tooling
-Context: this is a personal reference, not an app platform.
-Decision: Python standard library builds semantic HTML, CSS, and a tiny optional clipboard script. System fonts and system appearance need no storage.
-Consequence: zero website packages and no API, account, analytics, service worker, or framework maintenance.
+Context: browser find must reach every answer under interview time
+pressure.
+Decision: all entries are in one HTML document. Pure DSA Swift, SwiftUI
+and UIKit are header links to sections, not tabs or hidden panels.
+Consequence: a long page, navigated with the contents list, `/` and
+Cmd+F.
 
-## 04 — Native checks are developer tooling
-Context: UIKit cannot run in a web page or a macOS-only Swift package.
-Decision: use the installed Xcode SDK to compile a small simulator fixture separately from portable SwiftPM tests.
-Consequence: the public artifact never contains the fixture, private planning documents, or build caches.
+## 02: The displayed code is the tested code
 
-## 05 — Release authority
-Context: the initial task was document-only; the later implementation request explicitly authorized a new GitHub repository and real pushed commits.
-Decision: create a separate public `swift-cheatsheet` repository and publish only the verified static artifact through GitHub Pages.
-Consequence: unrelated workspace repositories and source Google Docs stay untouched.
+Context: pasted documentation drifts from tests.
+Decision: the build extracts declarations by name from `examples/`.
+DSA demos keep real `assert` calls that `swift test` runs; the page
+shows them as `expression  // result`.
+Consequence: no hand-written duplicate snippets. A wrong result fails
+CI.
 
-## 06 — Avoid SwiftPM's reserved snippets directory
-Context: on case-insensitive macOS, SwiftPM discovers `snippets/` as the reserved `Snippets/` directory and creates independent executable targets, breaking shared helpers and UIKit validation.
-Decision: use `examples/` instead of the proposed `snippets/` folder. Use unique Swift basenames in the combined native validation target.
-Consequence: the original architecture remains intact without depending on a deprecated build engine or hidden compiler switches.
+## 03: Native checks are developer tooling
+
+Context: UIKit cannot run in a web page or a macOS Swift package.
+Decision: `tools/native.py` type-checks every SwiftUI and UIKit example
+against the iOS SDK in strict Swift 6 mode, then runs behaviour checks
+on an isolated simulator.
+Consequence: the public artifact never contains the fixture.
+
+## 04: Avoid SwiftPM's reserved Snippets directory
+
+Context: on case-insensitive macOS, SwiftPM treats `snippets/` as its
+reserved `Snippets/` directory.
+Decision: examples live in `examples/`.
+
+## 05: Reversed: one design system with Python and TypeScript CheatSheet
+
+Context: the first version used its own layout, green palette, nine
+parts per entry and one large example function per topic. It was hard
+to scan in an interview.
+Decision: port the shared design system from Python CheatSheet and
+TypeScript CheatSheet. Swift orange (#F05138) replaces their identity
+colour; link and highlight colours are derived from it and contrast
+tested. Each entry has at most five parts: title, one meta line,
+use-when, code, gotcha.
+Consequence: knowing one site means knowing the others. Design fixes
+are shared between the three.
+
+## 06: Redundant @MainActor removed
+
+Context: SwiftUI's `View` and UIKit's `UIViewController`, `UIView` and
+cells are already main-actor isolated.
+Decision: only types that need it (an `@Observable` model, an
+`ObservableObject`, a delegate protocol and its non-UIKit conformer)
+keep `@MainActor`.
+Consequence: less noise in every UI example. Strict Swift 6 type
+checking with warnings as errors still passes.
