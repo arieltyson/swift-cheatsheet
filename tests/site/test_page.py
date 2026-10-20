@@ -140,6 +140,19 @@ class BuiltPageTests(unittest.TestCase):
         icon = (WEB / "favicon.svg").read_text(encoding="utf-8")
         self.assertIn('fill="#F05138"', icon)
 
+    def test_link_previews_name_the_site(self) -> None:
+        # Without og:title, Safari's Reading List titles a #fragment
+        # link after that section instead of the page
+        title = re.search(r"<title>(.*?)</title>", self.page).group(1)
+        self.assertIn(
+            f'<meta property="og:title" content="{title}">', self.page
+        )
+        dist = Path(self.tempdir.name) / "dist"
+        for asset in ("apple-touch-icon.png", "og-image.png"):
+            with self.subTest(asset=asset):
+                self.assertIn(asset, self.page)
+                self.assertTrue((dist / asset).is_file())
+
 
 if __name__ == "__main__":
     unittest.main()

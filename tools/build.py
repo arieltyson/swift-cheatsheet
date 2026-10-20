@@ -30,6 +30,8 @@ WEB = ROOT / "web"
 DIST = ROOT / "dist"
 ASSETS = [
     "favicon.svg",
+    "apple-touch-icon.png",
+    "og-image.png",
     "fonts/jetbrains-mono-subset.woff2",
     "fonts/OFL.txt",
 ]
