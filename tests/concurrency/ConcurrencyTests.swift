@@ -12,7 +12,59 @@ import Testing
   await demoTimeout()
   await demoAsyncStream()
   await demoActor()
+  await demoRollingWindow()
+  await demoRollingMax()
   await demoMainActor()
+}
+
+func timed(_ seconds: Double, _ value: Double) -> TimedValue {
+  TimedValue(
+    timestamp: Date(timeIntervalSince1970: seconds), value: value)
+}
+
+@Test func rollingWindowKeepsValueExactlyAtCutoff() async {
+  let window = RollingWindow(duration: 5)
+  await window.append(timed(1, 5))
+  await window.append(timed(6, 0))
+  #expect(await window.count == 2)
+  #expect(await window.hasValue(atLeast: 5))
+  await window.append(timed(6.5, 0))
+  #expect(await window.count == 2)
+  #expect(await !window.hasValue(atLeast: 5))
+}
+
+@Test func emptyWindowsHaveNothing() async {
+  let window = RollingWindow(duration: 5)
+  #expect(await window.count == 0)
+  #expect(await !window.hasValue(atLeast: 0))
+  #expect(await RollingMax(duration: 5).peak == nil)
+}
+
+@Test func rollingWindowsMatchBruteForce() async {
+  var generator = SystemRandomNumberGenerator()
+  for _ in 0..<50 {
+    let duration = Double.random(in: 0...3, using: &generator)
+    let window = RollingWindow(duration: duration)
+    let rollingMax = RollingMax(duration: duration)
+    var all: [TimedValue] = []
+    var time = 0.0
+    for _ in 0..<200 {
+      time += Double.random(in: 0...1, using: &generator)
+      let value = Double(Int.random(in: 0...10, using: &generator))
+      let item = timed(time, value)
+      all.append(item)
+      await window.append(item)
+      await rollingMax.append(item)
+
+      let cutoff = item.timestamp.addingTimeInterval(-duration)
+      let live = all.filter { $0.timestamp >= cutoff }
+      let peak = live.map(\.value).max()!
+      #expect(await window.count == live.count)
+      #expect(await window.hasValue(atLeast: peak))
+      #expect(await !window.hasValue(atLeast: peak + 0.5))
+      #expect(await rollingMax.peak == peak)
+    }
+  }
 }
 
 @Test func syncDemosRun() {

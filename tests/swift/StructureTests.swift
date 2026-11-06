@@ -7,6 +7,41 @@ import Testing
   #expect(firstEven([1, 3]) == nil)
 }
 
+@Test func ringBufferMatchesAnArrayModel() {
+  for capacity in 1...6 {
+    var ring = RingBuffer<Int>(capacity: capacity)
+    var model: [Int] = []
+    for step in 0..<40 {
+      ring.append(step)
+      model.append(step)
+      model = Array(model.suffix(capacity))
+      #expect(ring.elements == model)
+      #expect(ring.count == model.count)
+    }
+  }
+}
+
+@Test func slidingWindowMaxMatchesBruteForce() {
+  #expect(
+    slidingWindowMax([1, 3, -1, -3, 5, 3, 6, 7], k: 3)
+      == [3, 3, 5, 5, 6, 7])
+  #expect(slidingWindowMax([], k: 3) == [])
+  #expect(slidingWindowMax([1, 2], k: 3) == [])
+  #expect(slidingWindowMax([1, 2], k: 0) == [])
+  var generator = SystemRandomNumberGenerator()
+  for _ in 0..<500 {
+    let count = Int.random(in: 1...30, using: &generator)
+    let values = (0..<count).map { _ in
+      Int.random(in: -5...5, using: &generator)
+    }
+    let k = Int.random(in: 1...count, using: &generator)
+    let expected = (0...(count - k)).map {
+      values[$0..<($0 + k)].max()!
+    }
+    #expect(slidingWindowMax(values, k: k) == expected)
+  }
+}
+
 @Test func queueMatchesAnArrayModel() {
   var queue = Queue<Int>()
   var model: [Int] = []

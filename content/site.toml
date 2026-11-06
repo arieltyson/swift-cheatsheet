@@ -323,12 +323,39 @@ aliases = ["abs", "min", "max", "square root", "squareRoot", "pi", "infinity"]
 code = ["dsa/Numbers.swift:demoMath"]
 
 [[part.section.entry]]
+id = "vector-length"
+title = "Vector length"
+aliases = ["magnitude", "3D vector", "x y z", "euclidean norm", "distance from origin", "sqrt", "hypot", "computed property"]
+code = ["dsa/Numbers.swift:Vector3", "dsa/Numbers.swift:demoVectorLength"]
+gotcha = "`sqrt(x)` needs `import Foundation`; `x.squareRoot()` does not."
+
+[[part.section.entry]]
 id = "gcd"
 title = "gcd & lcm"
 aliases = ["greatest common divisor", "least common multiple", "euclid"]
 code = ["dsa/Numbers.swift:gcd", "dsa/Numbers.swift:demoGcd"]
 time = "O(log min(a, b))"
 space = "O(1)"
+
+[[part.section]]
+id = "dates"
+title = "Dates & time"
+group = "Syntax"
+
+[[part.section.entry]]
+id = "date-math"
+title = "Date math with TimeInterval"
+aliases = ["Date", "TimeInterval", "addingTimeInterval", "timeIntervalSince", "seconds ago", "time cutoff", "subtract time", "timestamp"]
+code = ["dsa/Dates.swift:demoDateMath"]
+gotcha = "`Date` follows the wall clock, which can jump when the system time changes. To add calendar days, use `Calendar`, not multiples of 86,400 seconds."
+
+[[part.section.entry]]
+id = "elapsed-time"
+title = "Elapsed time with ContinuousClock"
+aliases = ["ContinuousClock", "SuspendingClock", "Duration", "Instant", "monotonic clock", "measure time", "stopwatch"]
+code = ["dsa/Dates.swift:demoElapsedTime"]
+availability = "iOS 16+"
+use_when = "Measuring how long something took. `ContinuousClock` only moves forward, and keeps counting while the device sleeps; `SuspendingClock` pauses."
 
 [[part.section]]
 id = "complexity"
@@ -424,6 +451,15 @@ aliases = ["fifo", "enqueue", "dequeue", "deque", "o(1) queue"]
 code = ["dsa/StackQueue.swift:Queue", "dsa/StackQueue.swift:demoQueue"]
 time = "O(1) amortized per operation"
 space = "O(n)"
+
+[[part.section.entry]]
+id = "ring-buffer"
+title = "Ring buffer"
+aliases = ["circular buffer", "circular queue", "fixed capacity", "last N items", "overwrite oldest"]
+code = ["dsa/StackQueue.swift:RingBuffer", "dsa/StackQueue.swift:demoRingBuffer"]
+time = "O(1) per append"
+space = "O(capacity)"
+use_when = "You want the last N items, by count rather than by time. Memory never grows."
 
 [[part.section.entry]]
 id = "valid-brackets"
@@ -754,6 +790,16 @@ aliases = ["no repeating characters", "last seen index"]
 code = ["dsa/SlidingWindow.swift:longestUniqueSubstring"]
 time = "O(n)"
 space = "O(k), k = alphabet size"
+
+[[part.section.entry]]
+id = "sliding-window-max"
+title = "Sliding window maximum"
+aliases = ["monotonic deque", "monotonic queue", "max of each window", "window maximum", "max in window"]
+code = ["dsa/SlidingWindow.swift:slidingWindowMax"]
+time = "O(n)"
+space = "O(n)"
+use_when = "The largest (or, with `>=`, smallest) value in every window. For a window measured in time, see Actors & isolation."
+gotcha = "Store indices, not values: the index tells you when the front has left the window."
 
 [[part.section]]
 id = "prefix-sums"
@@ -1679,6 +1725,27 @@ aliases = ["actor", "data race", "thread safe", "isolation", "reentrancy", "Send
 code = ["concurrency/Isolation.swift:BankAccount", "concurrency/Isolation.swift:demoActor"]
 availability = "iOS 13+"
 gotcha = "Actors are re-entrant: state can change at every `await` inside an actor method. Re-check conditions after awaiting."
+
+[[part.section.entry]]
+id = "rolling-window"
+title = "Rolling time window in an actor"
+aliases = ["rolling window", "time window", "last N seconds", "expire old", "evict old", "purge old data", "thread safe buffer", "timestamps", "keep arrival order", "callback to actor", "backpressure", "threshold check"]
+code = ["concurrency/RollingWindow.swift:TimedValue", "concurrency/RollingWindow.swift:RollingWindow", "concurrency/RollingWindow.swift:drain", "concurrency/RollingWindow.swift:demoRollingWindow"]
+availability = "iOS 15+"
+time = "O(1) amortized per append, O(n) per check"
+space = "O(n), n = values in the window"
+use_when = "Many threads add timestamped values and you only care about the most recent stretch of time."
+gotcha = "A `Task` per value does not keep arrival order, and eviction relies on that order, so feed the actor from one loop. `.bufferingNewest` drops the oldest values if that loop falls behind. `Deque` is in the swift-collections package, not the standard library."
+
+[[part.section.entry]]
+id = "rolling-max"
+title = "Largest value in a rolling time window"
+aliases = ["rolling max", "peak in window", "max in last N seconds", "O(1) max", "monotonic deque", "time window maximum"]
+code = ["concurrency/RollingWindow.swift:RollingMax", "concurrency/RollingWindow.swift:demoRollingMax"]
+availability = "iOS 13+"
+time = "O(1) amortized per append, O(1) per peak"
+space = "O(n) worst case, usually far less"
+use_when = "You only need the largest value, so values that can never win are not worth keeping. Compare `peak` with a threshold to answer \"was it ever this high?\"."
 
 [[part.section.entry]]
 id = "main-actor"

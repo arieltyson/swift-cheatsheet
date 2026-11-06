@@ -18,7 +18,8 @@ import Testing
     ("Cents", demoCents), ("Characters", demoCharacters),
     ("Closures", demoClosures), ("Comparable", demoComparable),
     ("Counting", demoCounting), ("CreateArrays", demoCreateArrays),
-    ("Dictionary", demoDictionary), ("Enums", demoEnums),
+    ("DateMath", demoDateMath), ("Dictionary", demoDictionary),
+    ("ElapsedTime", demoElapsedTime), ("Enums", demoEnums),
     ("Gcd", demoGcd), ("Graphs", demoGraphs),
     ("Grouping", demoGrouping),
     ("HashableKeys", demoHashableKeys),
@@ -30,6 +31,7 @@ import Testing
     ("Money", demoMoney), ("NumberFormats", demoNumberFormats),
     ("Optionals", demoOptionals), ("Overflow", demoOverflow),
     ("PaddingAndRadix", demoPaddingAndRadix), ("Queue", demoQueue),
+    ("RingBuffer", demoRingBuffer),
     ("RangeSum", demoRangeSum), ("Rounding", demoRounding),
     ("SearchArrays", demoSearchArrays), ("Set", demoSet),
     ("Slices", demoSlices), ("Sorting", demoSorting),
@@ -39,6 +41,7 @@ import Testing
     ("Transforms", demoTransforms),
     ("Trie", demoTrie), ("UnionFind", demoUnionFind),
     ("ValueSemantics", demoValueSemantics),
+    ("VectorLength", demoVectorLength),
   ] as [(String, @Sendable () -> Void)])
 func demoRuns(name: String, demo: @Sendable () -> Void) {
   demo()

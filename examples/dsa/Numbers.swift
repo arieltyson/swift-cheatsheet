@@ -36,6 +36,20 @@ func demoMath() {
   assert([3, 1, 2].min() == 1)
 }
 
+struct Vector3 {
+  let x: Double
+  let y: Double
+  let z: Double
+
+  var length: Double { (x * x + y * y + z * z).squareRoot() }
+}
+
+func demoVectorLength() {
+  let vector = Vector3(x: 3, y: 4, z: 0)
+  assert(vector.length == 5)
+  assert(vector.length >= 5)
+}
+
 /// Returns the greatest common divisor of a and b.
 func gcd(_ a: Int, _ b: Int) -> Int {
   var (a, b) = (abs(a), abs(b))

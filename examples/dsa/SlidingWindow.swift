@@ -42,3 +42,26 @@ func longestUniqueSubstring(_ text: String) -> Int {
   }
   return best
 }
+
+/// Returns the largest value in each window of size k.
+func slidingWindowMax(_ values: [Int], k: Int) -> [Int] {
+  guard k > 0 else { return [] }
+  // Indices whose values strictly decrease from head to end
+  var deque: [Int] = []
+  var head = 0
+  var result: [Int] = []
+  for (index, value) in values.enumerated() {
+    // A smaller, older value can never be the largest again
+    while deque.count > head, values[deque[deque.count - 1]] <= value {
+      deque.removeLast()
+    }
+    deque.append(index)
+    if deque[head] <= index - k {
+      head += 1
+    }
+    if index >= k - 1 {
+      result.append(values[deque[head]])
+    }
+  }
+  return result
+}

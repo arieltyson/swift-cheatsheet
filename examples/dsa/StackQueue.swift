@@ -72,3 +72,38 @@ func isBalanced(_ text: String) -> Bool {
   }
   return stack.isEmpty
 }
+
+/// Holds the last `capacity` items; a new item replaces the oldest.
+struct RingBuffer<Element> {
+  private var slots: [Element?]
+  private var head = 0
+  private(set) var count = 0
+
+  init(capacity: Int) {
+    precondition(capacity > 0)
+    slots = Array(repeating: nil, count: capacity)
+  }
+
+  mutating func append(_ item: Element) {
+    slots[(head + count) % slots.count] = item
+    if count == slots.count {
+      head = (head + 1) % slots.count
+    } else {
+      count += 1
+    }
+  }
+
+  /// Oldest first.
+  var elements: [Element] {
+    (0..<count).map { slots[(head + $0) % slots.count]! }
+  }
+}
+
+func demoRingBuffer() {
+  var ring = RingBuffer<Int>(capacity: 3)
+  for value in 1...5 {
+    ring.append(value)
+  }
+  assert(ring.elements == [3, 4, 5])
+  assert(ring.count == 3)
+}
