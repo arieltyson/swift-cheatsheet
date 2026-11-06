@@ -139,7 +139,7 @@ code = ["dsa/Arrays.swift:demoCreateArrays"]
 [[part.section.entry]]
 id = "array-operations"
 title = "append, remove & insert"
-aliases = ["push", "pop", "popLast", "removeFirst", "insert at", "swapAt"]
+aliases = ["push", "pop", "popLast", "removeFirst", "insert at", "swapAt", "reverse", "reverse array", "reverse list"]
 code = ["dsa/Arrays.swift:demoArrayOperations"]
 gotcha = "`removeLast()` crashes on an empty array; `popLast()` returns nil. `removeFirst()` and `insert(_:at: 0)` are O(n)."
 

@@ -24,6 +24,11 @@ func demoArrayOperations() {
   assert(items == [2, 4])
   items.swapAt(0, 1)
   assert(items == [4, 2])
+  // reversed() can return a lazy view, so wrap it to get an array
+  let backwards = Array(items.reversed())
+  assert(backwards == [2, 4])
+  items.reverse()
+  assert(items == [2, 4])
   assert(items.isEmpty == false)
 }
 
