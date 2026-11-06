@@ -12,6 +12,7 @@ import Testing
   await demoTimeout()
   await demoAsyncStream()
   await demoActor()
+  await demoActorInit()
   await demoRollingWindow()
   await demoRollingMax()
   await demoMainActor()
@@ -31,6 +32,16 @@ func timed(_ seconds: Double, _ value: Double) -> TimedValue {
   await window.append(timed(6.5, 0))
   #expect(await window.count == 2)
   #expect(await !window.hasValue(atLeast: 5))
+}
+
+@Test func tallyInitsSetTheSameState() async {
+  let plain = Tally(name: "a")
+  #expect(await plain.total == 0)
+  await plain.add(2)
+  #expect(await plain.total == 2)
+  let empty = await Tally(name: "b", adding: [])
+  #expect(await empty.total == 0)
+  #expect(empty.name == "b")
 }
 
 @Test func emptyWindowsHaveNothing() async {

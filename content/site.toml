@@ -1727,6 +1727,15 @@ availability = "iOS 13+"
 gotcha = "Actors are re-entrant: state can change at every `await` inside an actor method. Re-check conditions after awaiting."
 
 [[part.section.entry]]
+id = "actor-init"
+title = "Initializing an actor"
+aliases = ["actor init", "actor initializer", "async init", "init async", "initialization", "create an actor", "actor constructor", "actor-isolated instance method in a synchronous nonisolated context", "let without await", "nonisolated let"]
+code = ["concurrency/Isolation.swift:Tally", "concurrency/Isolation.swift:demoActorInit"]
+availability = "iOS 13+"
+use_when = "Use a plain `init` when setting properties is enough. Use `init(...) async` when setup has to call the actor's own methods or await something."
+gotcha = "Calling an actor method from a plain `init` fails to compile: \"call to actor-isolated instance method in a synchronous nonisolated context\". Make the `init` async, or call the method after creating the actor."
+
+[[part.section.entry]]
 id = "rolling-window"
 title = "Rolling time window in an actor"
 aliases = ["rolling window", "time window", "last N seconds", "expire old", "evict old", "purge old data", "thread safe buffer", "timestamps", "keep arrival order", "callback to actor", "backpressure", "threshold check"]
