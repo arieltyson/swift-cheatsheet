@@ -133,7 +133,7 @@ group = "Syntax"
 [[part.section.entry]]
 id = "create-arrays"
 title = "Create arrays & grids"
-aliases = ["repeating", "2d array", "matrix", "grid", "range to array"]
+aliases = ["repeating", "2d array", "nested array", "array of arrays", "list of lists", "matrix", "grid", "range to array"]
 code = ["dsa/Arrays.swift:demoCreateArrays"]
 
 [[part.section.entry]]
