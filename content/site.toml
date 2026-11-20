@@ -357,6 +357,14 @@ code = ["dsa/Dates.swift:demoElapsedTime"]
 availability = "iOS 16+"
 use_when = "Measuring how long something took. `ContinuousClock` only moves forward, and keeps counting while the device sleeps; `SuspendingClock` pauses."
 
+[[part.section.entry]]
+id = "calendar-day"
+title = "Calendar: start of day, minutes & adding days"
+aliases = ["Calendar", "startOfDay", "dateComponents", "minutes since midnight", "date bySettingHour", "date byAdding", "isDate inSameDayAs", "weekday", "days in month", "tomorrow", "calendar app"]
+code = ["dsa/Dates.swift:demoCalendarDay"]
+use_when = "Any human question about a date: which day, what hour, the next day, the first weekday of a month. `Calendar.current` uses the device's time zone."
+gotcha = "`date(bySettingHour:)`, `date(byAdding:)` and `range(of:in:for:)` return optionals. For display, `date.formatted(date: .omitted, time: .shortened)` gives a localized time such as 9:30 AM."
+
 [[part.section]]
 id = "complexity"
 title = "Operation costs"
@@ -858,6 +866,16 @@ code = ["dsa/Intervals.swift:minMeetingRooms"]
 time = "O(n log n)"
 space = "O(n)"
 use_when = "The largest number of intervals open at once. Uses `Heap` from the Heap section."
+
+[[part.section.entry]]
+id = "interval-columns"
+title = "Overlapping intervals side by side"
+aliases = ["overlapping events", "calendar overlap", "event columns", "interval coloring", "side by side", "lanes"]
+code = ["dsa/Intervals.swift:assignColumns"]
+time = "O(n log n + n * k), k columns"
+space = "O(n)"
+use_when = "Drawing overlapping calendar events next to each other. The column count equals the minimum meeting rooms; each event's width is the total width divided by it."
+gotcha = "Strict overlap: an event ending at 10:00 and one starting at 10:00 share a column, because the test is `end <= start`."
 
 [[part.section]]
 id = "graph-search"

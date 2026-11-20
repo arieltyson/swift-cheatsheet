@@ -22,3 +22,24 @@ func minMeetingRooms(_ intervals: [[Int]]) -> Int {
   }
   return endTimes.count
 }
+
+/// Puts each interval in the lowest column free at its start, so
+/// overlapping intervals sit side by side, like calendar events.
+func assignColumns(_ intervals: [[Int]]) -> [Int] {
+  var columnEnds: [Int] = []
+  var columns = [Int](repeating: 0, count: intervals.count)
+  let order = intervals.indices.sorted {
+    intervals[$0][0] < intervals[$1][0]
+  }
+  for index in order {
+    let interval = intervals[index]
+    if let free = columnEnds.firstIndex(where: { $0 <= interval[0] }) {
+      columnEnds[free] = interval[1]
+      columns[index] = free
+    } else {
+      columnEnds.append(interval[1])
+      columns[index] = columnEnds.count - 1
+    }
+  }
+  return columns
+}

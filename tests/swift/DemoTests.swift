@@ -18,6 +18,7 @@ import Testing
     ("Cents", demoCents), ("Characters", demoCharacters),
     ("Closures", demoClosures), ("Comparable", demoComparable),
     ("Counting", demoCounting), ("CreateArrays", demoCreateArrays),
+    ("CalendarDay", demoCalendarDay),
     ("DateMath", demoDateMath), ("Dictionary", demoDictionary),
     ("ElapsedTime", demoElapsedTime), ("Enums", demoEnums),
     ("Gcd", demoGcd), ("Graphs", demoGraphs),

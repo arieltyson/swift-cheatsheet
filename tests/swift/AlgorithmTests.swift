@@ -117,6 +117,14 @@ func substrings(_ text: String) -> [String] {
         intervals.count { $0[0] <= moment && moment < $0[1] }
       }.max() ?? 0
     #expect(minMeetingRooms(intervals) == busiest)
+    let cols = assignColumns(intervals)
+    #expect((cols.max().map { $0 + 1 } ?? 0) == busiest)
+    for i in intervals.indices {
+      for j in intervals.indices where i < j && cols[i] == cols[j] {
+        let (a, b) = (intervals[i], intervals[j])
+        #expect(a[1] <= b[0] || b[1] <= a[0])
+      }
+    }
     let merged = mergeIntervals(intervals)
     func covered(_ list: [[Int]]) -> Set<Int> {
       Set(list.flatMap { Array($0[0]...$0[1]) })
