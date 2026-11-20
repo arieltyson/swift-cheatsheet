@@ -1169,6 +1169,15 @@ code = ["swiftui/Layout.swift:ReviewSummary"]
 availability = "iOS 14+"
 gotcha = "Use text styles (`.headline`, `.body`), never fixed point sizes, so text follows the user's size setting."
 
+[[part.section.entry]]
+id = "day-timeline"
+title = "Position views by data: a scrolling day timeline"
+aliases = ["calendar day view", "timeline", "offset", "ZStack alignment", "topLeading", "ScrollViewReader", "scrollTo", "GeometryReader", "TimelineView", "now line", "hour grid", "minutes to points", "position", "List vs ScrollView"]
+code = ["swiftui/Timeline.swift:DayTimeline"]
+availability = "iOS 17+"
+use_when = "Placing views at positions computed from data, such as events by time. A plain `VStack` in a `ScrollView` suits 24 fixed rows; use `LazyVStack` or `List` for long content."
+gotcha = "`.offset` moves drawing without changing layout, `.padding` changes layout, `.position` sets the center. With the default center alignment, offsets start from the middle."
+
 [[part.section]]
 id = "forms"
 title = "Forms & input"
@@ -1181,6 +1190,15 @@ code = ["swiftui/Forms.swift:SignUpForm"]
 availability = "iOS 15+"
 use_when = "Any input screen. Derive validity from the fields as computed properties instead of storing it."
 gotcha = "Setting the focus state to nil hides the keyboard. `.textContentType` lets the system offer saved emails and strong passwords."
+
+[[part.section.entry]]
+id = "edit-copy-sheet"
+title = "Create, edit & delete in a sheet: edit a copy"
+aliases = ["sheet(item:)", "edit form", "draft", "cancel and save", "DatePicker", "hourAndMinute", "State(initialValue:)", "init @State", "swipeActions", "swipe to delete", "upsert", "update by id", "destructive", "confirmationAction", "cancellationAction", "trimmingCharacters", "calendar event form"]
+code = ["swiftui/Editing.swift:Booking", "swiftui/Editing.swift:BookingEditor", "swiftui/Editing.swift:BookingsScreen"]
+availability = "iOS 17+"
+use_when = "One form for both new and existing items. A new item gets a new id; Save replaces the item with that id or appends it."
+gotcha = "Bind fields to the sheet's own `@State` copy, not to the stored item, or every keystroke changes the real data and Cancel cannot undo it. `State(initialValue:)` is read only when the view first appears."
 
 [[part.section]]
 id = "animation"
