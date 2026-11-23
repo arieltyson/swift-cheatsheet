@@ -33,6 +33,8 @@ func demoGridLines() {
   let row1 = (0..<n).map { col in [1, col] }
   let col2 = (0..<n).map { row in [row, 2] }
   let main = (0..<n).map { i in [i, i] }
+  // Solve the rule for col: row + col == n - 1, row = i,
+  // so col = n - 1 - i. (abs(i - (n - 1)) is the same, but longer.)
   let anti = (0..<n).map { i in [i, n - 1 - i] }
   assert(row1 == [[1, 0], [1, 1], [1, 2]])
   assert(col2 == [[0, 2], [1, 2], [2, 2]])

@@ -331,7 +331,7 @@ gotcha = "Overflow crashes instead of wrapping. Int is 64-bit, so `a * b` fits w
 [[part.section.entry]]
 id = "math"
 title = "Math helpers"
-aliases = ["abs", "min", "max", "square root", "squareRoot", "pi", "infinity"]
+aliases = ["abs", "absolute value", "pos", "positive", "min", "max", "square root", "squareRoot", "pi", "infinity"]
 code = ["dsa/Numbers.swift:demoMath"]
 
 [[part.section.entry]]
@@ -706,7 +706,7 @@ use_when = "Storing an n x n board in one array: simpler to copy, compare and in
 [[part.section.entry]]
 id = "grid-lines"
 title = "Grid coordinates: rows, columns & diagonals"
-aliases = ["diagonal", "anti-diagonal", "row == col", "row + col == n - 1", "main diagonal", "coordinates", "grid lines", "3x3 grid"]
+aliases = ["diagonal", "anti-diagonal", "row == col", "row + col == n - 1", "n - 1 - i", "solve for col", "main diagonal", "coordinates", "grid lines", "3x3 grid"]
 code = ["dsa/Board.swift:demoGridLines"]
 use_when = "Any n x n grid question: a cell is on the main diagonal when row == col, on the anti-diagonal when row + col == n - 1."
 gotcha = "Write n - 1, not 2: the formulas must hold for any board size. Only the centre of an odd-sized board is on both diagonals."
