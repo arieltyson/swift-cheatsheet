@@ -7,6 +7,12 @@ func demoCreateArrays() {
   // Rows are values, so changing one never changes another
   assert(grid == [[0, 7, 0], [0, 0, 0]])
   assert((grid.count, grid[0].count) == (2, 3))
+
+  // Checking every cell: the outer closure gets a ROW, not a cell
+  let cells: [[Int?]] = [[1, nil], [3, 4]]
+  assert(!cells.allSatisfy { row in row.allSatisfy { $0 != nil } })
+  assert(cells.contains { row in row.contains(nil) })
+  assert(cells.joined().filter { $0 == nil }.count == 1)
 }
 
 func demoArrayOperations() {

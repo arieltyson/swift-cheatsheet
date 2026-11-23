@@ -134,8 +134,9 @@ group = "Syntax"
 [[part.section.entry]]
 id = "create-arrays"
 title = "Create arrays & grids"
-aliases = ["repeating", "2d array", "nested array", "array of arrays", "list of lists", "matrix", "grid", "range to array"]
+aliases = ["repeating", "2d array", "nested array", "array of arrays", "list of lists", "matrix", "grid", "range to array", "allSatisfy 2d", "grid full", "every cell", "contains nil", "joined"]
 code = ["dsa/Arrays.swift:demoCreateArrays"]
+gotcha = "On a 2D array, `allSatisfy`/`contains` hand the closure a whole row. Nest a second call, or flatten with `joined()`."
 
 [[part.section.entry]]
 id = "array-operations"
