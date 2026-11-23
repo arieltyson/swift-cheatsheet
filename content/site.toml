@@ -39,9 +39,9 @@ gotcha = "A multi-line closure needs an explicit `return`. In an `if`/`guard`/`w
 [[part.section.entry]]
 id = "enums"
 title = "Enums with associated values"
-aliases = ["enum", "switch", "pattern matching", "associated value", "computed property", "if case", "guard case", "case let", "Equatable enum"]
-code = ["dsa/Language.swift:Shape", "dsa/Language.swift:demoEnums"]
-gotcha = "Plain enums get `==` for free. With associated values you must write `: Equatable` (Swift then synthesizes `==`)."
+aliases = ["enum", "switch", "pattern matching", "associated value", "computed property", "if case", "guard case", "case let", "Equatable enum", "raw value", "rawValue", "enum String", "CaseIterable", "allCases", "init rawValue"]
+code = ["dsa/Language.swift:Shape", "dsa/Language.swift:Switch", "dsa/Language.swift:demoEnums"]
+gotcha = "Plain enums get `==` for free. With associated values you must write `: Equatable` (Swift then synthesizes `==`). An enum has raw values OR associated values, never both."
 
 [[part.section.entry]]
 id = "comparable"

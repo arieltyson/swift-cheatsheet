@@ -83,6 +83,13 @@ enum Shape: Equatable {
   }
 }
 
+/// Raw values: one fixed value per case, declared after the type.
+/// Without `: String` (or Int), `case on = "On"` doesn't compile.
+enum Switch: String, CaseIterable {
+  case on = "On"
+  case off  // defaults to "off", the case name
+}
+
 func demoEnums() {
   assert(Shape.square(side: 3).area == 9)
   let shapes: [Shape] = [.point, .circle(radius: 1), .square(side: 2)]
@@ -95,6 +102,11 @@ func demoEnums() {
 
   // == compares the case and its values.
   assert(shapes[0] == .point && shapes[2] != .square(side: 3))
+
+  assert(Switch.on.rawValue == "On" && Switch.off.rawValue == "off")
+  assert(Switch(rawValue: "On") == .on)  // failable: String -> case?
+  assert(Switch(rawValue: "nope") == nil)
+  assert(Switch.allCases == [.on, .off])  // from CaseIterable
 }
 
 /// Sorts by priority, then by name, so it works with sorted() and Heap.
