@@ -32,9 +32,9 @@ gotcha = "Arrays, dictionaries, sets and strings are values: copying is O(1) unt
 [[part.section.entry]]
 id = "closures"
 title = "Closures"
-aliases = ["lambda", "$0", "trailing closure", "sorted by", "higher order", "closure return", "missing return", "tuple", "destructure", "let (a, b)"]
+aliases = ["lambda", "$0", "trailing closure", "sorted by", "higher order", "closure return", "missing return", "tuple", "destructure", "let (a, b)", "closure in if", "confusable with the body"]
 code = ["dsa/Language.swift:demoClosures", "dsa/Language.swift:demoTuples"]
-gotcha = "A multi-line closure needs an explicit `return`. Tuples destructure with `let (a, b) = pair`; arrays don't."
+gotcha = "A multi-line closure needs an explicit `return`. In an `if`/`guard`/`while` condition, write `xs.allSatisfy({ ... })` or store it in a `let` first: a trailing closure there looks like the statement's body. Tuples destructure with `let (a, b) = pair`; arrays don't."
 
 [[part.section.entry]]
 id = "enums"
