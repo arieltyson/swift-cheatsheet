@@ -7,6 +7,7 @@ import Testing
 @Test(
   arguments: [
     ("Arrays", demoArrayOperations), ("BoardIndex", demoBoardIndex),
+    ("GridLines", demoGridLines),
     ("Protocols", demoProtocols),
     ("Extensions", demoExtensions), ("Generics", demoGenerics),
     ("LRUCache", demoLRUCache), ("DoCatch", demoDoCatch),

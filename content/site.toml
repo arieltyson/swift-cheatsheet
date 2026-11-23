@@ -695,6 +695,14 @@ code = ["dsa/Board.swift:demoBoardIndex"]
 use_when = "Storing an n x n board in one array: simpler to copy, compare and index than nested arrays."
 
 [[part.section.entry]]
+id = "grid-lines"
+title = "Grid coordinates: rows, columns & diagonals"
+aliases = ["diagonal", "anti-diagonal", "row == col", "row + col == n - 1", "main diagonal", "coordinates", "grid lines", "3x3 grid"]
+code = ["dsa/Board.swift:demoGridLines"]
+use_when = "Any n x n grid question: a cell is on the main diagonal when row == col, on the anti-diagonal when row + col == n - 1."
+gotcha = "Write n - 1, not 2: the formulas must hold for any board size. Only the centre of an odd-sized board is on both diagonals."
+
+[[part.section.entry]]
 id = "tic-tac-toe"
 title = "N x N tic-tac-toe: O(1) win check & undo"
 aliases = ["tic tac toe", "game board", "winner check", "undo move", "row column diagonal", "n by n", "board game"]

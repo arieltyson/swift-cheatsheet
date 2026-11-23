@@ -11,6 +11,35 @@ func demoBoardIndex() {
   assert(board.compactMap { $0 } == ["X"])
 }
 
+/// 0-based (row, col) in a 3 x 3 grid, read as grid[row][col]:
+///
+///            col 0    col 1    col 2
+///   row 0   (0, 0)   (0, 1)   (0, 2)
+///   row 1   (1, 0)   (1, 1)   (1, 2)
+///   row 2   (2, 0)   (2, 1)   (2, 2)
+///
+/// Row r: row fixed, col varies.   Col c: col fixed, row varies.
+/// Main diagonal (\): row == col.
+/// Anti-diagonal (/): row + col == n - 1.
+func demoGridLines() {
+  let n = 3
+  let isMain = { (row: Int, col: Int) in row == col }
+  let isAnti = { (row: Int, col: Int) in row + col == n - 1 }
+  assert(isMain(1, 1) && isAnti(1, 1))  // the centre is on both
+  assert(isAnti(0, 2) && isAnti(2, 0) && !isAnti(0, 0))
+  assert(!isMain(0, 1) && !isAnti(0, 1))  // edge middles: neither
+
+  // Coordinates of each line, built from 0..<n
+  let row1 = (0..<n).map { col in [1, col] }
+  let col2 = (0..<n).map { row in [row, 2] }
+  let main = (0..<n).map { i in [i, i] }
+  let anti = (0..<n).map { i in [i, n - 1 - i] }
+  assert(row1 == [[1, 0], [1, 1], [1, 2]])
+  assert(col2 == [[0, 2], [1, 2], [2, 2]])
+  assert(main == [[0, 0], [1, 1], [2, 2]])
+  assert(anti == [[0, 2], [1, 1], [2, 0]])
+}
+
 enum Mark: Equatable {
   case x
   case o
