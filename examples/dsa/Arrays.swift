@@ -76,6 +76,50 @@ func demoTransforms() {
   assert(squares == [9, 1, 16])
 }
 
+/// Python comprehensions in Swift. Read `xs.map { x in f(x) }` as
+/// `[f(x) for x in xs]`; the closure's value is the new element.
+func demoComprehensions() {
+  let n = 4
+  // [i * i for i in range(n)]
+  assert((0..<n).map { i in i * i } == [0, 1, 4, 9])
+  // [i for i in range(n) if i % 2 == 0]
+  assert((0..<n).filter { $0 % 2 == 0 } == [0, 2])
+  // [i * 10 for i in range(n) if i > 1]: filter first, then map
+  assert((0..<n).filter { $0 > 1 }.map { $0 * 10 } == [20, 30])
+  // ["even" if i % 2 == 0 else "odd" for i in range(3)]
+  let labels = (0..<3).map { $0 % 2 == 0 ? "even" : "odd" }
+  assert(labels == ["even", "odd", "even"])
+  // [[i, i] for i in range(3)]: each element is itself an array
+  assert((0..<3).map { i in [i, i] } == [[0, 0], [1, 1], [2, 2]])
+  // [[0] * 3 for _ in range(2)]: `_` when the index isn't used
+  assert((0..<2).map { _ in [0, 0, 0] } == [[0, 0, 0], [0, 0, 0]])
+  // [(r, c) for r in range(2) for c in range(2)]: nested loops
+  let cells = (0..<2).flatMap { r in (0..<2).map { c in [r, c] } }
+  assert(cells == [[0, 0], [0, 1], [1, 0], [1, 1]])
+  // [x for row in grid for x in row]: flatten
+  assert([[1, 2], [3]].flatMap { $0 } == [1, 2, 3])
+}
+
+/// Dict and set comprehensions, enumerate, and all/any/sum.
+func demoComprehensionsMore() {
+  let n = 4
+  // {w: len(w) for w in words}
+  let words = ["hi", "hey"]
+  let lengths = Dictionary(uniqueKeysWithValues: words.map {
+    ($0, $0.count)
+  })
+  assert(lengths == ["hi": 2, "hey": 3])
+  // {len(w) for w in words}
+  assert(Set(words.map(\.count)) == [2, 3])
+  // [f"{i}:{w}" for i, w in enumerate(words)]
+  let numbered = words.enumerated().map { i, w in "\(i):\(w)" }
+  assert(numbered == ["0:hi", "1:hey"])
+  // all(...), any(...), sum(...) take a generator in Python
+  assert((0..<n).allSatisfy { $0 < n })
+  assert((0..<n).contains { $0 == 3 })
+  assert((0..<n).reduce(0, +) == 6)
+}
+
 func demoSearchArrays() {
   let values = [3, -1, 4, -1]
   assert(values.contains(4))

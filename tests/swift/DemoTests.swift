@@ -8,6 +8,9 @@ import Testing
   arguments: [
     ("Arrays", demoArrayOperations), ("BoardIndex", demoBoardIndex),
     ("GridLines", demoGridLines),
+    ("Comprehensions", demoComprehensions),
+    ("ComprehensionsMore", demoComprehensionsMore),
+    ("Tuples", demoTuples),
     ("Protocols", demoProtocols),
     ("Extensions", demoExtensions), ("Generics", demoGenerics),
     ("LRUCache", demoLRUCache), ("DoCatch", demoDoCatch),

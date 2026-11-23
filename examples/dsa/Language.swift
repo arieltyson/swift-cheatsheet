@@ -46,6 +46,25 @@ func demoClosures() {
   assert(values.filter(isLarge) == [3])
   let total = values.reduce(0) { sum, value in sum + value }
   assert(total == 6)
+
+  // One expression: its value is returned. More than one statement:
+  // write `return`, or the closure returns nothing.
+  let doubledOdds = values.map { value in
+    let isOdd = value % 2 == 1
+    return isOdd ? value * 2 : value
+  }
+  assert(doubledOdds == [6, 2, 2])
+  // Names declared inside a closure don't exist outside it.
+}
+
+/// Tuples destructure; arrays don't. Use a tuple for a pair.
+func demoTuples() {
+  let cell = (row: 1, col: 2)
+  let (row, col) = cell
+  assert(row == 1 && col == 2 && cell.col == 2)
+  let pair = [1, 2]
+  let (first, second) = (pair[0], pair[1])
+  assert(first + second == 3)
 }
 
 /// Associated values: `Equatable` must be declared (then `==` is

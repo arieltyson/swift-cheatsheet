@@ -32,8 +32,9 @@ gotcha = "Arrays, dictionaries, sets and strings are values: copying is O(1) unt
 [[part.section.entry]]
 id = "closures"
 title = "Closures"
-aliases = ["lambda", "$0", "trailing closure", "sorted by", "higher order"]
-code = ["dsa/Language.swift:demoClosures"]
+aliases = ["lambda", "$0", "trailing closure", "sorted by", "higher order", "closure return", "missing return", "tuple", "destructure", "let (a, b)"]
+code = ["dsa/Language.swift:demoClosures", "dsa/Language.swift:demoTuples"]
+gotcha = "A multi-line closure needs an explicit `return`. Tuples destructure with `let (a, b) = pair`; arrays don't."
 
 [[part.section.entry]]
 id = "enums"
@@ -164,6 +165,14 @@ title = "map, filter, reduce & compactMap"
 aliases = ["flatMap", "reduce into", "sum", "transform", "parse ints"]
 code = ["dsa/Arrays.swift:demoTransforms"]
 gotcha = "Use `reduce(into:)` to build arrays or dictionaries. `reduce` with `+ [x]` copies on every step: O(n^2)."
+
+[[part.section.entry]]
+id = "comprehensions"
+title = "List comprehensions: map, filter & flatMap"
+aliases = ["list comprehension", "python comprehension", "for in range", "dict comprehension", "set comprehension", "nested loop", "generator", "all any sum"]
+code = ["dsa/Arrays.swift:demoComprehensions", "dsa/Arrays.swift:demoComprehensionsMore"]
+use_when = "Swift has no comprehension syntax. Chain map/filter on a range or array; flatMap stands in for a second `for`."
+gotcha = "Python's `[x for ... if cond]` filters before mapping. In Swift, put `filter` before `map`."
 
 [[part.section.entry]]
 id = "array-search"
