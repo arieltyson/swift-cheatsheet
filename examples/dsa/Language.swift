@@ -48,22 +48,34 @@ func demoClosures() {
   assert(total == 6)
 }
 
-enum Shape {
+/// Associated values: `Equatable` must be declared (then `==` is
+/// synthesized, since every value is Equatable).
+enum Shape: Equatable {
+  case point
   case circle(radius: Double)
   case square(side: Double)
 
   var area: Double {
     switch self {
+    case .point: 0
     case .circle(let radius): Double.pi * radius * radius
-    case .square(let side): side * side
+    case let .square(side): side * side
     }
   }
 }
 
 func demoEnums() {
   assert(Shape.square(side: 3).area == 9)
-  let shapes: [Shape] = [.circle(radius: 1), .square(side: 2)]
-  assert(shapes.count == 2)
+  let shapes: [Shape] = [.point, .circle(radius: 1), .square(side: 2)]
+  assert(shapes.count == 3)
+
+  // Check one case and pull its value out.
+  var radius = 0.0
+  if case .circle(let r) = shapes[1] { radius = r }
+  assert(radius == 1)
+
+  // == compares the case and its values.
+  assert(shapes[0] == .point && shapes[2] != .square(side: 3))
 }
 
 /// Sorts by priority, then by name, so it works with sorted() and Heap.
