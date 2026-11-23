@@ -168,8 +168,9 @@ gotcha = "Use `reduce(into:)` to build arrays or dictionaries. `reduce` with `+ 
 [[part.section.entry]]
 id = "array-search"
 title = "contains, first(where:) & min/max"
-aliases = ["firstIndex", "lastIndex", "allSatisfy", "count where", "search array"]
+aliases = ["firstIndex", "lastIndex", "allSatisfy", "every element", "all match", "count where", "search array", "contains where"]
 code = ["dsa/Arrays.swift:demoSearchArrays"]
+gotcha = "`allSatisfy` on an empty collection is `true`. Guard against empty input when \"all match\" must mean \"at least one, and all\"."
 
 [[part.section.entry]]
 id = "iteration"

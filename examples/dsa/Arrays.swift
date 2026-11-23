@@ -82,7 +82,13 @@ func demoSearchArrays() {
   assert(values.first(where: { $0 > 3 }) == 4)
   assert(values.firstIndex(of: -1) == 1)
   assert(values.lastIndex(of: -1) == 3)
+  // allSatisfy: does EVERY element pass? Stops at the first failure.
   assert(values.allSatisfy { $0 != 0 })
+  assert(!values.allSatisfy { $0 > 0 })
+  assert([Int]().allSatisfy { $0 > 100 })  // empty: always true
+  assert((1...4).allSatisfy { 12 % $0 == 0 })  // ranges work too
+  // "all pass" is the same as "none fail"
+  assert(values.allSatisfy { $0 != 0 } == !values.contains { $0 == 0 })
   assert(values.min() == -1)
   assert(values.max() == 4)
   assert(values.count(where: { $0 < 0 }) == 2)
