@@ -2,6 +2,7 @@ import SwiftUI
 
 /// Frame tuning. A frame proposes a size to the view inside it;
 /// min/max set the range it accepts, alignment places the content.
+/// Text hugs: without a frame it is only as big as its letters.
 struct FrameTuning: View {
   var body: some View {
     VStack(spacing: 12) {
