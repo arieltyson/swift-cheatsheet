@@ -121,6 +121,9 @@ func demoEnums() {
 struct Tally {
   private(set) var count = 0
   private var log: [Int] = []
+  // A yes/no question with no side effects: a computed property, not
+  // a func. Name it for when it's TRUE; negate at the call site.
+  var hasEntries: Bool { !log.isEmpty }
 
   mutating func add() {
     count += 1
@@ -130,8 +133,9 @@ struct Tally {
 
 func demoAccessControl() {
   var tally = Tally()
+  assert(!tally.hasEntries)
   tally.add()
-  assert(tally.count == 1)
+  assert(tally.count == 1 && tally.hasEntries)
   // tally.count = 5  // error: the setter is private
   // tally.log        // error: 'log' is inaccessible
 }
