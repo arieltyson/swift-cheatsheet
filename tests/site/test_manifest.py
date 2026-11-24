@@ -94,6 +94,45 @@ class ParseSiteTests(unittest.TestCase):
         )
         self.assertIsNone(parse_site(data, self.root).entries()[0].time)
 
+    def test_parses_figure(self) -> None:
+        figure = {"src": "figures/a-b.png", "alt": "A", "caption": "C"}
+        data = site_with(
+            {
+                "id": "find",
+                "title": "Find",
+                "code": ["search.py:demo_x"],
+                "figure": figure,
+            }
+        )
+        entry = parse_site(data, self.root).entries()[0]
+        self.assertEqual(entry.figure.src, "figures/a-b.png")
+
+    def test_rejects_figure_outside_figures(self) -> None:
+        figure = {"src": "../secret.png", "alt": "A", "caption": "C"}
+        data = site_with(
+            {
+                "id": "find",
+                "title": "Find",
+                "code": ["search.py:demo_x"],
+                "figure": figure,
+            }
+        )
+        with self.assertRaisesRegex(ManifestError, "figures/name"):
+            parse_site(data, self.root)
+
+    def test_rejects_figure_without_alt(self) -> None:
+        figure = {"src": "figures/a.png", "caption": "C"}
+        data = site_with(
+            {
+                "id": "find",
+                "title": "Find",
+                "code": ["search.py:demo_x"],
+                "figure": figure,
+            }
+        )
+        with self.assertRaisesRegex(ManifestError, "'alt'"):
+            parse_site(data, self.root)
+
     def test_rejects_missing_snippet_file(self) -> None:
         data = site_with(
             {

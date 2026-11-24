@@ -13,6 +13,7 @@ from tools.highlight import highlight
 from tools.manifest import (
     CodeRef,
     Entry,
+    Figure,
     Part,
     Section,
     Site,
@@ -109,6 +110,35 @@ def render_table(table: Table) -> str:
     )
 
 
+def png_size(path: Path) -> tuple[int, int]:
+    """Read width and height from a PNG's IHDR chunk."""
+    header = path.read_bytes()[:24]
+    if header[:8] != b"\x89PNG\r\n\x1a\n":
+        raise ValueError(f"{path.name} is not a PNG")
+    return (
+        int.from_bytes(header[16:20], "big"),
+        int.from_bytes(header[20:24], "big"),
+    )
+
+
+def render_figure(figure: Figure) -> str:
+    """An image with its size set, so the page doesn't jump."""
+    path = WEB / figure.src
+    if not path.is_file():
+        raise FileNotFoundError(f"figure {figure.src} not found")
+    width, height = png_size(path)
+    return (
+        f'<figure class="figure"><img src="{figure.src}" '
+        f'alt="{html.escape(figure.alt)}" width="{width}" '
+        f'height="{height}" loading="lazy" decoding="async">'
+        f"<figcaption>{inline(figure.caption)}</figcaption></figure>"
+    )
+
+
+def figures(site: Site) -> list[str]:
+    return [e.figure.src for e in site.entries() if e.figure]
+
+
 def render_meta(entry: Entry) -> str:
     if entry.table:
         return ""
@@ -137,6 +167,8 @@ def render_entry(entry: Entry) -> str:
     parts.extend(render_code(ref) for ref in entry.code)
     if entry.table:
         parts.append(render_table(entry.table))
+    if entry.figure:
+        parts.append(render_figure(entry.figure))
     if entry.gotcha:
         parts.append(
             '<p class="gotcha"><span class="label">Gotcha:</span> '
@@ -273,7 +305,7 @@ def build(output_dir: Path = DIST) -> Path:
         raise BudgetError("index.html is over its gzipped size budget")
     index = output_dir / "index.html"
     index.write_text(page, encoding="utf-8")
-    for asset in ASSETS:
+    for asset in ASSETS + figures(site):
         target = output_dir / asset
         target.parent.mkdir(parents=True, exist_ok=True)
         shutil.copyfile(WEB / asset, target)

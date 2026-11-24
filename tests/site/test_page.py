@@ -153,6 +153,20 @@ class BuiltPageTests(unittest.TestCase):
                 self.assertIn(asset, self.page)
                 self.assertTrue((dist / asset).is_file())
 
+    def test_figures_ship_with_size_and_alt(self) -> None:
+        dist = Path(self.tempdir.name) / "dist"
+        site = load_site(MANIFEST, SNIPPETS)
+        sources = [e.figure.src for e in site.entries() if e.figure]
+        self.assertTrue(sources)
+        for src in sources:
+            with self.subTest(src=src):
+                self.assertTrue((dist / src).is_file())
+                self.assertRegex(
+                    self.page,
+                    rf'<img src="{re.escape(src)}" alt="[^"]+" '
+                    r'width="\d+" height="\d+"',
+                )
+
 
 if __name__ == "__main__":
     unittest.main()

@@ -237,6 +237,26 @@ h4 {
   font-weight: 600;
 }
 
+/* A simulator screenshot. It keeps its own light background in dark
+   mode, so the border marks where it ends. */
+.figure {
+  margin: var(--space-3) 0 0;
+}
+
+.figure img {
+  display: block;
+  max-width: 100%;
+  height: auto;
+  border: 1px solid var(--border);
+  border-radius: var(--radius-code);
+}
+
+.figure figcaption {
+  margin-top: var(--space-1);
+  font-size: 0.875rem;
+  color: var(--text-muted);
+}
+
 /* Code */
 
 pre {

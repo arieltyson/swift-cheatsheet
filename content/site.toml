@@ -44,6 +44,14 @@ code = ["dsa/Language.swift:Shape", "dsa/Language.swift:Switch", "dsa/Language.s
 gotcha = "Plain enums get `==` for free. With associated values you must write `: Equatable` (Swift then synthesizes `==`). An enum has raw values OR associated values, never both."
 
 [[part.section.entry]]
+id = "property-observers"
+title = "Property observers: willSet & didSet"
+aliases = ["didSet", "willSet", "property observer", "oldValue", "newValue", "run code when a property changes", "observe property", "on change", "clamp value"]
+code = ["dsa/Language.swift:Thermostat", "dsa/Language.swift:demoPropertyObservers"]
+use_when = "Something must happen every time a stored property changes: reset a game when its size changes, clamp a value, keep a log."
+gotcha = "Observers don't run for assignments inside `init`, so an init still has to do the setup itself. Assigning the property inside its own `didSet` doesn't call the observers again. They work in `@Observable` classes; for a SwiftUI view reacting to a change, use `.onChange(of:)`."
+
+[[part.section.entry]]
 id = "access-control"
 title = "private, private(set) & internal"
 aliases = ["private", "private(set)", "fileprivate", "internal", "public", "access control", "inaccessible due to private protection level", "computed property vs function", "Bool naming", "isEmpty vs count"]
@@ -1157,11 +1165,11 @@ gotcha = "Mark `@State` private. Passing a new initial value later does not rese
 [[part.section.entry]]
 id = "observable"
 title = "@Observable, @Environment & @Bindable"
-aliases = ["Observation", "model", "environment", "Bindable", "shared state", "view model"]
+aliases = ["Observation", "model", "environment", "Bindable", "shared state", "view model", "$model.property", "binding to a model property", "Stepper binding", "why does Stepper need a binding", "Toggle TextField Slider Picker binding", "binding vs method call", "cannot find $ in scope"]
 code = ["swiftui/Observation.swift:StudySession", "swiftui/Observation.swift:SessionScreen", "swiftui/Observation.swift:SessionEditor"]
 availability = "iOS 17+"
 use_when = "A model shared by several views. The owner keeps it in `@State`; children read it from the environment."
-gotcha = "Views only re-render for properties their `body` actually reads. Use `@Bindable` to get `$` bindings."
+gotcha = "Views only re-render for properties their `body` actually reads. Controls that change a value themselves (`Stepper`, `Toggle`, `TextField`, `Slider`, `Picker`) take a `Binding`: a get plus a set. A `Button` only runs your closure, so it calls a method and needs no binding. The `$` comes from the property wrapper, not from `@Observable`: an owned `@State private var model` gives `$model.size` directly; a model you were handed (a plain `let`, or `@Environment`) needs `@Bindable` first."
 
 [[part.section.entry]]
 id = "observable-object"
@@ -1195,6 +1203,16 @@ aliases = ["VStack", "HStack", "frame", "padding", "Label", "font", "accessibili
 code = ["swiftui/Layout.swift:ReviewSummary"]
 availability = "iOS 14+"
 gotcha = "Use text styles (`.headline`, `.body`), never fixed point sizes, so text follows the user's size setting."
+
+[[part.section.entry]]
+id = "frames-aspect-ratio"
+title = "Frame tuning & aspectRatio"
+aliases = ["frame", "maxWidth", "maxHeight", "minWidth", "minHeight", ".infinity", "fill width", "full width", "fixed size", "fixedSize", "frame alignment", "aspectRatio", "contentMode", ".fit", ".fill", "scaledToFit", "scaledToFill", "square", "16:9", "clipped", "resizable", "cells too big", "layout overflows screen"]
+code = ["swiftui/Frames.swift:FrameTuning", "swiftui/Frames.swift:AspectRatioGallery"]
+availability = "iOS 16+"
+use_when = "Sizing a view to the space it's offered. `maxWidth: .infinity` fills; `width:` fixes; `min`/`max` set a range. `aspectRatio` then picks a shape inside that space."
+figure = { src = "figures/aspect-ratio.png", alt = "Six 160 by 100 point dashed slots. No modifier fills the slot. 16/9 fit is a wide band touching the sides. 1 fit is a centred square. 1 fill covers the slot and is clipped. 3/4 fit is a narrow centred portrait. scaledToFit shows a mountain symbol at its own proportions.", caption = "AspectRatioGallery on an iPhone: the dashed box is the space offered, the colour is the size the view chose." }
+gotcha = "Order matters. Size first, then shape: `.frame(maxWidth: .infinity, maxHeight: .infinity).aspectRatio(1, contentMode: .fit)` makes a square that grows with the screen. `.fill` overflows the slot unless you add `.clipped()`. Never hardcode the screen width (390): devices differ, so let the frame fill and the ratio decide."
 
 [[part.section.entry]]
 id = "day-timeline"

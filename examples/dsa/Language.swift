@@ -116,6 +116,34 @@ func demoEnums() {
   assert(Switch.allCases == [.on, .off])  // from CaseIterable
 }
 
+/// willSet runs just before a change (the incoming value is
+/// `newValue`); didSet runs just after (the old one is `oldValue`).
+struct Thermostat {
+  private(set) var log: [String] = []
+  var target: Int {
+    willSet { log.append("will \(target)->\(newValue)") }
+    didSet {
+      // Setting it here doesn't call the observers again
+      if target > 30 { target = 30 }
+      log.append("did \(oldValue)->\(target)")
+    }
+  }
+
+  init(target: Int) {
+    self.target = target  // observers don't run inside init
+  }
+}
+
+func demoPropertyObservers() {
+  var room = Thermostat(target: 20)
+  assert(room.log.isEmpty)
+  room.target = 25
+  assert(room.log == ["will 20->25", "did 20->25"])
+  room.target = 40  // clamped in didSet
+  assert(room.target == 30)
+  assert(room.log.last == "did 25->30")
+}
+
 /// No keyword (internal): visible to the whole module, views too.
 /// private: only inside this type. private(set): anyone can read,
 /// only this type can change it.

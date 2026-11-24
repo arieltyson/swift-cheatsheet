@@ -34,6 +34,13 @@ class Table:
 
 
 @dataclass(frozen=True, slots=True)
+class Figure:
+    src: str
+    alt: str
+    caption: str
+
+
+@dataclass(frozen=True, slots=True)
 class Entry:
     id: str
     title: str
@@ -45,6 +52,7 @@ class Entry:
     use_when: str | None
     gotcha: str | None
     availability: str | None
+    figure: Figure | None = None
 
 
 @dataclass(frozen=True, slots=True)
@@ -89,7 +97,10 @@ ENTRY_KEYS = {
     "use_when",
     "gotcha",
     "availability",
+    "figure",
 }
+FIGURE_KEYS = {"src", "alt", "caption"}
+FIGURE_SRC = re.compile(r"^figures/[a-z0-9-]+\.png$")
 
 
 def load_site(manifest_path: Path, snippets_root: Path) -> Site:
@@ -220,6 +231,27 @@ def _parse_entry(
         use_when=_optional_text(entry, "use_when", where),
         gotcha=_optional_text(entry, "gotcha", where),
         availability=_optional_text(entry, "availability", where),
+        figure=(
+            _parse_figure(entry["figure"], where)
+            if "figure" in entry
+            else None
+        ),
+    )
+
+
+def _parse_figure(figure: object, where: str) -> Figure:
+    if not isinstance(figure, dict):
+        raise ManifestError(f"{where}: figure must be a table")
+    _check_keys(figure, FIGURE_KEYS, f"{where} figure")
+    src = _required_text(figure, "src", where)
+    if not FIGURE_SRC.match(src):
+        raise ManifestError(
+            f"{where}: figure src {src!r} is not figures/name.png"
+        )
+    return Figure(
+        src,
+        _required_text(figure, "alt", where),
+        _required_text(figure, "caption", where),
     )
 
 
