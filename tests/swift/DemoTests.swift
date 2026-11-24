@@ -6,6 +6,7 @@ import Testing
 // builds in debug, where assert is checked.
 @Test(
   arguments: [
+    ("AccessControl", demoAccessControl),
     ("Arrays", demoArrayOperations), ("BoardIndex", demoBoardIndex),
     ("GridLines", demoGridLines),
     ("Comprehensions", demoComprehensions),

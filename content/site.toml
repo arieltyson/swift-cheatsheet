@@ -16,11 +16,11 @@ group = "Syntax"
 [[part.section.entry]]
 id = "optionals"
 title = "Optionals, if let & guard"
-aliases = ["nil", "unwrap", "nil coalescing", "??", "guard let", "optional binding", "Int from String"]
+aliases = ["nil", "unwrap", "nil coalescing", "??", "guard let", "optional binding", "Int from String", "guard direction", "popLast optional", "value of optional type must be unwrapped"]
 code = ["dsa/Language.swift:demoOptionals", "dsa/Language.swift:firstEven"]
 time = "O(n)"
 space = "O(1)"
-gotcha = "Never force-unwrap (`!`) a value that can legitimately be missing. Use `guard let` to exit early."
+gotcha = "Never force-unwrap (`!`) a value that can legitimately be missing. Use `guard let` to exit early. `guard` continues when the condition is true: `guard !xs.isEmpty`, not `guard xs.isEmpty`. `popLast()`, `first` and `last` return optionals; unwrap before reading a property."
 
 [[part.section.entry]]
 id = "value-semantics"
@@ -42,6 +42,13 @@ title = "Enums with associated values"
 aliases = ["enum", "switch", "pattern matching", "associated value", "computed property", "if case", "guard case", "case let", "Equatable enum", "raw value", "rawValue", "enum String", "CaseIterable", "allCases", "init rawValue"]
 code = ["dsa/Language.swift:Shape", "dsa/Language.swift:Switch", "dsa/Language.swift:demoEnums"]
 gotcha = "Plain enums get `==` for free. With associated values you must write `: Equatable` (Swift then synthesizes `==`). An enum has raw values OR associated values, never both."
+
+[[part.section.entry]]
+id = "access-control"
+title = "private, private(set) & internal"
+aliases = ["private", "private(set)", "fileprivate", "internal", "public", "access control", "inaccessible due to private protection level"]
+code = ["dsa/Language.swift:Tally", "dsa/Language.swift:demoAccessControl"]
+gotcha = "A method the view calls (a button's `undo()`) can't be `private`. Keep helpers private, and use `private(set)` for state the view reads but must not change."
 
 [[part.section.entry]]
 id = "comparable"

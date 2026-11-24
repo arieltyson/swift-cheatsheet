@@ -9,6 +9,12 @@ func demoOptionals() {
   let ages = ["ada": 36]
   assert(ages["bo"] == nil)
   assert(ages["bo", default: 0] == 0)
+
+  // popLast() returns Int?, so unwrap it before using the value.
+  // guard continues when its condition is TRUE, and exits otherwise.
+  var stack = [1, 2]
+  guard !stack.isEmpty, let top = stack.popLast() else { return }
+  assert(top == 2 && stack == [1])
 }
 
 /// Returns the first even value, or nil.
@@ -107,6 +113,27 @@ func demoEnums() {
   assert(Switch(rawValue: "On") == .on)  // failable: String -> case?
   assert(Switch(rawValue: "nope") == nil)
   assert(Switch.allCases == [.on, .off])  // from CaseIterable
+}
+
+/// No keyword (internal): visible to the whole module, views too.
+/// private: only inside this type. private(set): anyone can read,
+/// only this type can change it.
+struct Tally {
+  private(set) var count = 0
+  private var log: [Int] = []
+
+  mutating func add() {
+    count += 1
+    log.append(count)
+  }
+}
+
+func demoAccessControl() {
+  var tally = Tally()
+  tally.add()
+  assert(tally.count == 1)
+  // tally.count = 5  // error: the setter is private
+  // tally.log        // error: 'log' is inaccessible
 }
 
 /// Sorts by priority, then by name, so it works with sorted() and Heap.
