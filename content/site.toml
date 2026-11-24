@@ -16,11 +16,11 @@ group = "Syntax"
 [[part.section.entry]]
 id = "optionals"
 title = "Optionals, if let & guard"
-aliases = ["nil", "unwrap", "nil coalescing", "??", "guard let", "optional binding", "Int from String", "guard direction", "popLast optional", "value of optional type must be unwrapped"]
+aliases = ["nil", "unwrap", "nil coalescing", "??", "guard let", "optional binding", "Int from String", "guard direction", "popLast optional", "value of optional type must be unwrapped", "guard order", "side effect in guard"]
 code = ["dsa/Language.swift:demoOptionals", "dsa/Language.swift:firstEven"]
 time = "O(n)"
 space = "O(1)"
-gotcha = "Never force-unwrap (`!`) a value that can legitimately be missing. Use `guard let` to exit early. `guard` continues when the condition is true: `guard !xs.isEmpty`, not `guard xs.isEmpty`. `popLast()`, `first` and `last` return optionals; unwrap before reading a property."
+gotcha = "Never force-unwrap (`!`) a value that can legitimately be missing. Use `guard let` to exit early. `guard` continues when the condition is true: `guard !xs.isEmpty`, not `guard xs.isEmpty`. `popLast()`, `first` and `last` return optionals; unwrap before reading a property. Guard conditions run left to right and stop at the first false one, so put the checks that only look before anything that changes state: `guard status == .playing, let m = moves.popLast()`, not the reverse."
 
 [[part.section.entry]]
 id = "value-semantics"

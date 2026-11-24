@@ -12,6 +12,7 @@ func demoOptionals() {
 
   // popLast() returns Int?, so unwrap it before using the value.
   // guard continues when its condition is TRUE, and exits otherwise.
+  // Conditions run left to right: check first, then pop (it removes).
   var stack = [1, 2]
   guard !stack.isEmpty, let top = stack.popLast() else { return }
   assert(top == 2 && stack == [1])
