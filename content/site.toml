@@ -1555,11 +1555,11 @@ gotcha = "The tag's type must match the selection's type exactly: `.tag(9)` for 
 [[part.section.entry]]
 id = "text-field-kinds"
 title = "TextField: text, multi-line & numbers"
-aliases = ["TextField", "text field", "placeholder", "multiline TextField", "axis vertical", "TextEditor", "lineLimit", "number field", "TextField value format", "keyboardType", "autocapitalization", "SecureField"]
+aliases = ["TextField", "text field", "placeholder", "multiline TextField", "axis vertical", "TextEditor", "lineLimit", "number field", "TextField value format", "keyboardType", "autocapitalization", "SecureField", "Binding<String?> to Binding<String>", "optional String TextField"]
 code = ["swiftui/FormControls.swift:TextFieldKinds"]
 availability = "iOS 16+"
 use_when = "Typing input. `TextField(\"Title\", text: $title)` for a line; `axis: .vertical` to grow for notes; `value:format:` to edit a number directly."
-gotcha = "The first argument is a placeholder, shown only while empty. Check `title.trimmingCharacters(in: .whitespaces).isEmpty` before saving, so spaces don't count. `TextEditor` is a fixed-size multi-line box; `TextField(axis: .vertical)` grows with the text."
+gotcha = "The first argument is a placeholder, shown only while empty. Check `title.trimmingCharacters(in: .whitespaces).isEmpty` before saving, so spaces don't count. `TextEditor` is a fixed-size multi-line box; `TextField(axis: .vertical)` grows with the text. `text:` needs a `Binding<String>`, never `String?`: store the draft as `var name = \"\"` (empty means unset). Only `value:format:` binds an optional (`Int?` is nil while the field is empty)."
 
 [[part.section.entry]]
 id = "previews"
