@@ -1228,10 +1228,10 @@ title = "Layout & accessibility"
 [[part.section.entry]]
 id = "stacks-layout"
 title = "Stacks, frames & Dynamic Type"
-aliases = ["VStack", "HStack", "frame", "padding", "Label", "font", "accessibility", "44 points"]
+aliases = ["VStack", "HStack", "frame", "padding", "Label", "font", "accessibility", "44 points", "Divider", "Divider vertical", "horizontal line", "line next to text", "Divider in HStack", "spacing 0", "ScrollView spacing", "gaps between rows"]
 code = ["swiftui/Layout.swift:ReviewSummary"]
 availability = "iOS 14+"
-gotcha = "Use text styles (`.headline`, `.body`), never fixed point sizes, so text follows the user's size setting."
+gotcha = "Use text styles (`.headline`, `.body`), never fixed point sizes, so text follows the user's size setting. `Divider` runs across its stack: horizontal in a `VStack`, but a VERTICAL line in an `HStack`. For a horizontal line beside text, use `Rectangle().fill(.quaternary).frame(height: 1)`, or wrap the `Divider` in a `VStack`. Stacks (and the content of a `ScrollView`) add default spacing between children; use `VStack(spacing: 0)` when rows must be an exact height."
 
 [[part.section.entry]]
 id = "frames-aspect-ratio"
