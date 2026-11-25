@@ -32,9 +32,9 @@ gotcha = "Arrays, dictionaries, sets and strings are values: copying is O(1) unt
 [[part.section.entry]]
 id = "closures"
 title = "Closures"
-aliases = ["lambda", "$0", "trailing closure", "sorted by", "higher order", "closure return", "missing return", "tuple", "destructure", "let (a, b)", "closure in if", "confusable with the body"]
+aliases = ["lambda", "$0", "trailing closure", "sorted by", "higher order", "closure return", "missing return", "tuple", "destructure", "let (a, b)", "closure in if", "confusable with the body", "multiple trailing closures", "two closures", "onSave onDelete", "trailing closure label"]
 code = ["dsa/Language.swift:demoClosures", "dsa/Language.swift:demoTuples"]
-gotcha = "A multi-line closure needs an explicit `return`. In an `if`/`guard`/`while` condition, write `xs.allSatisfy({ ... })` or store it in a `let` first: a trailing closure there looks like the statement's body. Tuples destructure with `let (a, b) = pair`; arrays don't."
+gotcha = "A multi-line closure needs an explicit `return`. In an `if`/`guard`/`while` condition, write `xs.allSatisfy({ ... })` or store it in a `let` first: a trailing closure there looks like the statement's body. Tuples destructure with `let (a, b) = pair`; arrays don't. Two closure parameters: the first trailing closure drops its label, later ones keep it: `Form(item: x) { save($0) } onDelete: { delete(x) }`. When that reads badly, pass both inside the parentheses with labels. A trailing closure must be the LAST parameter, so declare closure properties after the others (memberwise init follows declaration order)."
 
 [[part.section.entry]]
 id = "static-members"
