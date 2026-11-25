@@ -409,6 +409,22 @@ availability = "iOS 15+"
 use_when = "Labelling hour rows or showing today's date. `Date.now.formatted(.dateTime.weekday(.wide).month(.wide).day())` gives a header like \"Monday, November 24\" in the user's language."
 gotcha = "`hour % 12` alone shows midnight and noon as 0. `DateFormatter` still works but is the older, verbose API; `.formatted(...)` is the modern one. Test formatted strings with a fixed locale and time zone, or they differ between machines."
 
+[[part.section.entry]]
+id = "quarter-hours"
+title = "Minutes since midnight, 15-minute steps & time ranges"
+aliases = ["minute precision", "15 minutes", "quarter hour", "stride", "minutes since midnight", "9:05 AM", "%02d", "zero pad", "time range", "en dash", "9 AM - 11 AM", "minutes to points", "end of day 24:00"]
+code = ["dsa/Dates.swift:demoQuarterHours"]
+use_when = "Times inside one day. An `Int` of minutes (0...1440) is easy to compare, step and convert to points: y = minutes / 60 * hourHeight."
+gotcha = "1440 (24 * 60) is midnight at the END of the day; allow it as an end time so the last slot can finish. Use `/` and `%` on minutes, never on a Double. Write ranges with an en dash and spaces: \"9 AM \u2013 11 AM\"."
+
+[[part.section.entry]]
+id = "month-grid-math"
+title = "Month grid maths: days in month & leading blanks"
+aliases = ["month view", "month grid", "days in month", "first weekday", "leading blanks", "empty cells", "weekday of first day", "range of day in month", "next month", "previous month", "firstWeekday"]
+code = ["dsa/Dates.swift:demoMonthGrid"]
+use_when = "Laying a month out in 7 columns: blanks = (weekday of day 1 - firstWeekday + 7) % 7, then the days, then (blanks + days + 6) / 7 rows."
+gotcha = "`weekday` is 1 for Sunday, not 0. `firstWeekday` depends on the user's region (Monday in much of the world), so don't hardcode Sunday-first."
+
 [[part.section]]
 id = "complexity"
 title = "Operation costs"
@@ -922,12 +938,12 @@ use_when = "The largest number of intervals open at once. Uses `Heap` from the H
 [[part.section.entry]]
 id = "interval-columns"
 title = "Overlapping intervals side by side"
-aliases = ["overlapping events", "calendar overlap", "event columns", "interval coloring", "side by side", "lanes"]
-code = ["dsa/Intervals.swift:assignColumns"]
+aliases = ["overlapping events", "calendar overlap", "event columns", "interval coloring", "side by side", "lanes", "do two intervals overlap", "back to back", "touching intervals", "half width", "split width", "column count per group", "overlap groups", "clusters"]
+code = ["dsa/Intervals.swift:assignColumns", "dsa/Intervals.swift:overlaps", "dsa/Intervals.swift:columnLayout", "dsa/Intervals.swift:demoOverlaps"]
 time = "O(n log n + n * k), k columns"
 space = "O(n)"
-use_when = "Drawing overlapping calendar events next to each other. The column count equals the minimum meeting rooms; each event's width is the total width divided by it."
-gotcha = "Strict overlap: an event ending at 10:00 and one starting at 10:00 share a column, because the test is `end <= start`."
+use_when = "Drawing overlapping items next to each other. Each item's width is the width divided by its GROUP's column count, and its x is `column * thatWidth`."
+gotcha = "Strict overlap: something ending at 10 and something starting at 10 don't overlap, because the test is `a.start < b.end && b.start < a.end`. Dividing by the column count of the WHOLE day makes lone items narrow for no reason; use the count of the group they chain into."
 
 [[part.section]]
 id = "graph-search"
@@ -1255,6 +1271,43 @@ figure = { src = "figures/sheet-medium.png", alt = "A Notes list dimmed behind a
 gotcha = "Both take a binding (`$`) because the sheet sets it back when swiped down. Give the sheet its own `NavigationStack` for a title and toolbar. Inside it, close with `@Environment(\\.dismiss)`; don't pass the Bool down. `.fullScreenCover` has the same API but no swipe to dismiss; `.interactiveDismissDisabled()` blocks the swipe on a sheet with unsaved changes."
 
 [[part.section.entry]]
+id = "child-to-parent"
+title = "Sending data back from a child or sheet"
+aliases = ["pass data back", "child to parent", "callback", "closure property", "onSave", "completion handler", "@escaping", "non-escaping parameter", "sheet returns a value", "Binding vs closure", "pass the model", "delegate in SwiftUI"]
+code = ["swiftui/ChildToParent.swift:Contact", "swiftui/ChildToParent.swift:ContactBook", "swiftui/ChildToParent.swift:ContactsScreen", "swiftui/ChildToParent.swift:ContactForm", "swiftui/ChildToParent.swift:FavouriteField", "swiftui/ChildToParent.swift:ContactCount", "swiftui/ChildToParent.swift:RenameForm"]
+availability = "iOS 17+"
+use_when = "A form in a sheet must give its result to the screen that opened it. A closure (`onSave: (Item) -> Void`) is the usual choice: the child stays reusable and the parent decides what Save means."
+gotcha = "A stored closure property needs no init: `ContactForm { contact in ... }` uses the memberwise init. Write your own init and the parameter needs `@escaping`. A `@Binding` suits one value the parent owns; passing the whole model is shortest but ties the child to it."
+
+[[part.section.entry]]
+id = "tap-location"
+title = "Tap empty space & tap items on top"
+aliases = ["onTapGesture location", "tap empty area", "tap to create", "which row was tapped", "location.y", "contentShape", "tap through", "ZStack tap order", "hit testing", "allowsHitTesting", "Button vs onTapGesture"]
+code = ["swiftui/Taps.swift:SlotBoard"]
+availability = "iOS 17+"
+use_when = "Tapping a blank spot creates something there (slot = Int(location.y / slotHeight)), while tapping an existing item opens it."
+gotcha = "Clear or empty areas don't receive taps until you add `.contentShape(.rect)`. In a ZStack, later layers are in front and get the tap first. Prefer one Button per row when rows are fixed; it works with VoiceOver, which a bare tap location doesn't."
+
+[[part.section.entry]]
+id = "month-grid-view"
+title = "A month grid view with arrows & dots"
+aliases = ["month view", "calendar grid", "LazyVGrid 7 columns", "weekday headers", "veryShortWeekdaySymbols", "dot under day", "selected day circle", "duplicate ids in ForEach", "views missing in grid"]
+code = ["swiftui/MonthView.swift:MonthGrid"]
+availability = "iOS 17+"
+use_when = "Showing a month: 7 flexible columns, blank cells first, a dot on days with items, tapping a day selects it."
+figure = { src = "figures/month-grid.png", alt = "December 2026 with arrows either side of the title, single-letter weekday headers from S to S, two blank cells before Tuesday the 1st, and small grey dots under the 3rd, 9th, 10th, 18th and 25th.", caption = "MonthGrid showing December 2026, with dots on days that have items." }
+gotcha = "Every view in one container needs a different id. Header indices 0...6 and day numbers 1...31 in the same grid clash, and SwiftUI silently drops the duplicates (days 1-6 vanish). Use separate grids or non-overlapping ids, as here."
+
+[[part.section.entry]]
+id = "day-pager"
+title = "Previous, Today & Next: moving between days"
+aliases = ["day navigation", "next day", "previous day", "today button", "chevron buttons", "isDateInToday", "isDate inSameDayAs", "filter by day", "startOfDay"]
+code = ["swiftui/MonthView.swift:DayPager"]
+availability = "iOS 17+"
+use_when = "Paging one day at a time. Store the day as `startOfDay`, change it with `date(byAdding: .day, ...)`, and filter items with `isDate(_:inSameDayAs:)`."
+gotcha = "Don't add 86,400 seconds for a day: daylight-saving days are 23 or 25 hours. Show a Today button only when you're not on today."
+
+[[part.section.entry]]
 id = "navigation-links-paths"
 title = "NavigationLink by value & a path you control"
 aliases = ["NavigationLink(value:)", "navigationDestination(for:)", "path", "programmatic navigation", "push from code", "pop to root", "removeAll", "back stack", "deep link", "Hashable route", "navigate after save"]
@@ -1455,7 +1508,7 @@ use_when = "Seeing a view without running the app. If the canvas says it crashed
 [[part.section.entry]]
 id = "form-focus"
 title = "Form, @FocusState & validation"
-aliases = ["Form", "TextField", "SecureField", "FocusState", "keyboard", "onSubmit", "submitLabel", "validation", "dismiss keyboard", "sign up", "login form"]
+aliases = ["Form", "TextField", "SecureField", "FocusState", "keyboard", "onSubmit", "submitLabel", "validation", "dismiss keyboard", "sign up", "login form", "validation message", "show why save is disabled", "inline error", "disable Save", "disabled button"]
 code = ["swiftui/Forms.swift:SignUpForm"]
 availability = "iOS 15+"
 use_when = "Any input screen. Derive validity from the fields as computed properties instead of storing it."
@@ -1464,7 +1517,7 @@ gotcha = "Setting the focus state to nil hides the keyboard. `.textContentType` 
 [[part.section.entry]]
 id = "edit-copy-sheet"
 title = "Create, edit & delete in a sheet: edit a copy"
-aliases = ["sheet(item:)", "edit form", "draft", "cancel and save", "DatePicker", "hourAndMinute", "State(initialValue:)", "init @State", "swipeActions", "swipe to delete", "upsert", "update by id", "destructive", "confirmationAction", "cancellationAction", "trimmingCharacters", "calendar event form"]
+aliases = ["sheet(item:)", "edit form", "draft", "cancel and save", "DatePicker", "hourAndMinute", "State(initialValue:)", "init @State", "swipeActions", "swipe to delete", "upsert", "update by id", "destructive", "confirmationAction", "cancellationAction", "trimmingCharacters", "calendar event form", "edit vs new", "same form for add and edit", "prefill form", "firstIndex(where:)", "removeAll(where:)", "delete by id", "onChange keep end after start", "update in place no duplicate"]
 code = ["swiftui/Editing.swift:Booking", "swiftui/Editing.swift:BookingEditor", "swiftui/Editing.swift:BookingsScreen"]
 availability = "iOS 17+"
 use_when = "One form for both new and existing items. A new item gets a new id; Save replaces the item with that id or appends it."

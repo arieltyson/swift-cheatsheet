@@ -68,3 +68,48 @@ func demoDateLabels() {
   let plain = hour.replacingOccurrences(of: "\u{202F}", with: " ")
   assert(plain == "12 AM")
 }
+
+/// Minute precision: store minutes since midnight (0...1440), step
+/// by 15, and format "h:mm AM". A range uses an en dash with spaces.
+func demoQuarterHours() {
+  let quarters = Array(stride(from: 0, through: 24 * 60, by: 15))
+  assert(quarters.count == 97 && quarters[1] == 15)
+  func label(_ minutes: Int) -> String {
+    let (hour, minute) = (minutes / 60 % 24, minutes % 60)
+    let twelve = hour % 12 == 0 ? 12 : hour % 12
+    let period = hour < 12 ? "AM" : "PM"
+    return minute == 0
+      ? "\(twelve) \(period)"
+      : "\(twelve):\(String(format: "%02d", minute)) \(period)"
+  }
+  assert(label(9 * 60 + 5) == "9:05 AM")
+  assert(label(13 * 60) == "1 PM")
+  assert(label(24 * 60) == "12 AM")  // midnight at the END of the day
+  let range = "\(label(9 * 60)) – \(label(11 * 60 + 30))"
+  assert(range == "9 AM – 11:30 AM")
+  // Points from minutes, with 60 pt per hour: 1 pt per minute
+  let hourHeight = 60.0
+  assert(Double(9 * 60 + 30) / 60 * hourHeight == 570)
+}
+
+/// The numbers a month grid needs: how many days, and how many blank
+/// cells before day 1 (Sunday-first weeks).
+func demoMonthGrid() {
+  var calendar = Calendar(identifier: .gregorian)
+  calendar.timeZone = TimeZone(identifier: "UTC")!
+  calendar.firstWeekday = 1  // Sunday; the user's locale may differ
+  let parts = DateComponents(year: 2026, month: 2, day: 10)
+  let date = calendar.date(from: parts)!
+  let monthStart = calendar.dateInterval(of: .month, for: date)!.start
+  let days = calendar.range(of: .day, in: .month, for: date)!.count
+  assert(days == 28)
+  // weekday: 1 = Sunday ... 7 = Saturday
+  let weekday = calendar.component(.weekday, from: monthStart)
+  let blanks = (weekday - calendar.firstWeekday + 7) % 7
+  assert(blanks == 0)  // 1 Feb 2026 is a Sunday
+  let cells = blanks + days
+  assert((cells + 6) / 7 == 4)  // rows needed
+  // Next and previous month or day: add calendar units
+  let next = calendar.date(byAdding: .month, value: 1, to: monthStart)!
+  assert(calendar.component(.month, from: next) == 3)
+}
