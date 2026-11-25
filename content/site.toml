@@ -1407,6 +1407,52 @@ id = "forms"
 title = "Forms & input"
 
 [[part.section.entry]]
+id = "form-basics"
+title = "Form: grouped input rows"
+aliases = ["Form", "Section", "section header", "section footer", "settings screen", "form vs VStack", "form vs List", "grouped rows", "input screen", "Toggle", "Stepper", "DatePicker", "TextField in Form"]
+code = ["swiftui/FormControls.swift:FormBasics", "swiftui/FormControls.swift:SameControlsInStack"]
+availability = "iOS 16+"
+use_when = "Any screen where the user enters or changes values: create and edit forms, settings. `Form` gives each control its own row, groups `Section`s, scrolls, and styles controls to match iOS Settings for free."
+figure = { src = "figures/form-vs-stack.png", alt = "Left: a Form with a Details header, then rounded white groups on a grey background holding Name, Notify me and Guests rows, then Size and Date rows with a footer. Right: the same Name field and toggle in a VStack, with no grouping and a bordered text field.", caption = "FormBasics (left) and SameControlsInStack (right): the same controls, styled by the container." }
+gotcha = "A `Form` is a scrolling list: don't put it inside a `ScrollView`, and don't expect stack spacing or `.frame` layout inside it; each child becomes a row. Outside a Form, a `TextField` has no border: add `.textFieldStyle(.roundedBorder)`. In a Form, a TextField's title is only a placeholder; a Picker, Toggle or Stepper shows its title as the row label."
+
+[[part.section.entry]]
+id = "picker-tags"
+title = "Picker & .tag: what gets stored"
+aliases = ["Picker", ".tag", "tag", "selection", "picker not updating", "picker selection does not change", "pickerStyle", "segmented", "wheel", "menu picker", "CaseIterable picker", "enum picker", "Int picker"]
+code = ["swiftui/FormControls.swift:PickerTags"]
+availability = "iOS 16+"
+use_when = "Choosing one value from a list. Each row shows a view (\"9 AM\") and carries a `.tag(9)`; picking the row writes the tag into the selection binding."
+figure = { src = "figures/picker-tags.png", alt = "A form with an Hour menu row showing 9 AM, a segmented control with Calm, Busy and Tired, and a wheel of hours centred on 9.", caption = "PickerTags: the default .menu style, .segmented and .wheel, all bound to the same kind of tag." }
+gotcha = "The tag's type must match the selection's type exactly: `.tag(9)` for an `Int`, `.tag(mood)` for a `Mood`. A mismatch (an `Int` tag for an `Int?` selection, say) compiles but the picker never changes. In `ForEach(items, id: \\.self)` SwiftUI tags rows with their id automatically, but writing `.tag` makes it explicit."
+
+[[part.section.entry]]
+id = "text-field-kinds"
+title = "TextField: text, multi-line & numbers"
+aliases = ["TextField", "text field", "placeholder", "multiline TextField", "axis vertical", "TextEditor", "lineLimit", "number field", "TextField value format", "keyboardType", "autocapitalization", "SecureField"]
+code = ["swiftui/FormControls.swift:TextFieldKinds"]
+availability = "iOS 16+"
+use_when = "Typing input. `TextField(\"Title\", text: $title)` for a line; `axis: .vertical` to grow for notes; `value:format:` to edit a number directly."
+gotcha = "The first argument is a placeholder, shown only while empty. Check `title.trimmingCharacters(in: .whitespaces).isEmpty` before saving, so spaces don't count. `TextEditor` is a fixed-size multi-line box; `TextField(axis: .vertical)` grows with the text."
+
+[[part.section.entry]]
+id = "previews"
+title = "Previews: #Preview from scratch"
+aliases = ["#Preview", "preview", "canvas", "preview not showing", "add a preview", "PreviewProvider", "Previewable", "preview with binding", "preview sample data", "preview in NavigationStack", "preview environment", "multiple previews", "preview crashed"]
+table = { header = ["Need", "Write", "Notes"], rows = [
+  ["A preview in any file", "`#Preview { MyView() }`", "At file scope, outside every type. Canvas: Editor > Canvas (Opt-Cmd-Return); refresh with Opt-Cmd-P."],
+  ["Several, named", "`#Preview(\"Empty\") { ... }` twice", "Each gets a tab in the canvas."],
+  ["Custom data", "`#Preview { EventRow(event: Event(title: \"Standup\", start: 9, end: 10)) }`", "Build the values right there, or add a `static let sample` on the type."],
+  ["A view that takes a Binding", "`@Previewable @State var on = true` then `Toggle(\"x\", isOn: $on)`", "Xcode 16+. Older: `.constant(true)` (read-only)."],
+  ["An `@Observable` model the view reads", "`MyView().environment(Store())`", "Pass exactly what the app passes, or the preview crashes."],
+  ["Title or toolbar visible", "`NavigationStack { MyView() }`", "Toolbars only show inside one."],
+  ["As a sheet", "`Text(\"\").sheet(isPresented: .constant(true)) { Form() }`", "Shows the real sheet size and detents."],
+  ["Dark mode or bigger text", "`.preferredColorScheme(.dark)`, `.dynamicTypeSize(.xxxLarge)`", "Or the canvas's variant buttons."],
+  ["Older code", "`struct X_Previews: PreviewProvider { static var previews: some View { ... } }`", "Still works; `#Preview` (iOS 17 / Xcode 15) is the modern form."],
+] }
+use_when = "Seeing a view without running the app. If the canvas says it crashed, the view is usually missing something the app provides (environment model, NavigationStack)."
+
+[[part.section.entry]]
 id = "form-focus"
 title = "Form, @FocusState & validation"
 aliases = ["Form", "TextField", "SecureField", "FocusState", "keyboard", "onSubmit", "submitLabel", "validation", "dismiss keyboard", "sign up", "login form"]
