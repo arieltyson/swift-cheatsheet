@@ -35,6 +35,7 @@ import Testing
     ("Iteration", demoIteration),
     ("LetterCounts", demoLetterCounts), ("Math", demoMath),
     ("Money", demoMoney), ("NumberFormats", demoNumberFormats),
+    ("DateLabels", demoDateLabels),
     ("Optionals", demoOptionals), ("Overflow", demoOverflow),
     ("PaddingAndRadix", demoPaddingAndRadix),
     ("PropertyObservers", demoPropertyObservers), ("Queue", demoQueue),

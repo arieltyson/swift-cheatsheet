@@ -392,6 +392,15 @@ code = ["dsa/Dates.swift:demoCalendarDay"]
 use_when = "Any human question about a date: which day, what hour, the next day, the first weekday of a month. `Calendar.current` uses the device's time zone."
 gotcha = "`date(bySettingHour:)`, `date(byAdding:)` and `range(of:in:for:)` return optionals. For display, `date.formatted(date: .omitted, time: .shortened)` gives a localized time such as 9:30 AM."
 
+[[part.section.entry]]
+id = "date-labels"
+title = "Hour labels (12 AM) & date headers"
+aliases = ["12 AM", "12 PM", "AM PM", "12-hour clock", "hour label", "hour % 12", "0 AM bug", "format date", "Date.FormatStyle", "formatted", "weekday wide", "Monday, November", "date header", "DateFormatter"]
+code = ["dsa/Dates.swift:demoDateLabels"]
+availability = "iOS 15+"
+use_when = "Labelling hour rows or showing today's date. `Date.now.formatted(.dateTime.weekday(.wide).month(.wide).day())` gives a header like \"Monday, November 24\" in the user's language."
+gotcha = "`hour % 12` alone shows midnight and noon as 0. `DateFormatter` still works but is the older, verbose API; `.formatted(...)` is the modern one. Test formatted strings with a fixed locale and time zone, or they differ between machines."
+
 [[part.section]]
 id = "complexity"
 title = "Operation costs"
