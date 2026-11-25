@@ -78,3 +78,36 @@ struct AspectRatioGallery: View {
     }
   }
 }
+
+/// A greedy control in a centred VStack, three ways. Each grey box
+/// is the screen. Stepper takes the full width it's offered, so
+/// "centred" still means edge to edge.
+struct GreedyControls: View {
+  @State private var count = 3
+
+  var body: some View {
+    VStack(spacing: 20) {
+      screen("no modifier: touches both edges") {
+        Stepper("Count: \(count)", value: $count)
+      }
+      screen(".padding(): inset from the edges") {
+        Stepper("Count: \(count)", value: $count).padding()
+      }
+      screen(".fixedSize(): hugs, so it centres") {
+        Stepper("Count: \(count)", value: $count).fixedSize()
+      }
+    }
+    .padding()
+  }
+
+  private func screen(
+    _ caption: String, @ViewBuilder content: () -> some View
+  ) -> some View {
+    VStack(spacing: 6) {
+      VStack { content() }
+        .frame(maxWidth: .infinity, minHeight: 64)
+        .background(.gray.opacity(0.15))
+      Text(caption).font(.caption.monospaced())
+    }
+  }
+}

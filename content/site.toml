@@ -729,12 +729,12 @@ gotcha = "Write n - 1, not 2: the formulas must hold for any board size. Only th
 [[part.section.entry]]
 id = "tic-tac-toe"
 title = "N x N tic-tac-toe: O(1) win check & undo"
-aliases = ["tic tac toe", "game board", "winner check", "undo move", "row column diagonal", "n by n", "board game"]
+aliases = ["tic tac toe", "game board", "winner check", "undo move", "row column diagonal", "n by n", "board game", "draw check", "board full", "O(1) draw", "count moves instead of scanning"]
 code = ["dsa/Board.swift:Mark", "dsa/Board.swift:TicTacToe", "dsa/Board.swift:demoTicTacToe"]
 time = "O(1) per move and undo"
 space = "O(n^2) cells, O(n) line sums"
 use_when = "Any n-in-a-row board. Keep a sum per row, column and diagonal instead of rescanning the board after each move."
-gotcha = "The simpler check, scanning only the last move's row, column and two diagonals, is O(n) per move and is also a fine interview answer."
+gotcha = "The simpler check, scanning only the last move's row, column and two diagonals, is O(n) per move and is also a fine interview answer. For a draw, count moves (`history.count == cells.count`, O(1)) instead of scanning the board (O(n^2)), and check for a win first, since the last cell can win."
 
 [[part.section]]
 id = "binary-search"
@@ -1207,12 +1207,22 @@ gotcha = "Use text styles (`.headline`, `.body`), never fixed point sizes, so te
 [[part.section.entry]]
 id = "frames-aspect-ratio"
 title = "Frame tuning & aspectRatio"
-aliases = ["frame", "maxWidth", "maxHeight", "minWidth", "minHeight", ".infinity", "fill width", "full width", "fixed size", "fixedSize", "frame alignment", "aspectRatio", "contentMode", ".fit", ".fill", "scaledToFit", "scaledToFill", "square", "16:9", "clipped", "resizable", "cells too big", "layout overflows screen", "not square", "maxHeight value", "what does infinity mean", "hugging", "takes only the space it needs", "modifier order", "Stepper full width", "pushed to the edges", "VStack not centered", "greedy view", "Toggle stretches"]
+aliases = ["frame", "maxWidth", "maxHeight", "minWidth", "minHeight", ".infinity", "fill width", "full width", "fixed size", "fixedSize", "frame alignment", "aspectRatio", "contentMode", ".fit", ".fill", "scaledToFit", "scaledToFill", "square", "16:9", "clipped", "resizable", "cells too big", "layout overflows screen", "not square", "maxHeight value", "what does infinity mean", "hugging", "takes only the space it needs", "modifier order"]
 code = ["swiftui/Frames.swift:FrameTuning", "swiftui/Frames.swift:AspectRatioGallery"]
 availability = "iOS 16+"
 use_when = "Sizing a view to the space it's offered. `maxWidth: .infinity` fills; `width:` fixes; `min`/`max` set a range. `aspectRatio` then picks a shape inside that space."
 figure = { src = "figures/aspect-ratio.png", alt = "Six 160 by 100 point dashed slots. No modifier fills the slot. 16/9 fit is a wide band touching the sides. 1 fit is a centred square. 1 fill covers the slot and is clipped. 3/4 fit is a narrow centred portrait. scaledToFit shows a mountain symbol at its own proportions.", caption = "AspectRatioGallery on an iPhone: the dashed box is the space offered, the colour is the size the view chose." }
-gotcha = "Stacks centre a child only when it is narrower than them. `Stepper`, `Toggle`, `TextField`, `Slider`, `Color` and shapes are greedy: they take the full width offered, so the label sits at the leading edge and the control at the trailing edge. Add `.padding()` to the stack, or `.fixedSize()` to make the control hug. Text, Image and Button hug their content: they take only what they need, not what is offered, until a frame lets them grow. `.infinity` means \"accept whatever the parent offers\", not \"be infinitely big\"; with no `maxHeight`, the height stays the content's own. Order matters. Size first, then shape: `.frame(maxWidth: .infinity, maxHeight: .infinity).aspectRatio(1, contentMode: .fit)` makes a square that grows with the screen. `.fill` overflows the slot unless you add `.clipped()`. Never hardcode the screen width (390): devices differ, so let the frame fill and the ratio decide."
+gotcha = "Text, Image and Button hug their content: they take only what they need, not what is offered, until a frame lets them grow. `.infinity` means \"accept whatever the parent offers\", not \"be infinitely big\"; with no `maxHeight`, the height stays the content's own. Order matters. Size first, then shape: `.frame(maxWidth: .infinity, maxHeight: .infinity).aspectRatio(1, contentMode: .fit)` makes a square that grows with the screen. `.fill` overflows the slot unless you add `.clipped()`. Never hardcode the screen width (390): devices differ, so let the frame fill and the ratio decide."
+
+[[part.section.entry]]
+id = "greedy-controls"
+title = "Greedy controls in a centred stack"
+aliases = ["Stepper full width", "pushed to the edges", "VStack not centered", "VStack centre", "greedy view", "Toggle stretches", "fixedSize", "padding", "hug content", "control at screen edge"]
+code = ["swiftui/Frames.swift:GreedyControls"]
+availability = "iOS 17+"
+use_when = "A Stepper, Toggle, TextField or Slider looks stuck to the screen edges even though the stack centres its children."
+figure = { src = "figures/greedy-controls.png", alt = "Three grey boxes the width of the screen, each holding a Count stepper. With no modifier the label touches the left edge and the buttons the right. With padding both are inset. With fixedSize the label and buttons sit together in the centre.", caption = "GreedyControls on an iPhone: each grey box is the screen." }
+gotcha = "A stack centres a child only when the child is narrower than the stack. `Stepper`, `Toggle`, `TextField`, `Slider`, `Color` and shapes are greedy: they take the full width, so \"centred\" is edge to edge. `.padding()` is the usual fix (it insets everything); `.fixedSize()` makes the control hug its content so the stack can centre it."
 
 [[part.section.entry]]
 id = "day-timeline"
