@@ -44,6 +44,7 @@ import Testing
     ("SearchArrays", demoSearchArrays), ("Set", demoSet),
     ("Slices", demoSlices), ("Sorting", demoSorting),
     ("SortKeys", demoSortKeys), ("Stack", demoStack),
+    ("StartingValues", demoStartingValues),
     ("StringBasics", demoStringBasics),
     ("StringIndexing", demoStringIndexing),
     ("Transforms", demoTransforms),

@@ -44,6 +44,14 @@ code = ["dsa/Language.swift:Shape", "dsa/Language.swift:Switch", "dsa/Language.s
 gotcha = "Plain enums get `==` for free. With associated values you must write `: Equatable` (Swift then synthesizes `==`). An enum has raw values OR associated values, never both."
 
 [[part.section.entry]]
+id = "starting-values"
+title = "Starting values: property defaults, init & memberwise init"
+aliases = ["default value", "default property value", "initial value", "sample data", "seed data", "array literal of structs", "init default parameter", "memberwise init", "memberwise initializer", "init", "initializer", "where do I put default data", "cannot convert value of type to expected argument type"]
+code = ["dsa/Language.swift:Song", "dsa/Language.swift:Playlist", "dsa/Language.swift:demoStartingValues"]
+use_when = "A type needs data from the start: sample events, an empty board, settings. The simplest place is the property's own default: `var items: [Item] = [Item(...), Item(...)]`."
+gotcha = "A default must match the property's type: an array property needs `[ ... ]`, even for one element. Classes need an `init` unless every property has a default; structs get a memberwise init for free. Don't both default AND append the same items in `init`, or they appear twice."
+
+[[part.section.entry]]
 id = "property-observers"
 title = "Property observers: willSet & didSet"
 aliases = ["didSet", "willSet", "property observer", "oldValue", "newValue", "run code when a property changes", "observe property", "on change", "clamp value"]

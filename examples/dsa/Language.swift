@@ -1,3 +1,5 @@
+import Foundation
+
 func demoOptionals() {
   let parsed = Int("42")
   assert(parsed == 42)
@@ -114,6 +116,39 @@ func demoEnums() {
   assert(Switch(rawValue: "On") == .on)  // failable: String -> case?
   assert(Switch(rawValue: "nope") == nil)
   assert(Switch.allCases == [.on, .off])  // from CaseIterable
+}
+
+struct Song {
+  let id = UUID()  // a let with a value is left out of the init
+  var title: String
+  var minutes: Int
+}
+
+/// Three ways to give a property its starting value.
+final class Playlist {
+  // 1. A default right on the property: any expression works,
+  //    including an array literal of structs. No init needed.
+  var songs: [Song] = [
+    Song(title: "Intro", minutes: 2),
+    Song(title: "Outro", minutes: 3),
+  ]
+  var name: String
+
+  // 2. An init parameter with a default: callers may skip it.
+  //    The default's type must match: [Song], so wrap it in [ ].
+  init(name: String = "Mix", songs: [Song]? = nil) {
+    self.name = name
+    if let songs { self.songs = songs }  // 3. set it in the init
+  }
+}
+
+func demoStartingValues() {
+  assert(Playlist().songs.count == 2)  // the property's default
+  assert(Playlist(name: "Run").name == "Run")
+  let one = Playlist(songs: [Song(title: "Solo", minutes: 4)])
+  assert(one.songs.map(\.title) == ["Solo"])
+  // Memberwise init (structs only): every var, in order
+  assert(Song(title: "Hi", minutes: 1).minutes == 1)
 }
 
 /// willSet runs just before a change (the incoming value is
