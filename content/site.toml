@@ -1501,13 +1501,15 @@ gotcha = "The first argument is a placeholder, shown only while empty. Check `ti
 [[part.section.entry]]
 id = "previews"
 title = "Previews: #Preview from scratch"
-aliases = ["#Preview", "preview", "canvas", "preview not showing", "add a preview", "PreviewProvider", "Previewable", "preview with binding", "preview sample data", "preview in NavigationStack", "preview environment", "multiple previews", "preview crashed"]
+aliases = ["#Preview", "preview", "canvas", "preview not showing", "add a preview", "PreviewProvider", "Previewable", "preview with binding", "preview sample data", "preview in NavigationStack", "preview environment", "multiple previews", "preview crashed", "preview closure", "preview not building", "preview build failed", "missing argument in call", "error in another file"]
 table = { header = ["Need", "Write", "Notes"], rows = [
   ["A preview in any file", "`#Preview { MyView() }`", "At file scope, outside every type. Canvas: Editor > Canvas (Opt-Cmd-Return); refresh with Opt-Cmd-P."],
   ["Several, named", "`#Preview(\"Empty\") { ... }` twice", "Each gets a tab in the canvas."],
   ["Custom data", "`#Preview { EventRow(event: Event(title: \"Standup\", start: 9, end: 10)) }`", "Build the values right there, or add a `static let sample` on the type."],
   ["A view that takes a Binding", "`@Previewable @State var on = true` then `Toggle(\"x\", isOn: $on)`", "Xcode 16+. Older: `.constant(true)` (read-only)."],
   ["An `@Observable` model the view reads", "`MyView().environment(Store())`", "Pass exactly what the app passes, or the preview crashes."],
+  ["A view that takes a closure (`let onSave: (Song) -> Void`)", "`#Preview { SongForm(onSave: { _ in }) }` or `SongForm { _ in }`", "A do-nothing closure: `_` ignores the input. To see it fire: `{ print($0) }`."],
+  ["Preview won't build but its file looks fine", "Fix the errors in OTHER files (Issue navigator, Cmd-5)", "The canvas compiles the whole app target, so one error anywhere (often a call site you just broke by adding a parameter) stops every preview."],
   ["Title or toolbar visible", "`NavigationStack { MyView() }`", "Toolbars only show inside one."],
   ["As a sheet", "`Text(\"\").sheet(isPresented: .constant(true)) { Form() }`", "Shows the real sheet size and detents."],
   ["Dark mode or bigger text", "`.preferredColorScheme(.dark)`, `.dynamicTypeSize(.xxxLarge)`", "Or the canvas's variant buttons."],
