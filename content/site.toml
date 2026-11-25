@@ -215,9 +215,9 @@ gotcha = "Python's `[x for ... if cond]` filters before mapping. In Swift, put `
 [[part.section.entry]]
 id = "array-search"
 title = "contains, first(where:) & min/max"
-aliases = ["firstIndex", "lastIndex", "allSatisfy", "every element", "all match", "count where", "search array", "contains where"]
-code = ["dsa/Arrays.swift:demoSearchArrays"]
-gotcha = "`allSatisfy` on an empty collection is `true`. Guard against empty input when \"all match\" must mean \"at least one, and all\"."
+aliases = ["firstIndex", "lastIndex", "allSatisfy", "every element", "all match", "count where", "search array", "contains where", "contains", "check existence", "already exists", "is new or existing", "exists by id", "contains(where:)", "Set contains"]
+code = ["dsa/Arrays.swift:demoSearchArrays", "dsa/Arrays.swift:Reservation", "dsa/Arrays.swift:demoExistence"]
+gotcha = "`allSatisfy` on an empty collection is `true`. Guard against empty input when \"all match\" must mean \"at least one, and all\". Existence check: `contains(x)` needs Equatable elements; for structs use `contains { $0.id == x.id }` (two values with equal fields but different ids are different items). It is O(n); for many checks build a `Set` of ids once."
 
 [[part.section.entry]]
 id = "iteration"
@@ -1271,6 +1271,16 @@ figure = { src = "figures/icon-buttons.png", alt = "Three bordered buttons stack
 gotcha = "A bare `Image(systemName:)` has no text, so VoiceOver reads the symbol name; add `.accessibilityLabel`. Toolbars show a `Label` as its icon automatically, so no `.labelStyle` is needed there. A `Void` action needs no `return`: leave it empty while prototyping."
 
 [[part.section.entry]]
+id = "button-roles"
+title = "Button roles: destructive, cancel & styles"
+aliases = ["role", "ButtonRole", "role: .destructive", "role: .cancel", "red button", "delete button", "destructive button", "buttonStyle", "bordered", "borderedProminent", "confirmationDialog", "are you sure", "delete confirmation"]
+code = ["swiftui/FormControls.swift:ButtonRoles"]
+availability = "iOS 17+"
+use_when = "`.destructive` for anything that deletes or discards (Delete Event); `.cancel` for the back-out choice in dialogs and alerts. No role for everything else."
+figure = { src = "figures/button-roles.png", alt = "A form. First section: No role in blue, Delete in red, Cancel in blue. Second section: bordered Plain, bordered red Delete, filled blue Save, filled red Delete. Below: a Show a dialog button.", caption = "ButtonRoles. .destructive turns red in every style; .cancel looks plain in a Form but is placed and bolded apart in dialogs." }
+gotcha = "Syntax: `Button(\"Delete\", role: .destructive) { ... }`; the role comes before the action. A role describes meaning; the system picks the look, so don't also set `.foregroundStyle(.red)`. In `.confirmationDialog` and `.alert`, the `.cancel` button is moved to its own slot automatically, and a `.destructive` one is red. For a delete that can't be undone, confirm with `.confirmationDialog` first."
+
+[[part.section.entry]]
 id = "navigation-choose"
 title = "Which navigation API, when"
 aliases = ["NavigationView deprecated", "NavigationStack vs NavigationSplitView", "NavigationLink destination", "NavigationLink value", "navigationDestination", "NavigationPath", "push vs sheet", "fullScreenCover", "modern navigation", "iOS 16 navigation"]
@@ -1312,6 +1322,25 @@ code = ["swiftui/Taps.swift:SlotBoard"]
 availability = "iOS 17+"
 use_when = "Tapping a blank spot creates something there (slot = Int(location.y / slotHeight)), while tapping an existing item opens it."
 gotcha = "Clear or empty areas don't receive taps until you add `.contentShape(.rect)`. In a ZStack, later layers are in front and get the tap first. Prefer one Button per row when rows are fixed; it works with VoiceOver, which a bare tap location doesn't."
+
+[[part.section.entry]]
+id = "tap-kinds"
+title = "Every tap: Button, onTapGesture, count, location, long press"
+aliases = ["onTapGesture", "tap gesture", "double tap", "onTapGesture(count: 2)", "long press", "onLongPressGesture", "tap location", "make view tappable", "Text tappable", "Button vs onTapGesture", "gesture"]
+code = ["swiftui/Taps.swift:TapKinds"]
+availability = "iOS 17+"
+use_when = "`Button` for anything that is an action (it highlights, works with VoiceOver and in Lists). `onTapGesture` when a view must react but isn't button-like (a calendar block, a canvas), or you need the tap's location."
+gotcha = "Order matters: put `.onTapGesture` after the frame/background you want tappable and before outer `.padding` you don't. A double-tap handler delays single taps on the same view while it waits. In a List, a row's Button makes the whole row tappable; `onTapGesture` on Text only covers the text (see contentShape)."
+
+[[part.section.entry]]
+id = "tap-regions"
+title = "contentShape: making empty space tappable"
+aliases = ["contentShape", "contentShape(.rect)", "Spacer not tappable", "tap on empty space", "whole row tappable", "hit area", "hit testing", "tap only works on text", "clear background tap", "tappable area"]
+code = ["swiftui/Taps.swift:TapRegions"]
+availability = "iOS 17+"
+use_when = "A row, cell or clear area whose blank parts should respond: hour rows in a timeline, a list row built from an HStack with a Spacer, a Button whose label is wider than its text."
+figure = { src = "figures/tap-regions.png", alt = "Three rows, green where taps register. Row 1: only the words Tap me are green; the rest of the bordered row is white. Row 2: the whole row is green. Row 3: a Button whose whole wide label is green.", caption = "TapRegions. Green = answers taps. Without contentShape only drawn content counts; with it the whole frame does." }
+gotcha = "Taps hit only what is drawn: text, filled shapes, non-clear backgrounds. Spacers, padding and `.clear` are holes. `.contentShape(.rect)` goes AFTER the `.frame` it should cover. A filled `.background` also catches taps, but contentShape works without changing the look. Opposite need: `.allowsHitTesting(false)` lets taps pass through a view to the one behind."
 
 [[part.section.entry]]
 id = "month-grid-view"

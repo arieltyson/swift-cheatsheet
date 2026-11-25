@@ -129,6 +129,28 @@ func demoComprehensionsMore() {
   assert((0..<n).reduce(0, +) == 6)
 }
 
+struct Reservation: Identifiable {
+  let id: Int  // in an app: UUID(), needs Foundation
+  var name: String
+}
+
+/// "Is it already there?" Match by id for structs; a Set for speed.
+func demoExistence() {
+  let saved = Reservation(id: 1, name: "Dentist")
+  let bookings = [saved, Reservation(id: 2, name: "Gym")]
+  let fresh = Reservation(id: 3, name: "Dentist")  // new id
+  // contains(where:) for structs that aren't Equatable
+  assert(bookings.contains { $0.id == saved.id })
+  assert(!bookings.contains { $0.id == fresh.id })  // so it's new
+  let isNew = !bookings.contains { $0.id == fresh.id }
+  assert(isNew)
+  // contains(_:) needs Equatable elements
+  assert(["a", "b"].contains("b"))
+  // Many lookups: build a Set once, then each check is O(1)
+  let ids = Set(bookings.map(\.id))
+  assert(ids.contains(saved.id))
+}
+
 func demoSearchArrays() {
   let values = [3, -1, 4, -1]
   assert(values.contains(4))

@@ -113,3 +113,35 @@ struct TextFieldKinds: View {
   @Previewable @State var on = true
   Toggle("Live", isOn: $on).padding()
 }
+
+/// Button roles: meaning first, colour follows. The system styles
+/// .destructive red and puts .cancel in the cancel slot of dialogs.
+struct ButtonRoles: View {
+  @State private var asking = false
+
+  var body: some View {
+    Form {
+      Section("In a Form or List") {
+        Button("No role") {}
+        Button("Delete", role: .destructive) {}
+        Button("Cancel", role: .cancel) {}
+      }
+      Section("Bordered styles") {
+        HStack {
+          Button("Plain") {}.buttonStyle(.bordered)
+          Button("Delete", role: .destructive) {}
+            .buttonStyle(.bordered)
+          Button("Save") {}.buttonStyle(.borderedProminent)
+          Button("Delete", role: .destructive) {}
+            .buttonStyle(.borderedProminent)
+        }
+      }
+      Button("Show a dialog") { asking = true }
+        .confirmationDialog("Delete this note?", isPresented: $asking,
+          titleVisibility: .visible) {
+          Button("Delete", role: .destructive) {}
+          Button("Cancel", role: .cancel) {}  // shown apart, bold
+        }
+    }
+  }
+}

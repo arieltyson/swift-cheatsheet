@@ -9,7 +9,7 @@ import Testing
     ("AccessControl", demoAccessControl),
     ("ArgumentLabels", demoArgumentLabels), ("Static", demoStatic),
     ("Arrays", demoArrayOperations),
-    ("RemoveByValue", demoRemoveByValue), ("BoardIndex", demoBoardIndex),
+    ("RemoveByValue", demoRemoveByValue), ("Existence", demoExistence), ("BoardIndex", demoBoardIndex),
     ("GridLines", demoGridLines), ("GridSteps", demoGridSteps),
     ("Comprehensions", demoComprehensions),
     ("ComprehensionsMore", demoComprehensionsMore),
