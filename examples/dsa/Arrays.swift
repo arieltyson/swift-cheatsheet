@@ -36,7 +36,9 @@ func demoArrayOperations() {
   items.reverse()
   assert(items == [2, 4])
   assert(items.isEmpty == false)
+}
 
+func demoRemoveByValue() {
   // Remove by VALUE: find the index first, or let removeAll search
   var tags = ["a", "b", "c", "b"]
   if let index = tags.firstIndex(of: "b") { tags.remove(at: index) }

@@ -181,7 +181,7 @@ gotcha = "On a 2D array, `allSatisfy`/`contains` hand the closure a whole row. N
 id = "array-operations"
 title = "append, remove & insert"
 aliases = ["push", "pop", "popLast", "removeFirst", "insert at", "swapAt", "reverse", "reverse array", "reverse list", "remove(at:)", "remove at index", "remove by value", "removeAll(where:)", "delete by id", "remove element"]
-code = ["dsa/Arrays.swift:demoArrayOperations"]
+code = ["dsa/Arrays.swift:demoArrayOperations", "dsa/Arrays.swift:demoRemoveByValue"]
 gotcha = "`removeLast()` crashes on an empty array; `popLast()` returns nil. `removeFirst()` and `insert(_:at: 0)` are O(n). `remove(at:)` takes an INDEX and crashes if it is out of range; there is no `remove(value)`. To remove by value or id: `firstIndex(where:)` + `remove(at:)` (first match), or `removeAll { $0.id == id }` (all matches, no optional to unwrap)."
 
 [[part.section.entry]]

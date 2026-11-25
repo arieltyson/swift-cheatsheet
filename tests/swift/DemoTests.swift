@@ -8,7 +8,8 @@ import Testing
   arguments: [
     ("AccessControl", demoAccessControl),
     ("ArgumentLabels", demoArgumentLabels), ("Static", demoStatic),
-    ("Arrays", demoArrayOperations), ("BoardIndex", demoBoardIndex),
+    ("Arrays", demoArrayOperations),
+    ("RemoveByValue", demoRemoveByValue), ("BoardIndex", demoBoardIndex),
     ("GridLines", demoGridLines), ("GridSteps", demoGridSteps),
     ("Comprehensions", demoComprehensions),
     ("ComprehensionsMore", demoComprehensionsMore),
