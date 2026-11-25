@@ -36,6 +36,13 @@ func demoArrayOperations() {
   items.reverse()
   assert(items == [2, 4])
   assert(items.isEmpty == false)
+
+  // Remove by VALUE: find the index first, or let removeAll search
+  var tags = ["a", "b", "c", "b"]
+  if let index = tags.firstIndex(of: "b") { tags.remove(at: index) }
+  assert(tags == ["a", "c", "b"])  // first match only
+  tags.removeAll { $0 == "b" }  // every match, one O(n) pass
+  assert(tags == ["a", "c"])
 }
 
 func demoSorting() {
