@@ -37,6 +37,13 @@ code = ["dsa/Language.swift:demoClosures", "dsa/Language.swift:demoTuples"]
 gotcha = "A multi-line closure needs an explicit `return`. In an `if`/`guard`/`while` condition, write `xs.allSatisfy({ ... })` or store it in a `let` first: a trailing closure there looks like the statement's body. Tuples destructure with `let (a, b) = pair`; arrays don't."
 
 [[part.section.entry]]
+id = "argument-labels"
+title = "Argument labels, `_` & calling a method"
+aliases = ["argument label", "external name", "_ parameter", "underscore parameter", "func add(_", "missing argument label", "extraneous argument label", "call a method", "property vs method", "expression unused", "result unused", "from to labels", "call a closure"]
+code = ["dsa/Language.swift:SongQueue", "dsa/Language.swift:demoArgumentLabels"]
+gotcha = "The caller writes the label, not the parameter name: `func add(_ song:)` is called `add(x)`; `func add(song:)` is called `add(song: x)`. Wrong label errors read \"missing/extraneous argument label\". Writing `store.items` in a closure just reads the array (an unused-value warning, no change); to change it, call the method: `store.add(item)`. Calling a closure variable takes no labels: `onSave(item)`."
+
+[[part.section.entry]]
 id = "enums"
 title = "Enums with associated values"
 aliases = ["enum", "switch", "pattern matching", "associated value", "computed property", "if case", "guard case", "case let", "Equatable enum", "raw value", "rawValue", "enum String", "CaseIterable", "allCases", "init rawValue"]

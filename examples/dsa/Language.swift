@@ -66,6 +66,30 @@ func demoClosures() {
   // Names declared inside a closure don't exist outside it.
 }
 
+/// Argument labels: the name before the parameter is what the CALLER
+/// writes. `_` means "no label". Reading a property is not calling.
+final class SongQueue {
+  private(set) var songs: [String] = []
+  func add(_ song: String) { songs.append(song) }  // add("x")
+  func add(song: String) { songs.append(song) }  // add(song: "x")
+  func move(from start: Int, to end: Int) {  // inside: start, end
+    songs.swapAt(start, end)
+  }
+}
+
+func demoArgumentLabels() {
+  let list = SongQueue()
+  list.add("Intro")  // `_` label: nothing before the value
+  list.add(song: "Outro")  // label = parameter name
+  list.move(from: 0, to: 1)  // caller's words differ from inside
+  assert(list.songs == ["Outro", "Intro"])
+  // `list.songs` alone only READS (warning: unused); it adds nothing.
+  // `list.songs.append("x")` fails: private(set). Call the method.
+  let save: (String) -> Void = { song in list.add(song) }
+  save("Bonus")  // closure types have no labels when called
+  assert(list.songs.count == 3)
+}
+
 /// Tuples destructure; arrays don't. Use a tuple for a pair.
 func demoTuples() {
   let cell = (row: 1, col: 2)
