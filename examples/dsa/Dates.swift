@@ -52,13 +52,17 @@ func demoDateLabels() {
   let hours = [0, 1, 11, 12, 13, 23].map(label)
   assert(hours == ["12 AM", "1 AM", "11 AM", "12 PM", "1 PM", "11 PM"])
 
-  // Or let Foundation format it. In an app, skip .locale and
-  // .timeZone so the user's settings apply.
+  // Or let Foundation do it. In an app, the whole header is:
+  //   Date.now.formatted(.dateTime.weekday(.wide).month(.wide).day())
+  // .dateTime starts empty; each call adds one part. Here the locale
+  // and time zone are fixed so the result is the same on any machine.
   let day = Date(timeIntervalSince1970: 0)  // Thu 1 Jan 1970, UTC
-  let style = Date.FormatStyle(timeZone: TimeZone(identifier: "UTC")!)
-    .locale(Locale(identifier: "en_US"))
+  let english = Locale(identifier: "en_US")
+  var style = Date.FormatStyle.dateTime.locale(english)
+  style.timeZone = TimeZone(identifier: "UTC")!
   let header = day.formatted(style.weekday(.wide).month(.wide).day())
   assert(header == "Thursday, January 1")
+  assert(day.formatted(style.month(.abbreviated).day()) == "Jan 1")
   // Newer systems put a narrow no-break space before AM/PM
   let hour = day.formatted(style.hour())
   let plain = hour.replacingOccurrences(of: "\u{202F}", with: " ")

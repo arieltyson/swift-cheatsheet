@@ -395,7 +395,7 @@ gotcha = "`date(bySettingHour:)`, `date(byAdding:)` and `range(of:in:for:)` retu
 [[part.section.entry]]
 id = "date-labels"
 title = "Hour labels (12 AM) & date headers"
-aliases = ["12 AM", "12 PM", "AM PM", "12-hour clock", "hour label", "hour % 12", "0 AM bug", "format date", "Date.FormatStyle", "formatted", "weekday wide", "Monday, November", "date header", "DateFormatter"]
+aliases = ["12 AM", "12 PM", "AM PM", "12-hour clock", "hour label", "hour % 12", "0 AM bug", "format date", "Date.FormatStyle", "formatted", "weekday wide", "Monday, November", "date header", "DateFormatter", ".dateTime", "dateTime", "weekday(.wide)", "month(.wide)", "day()", "abbreviated month", "Jan 1"]
 code = ["dsa/Dates.swift:demoDateLabels"]
 availability = "iOS 15+"
 use_when = "Labelling hour rows or showing today's date. `Date.now.formatted(.dateTime.weekday(.wide).month(.wide).day())` gives a header like \"Monday, November 24\" in the user's language."
@@ -1232,6 +1232,26 @@ aliases = ["VStack", "HStack", "frame", "padding", "Label", "font", "accessibili
 code = ["swiftui/Layout.swift:ReviewSummary"]
 availability = "iOS 14+"
 gotcha = "Use text styles (`.headline`, `.body`), never fixed point sizes, so text follows the user's size setting. `Divider` runs across its stack: horizontal in a `VStack`, but a VERTICAL line in an `HStack`. For a horizontal line beside text, use `Rectangle().fill(.quaternary).frame(height: 1)`, or wrap the `Divider` in a `VStack`. Stacks (and the content of a `ScrollView`) add default spacing between children; use `VStack(spacing: 0)` when rows must be an exact height."
+
+[[part.section.entry]]
+id = "text-styles"
+title = "Text styles: largeTitle to caption2"
+aliases = ["font", "font size", "largeTitle", "title", "title2", "title3", "headline", "subheadline", "subtitle", "body", "callout", "footnote", "caption", "caption2", "Dynamic Type", "text size", "bold text", "fontWeight"]
+code = ["swiftui/TextStyles.swift:TextStyleScale"]
+availability = "iOS 14+"
+use_when = "Choosing a size for text. Pick by role: `.headline` for a row's main line, `.subheadline`/`.footnote` for details, `.caption` for labels like hour markers. Unstyled `Text` is `.body`."
+figure = { src = "figures/text-styles.png", alt = "Eleven lines of text in decreasing size: largeTitle, title, title2, title3, headline in bold, subheadline, body, callout, footnote, caption and caption2.", caption = "TextStyleScale at the default text size. Each style grows or shrinks with the user's setting." }
+gotcha = "There is no `.subtitle`; the closest is `.subheadline`. `.headline` is body-sized but semibold. Change weight with `.fontWeight(.bold)` or `.bold()`, not by picking a bigger style. Avoid `.font(.system(size: 14))`: a fixed size ignores the user's text size setting."
+
+[[part.section.entry]]
+id = "foreground-styles"
+title = "Foreground styles: primary, secondary & tint"
+aliases = ["foregroundStyle", "foregroundColor", "primary", "secondary", "tertiary", "quaternary", "quinary", "grey text", "gray text", "muted text", "tint", "accent color", "text color", "dark mode color"]
+code = ["swiftui/TextStyles.swift:ForegroundStyles"]
+availability = "iOS 17+"
+use_when = "Making text or shapes less prominent. `.secondary` for supporting text, `.tertiary`/`.quaternary` for faint lines and placeholders, `.tint` for anything tappable."
+figure = { src = "figures/foreground-styles.png", alt = "The same list in light mode on white and dark mode on black: primary, then progressively fainter secondary, tertiary, quaternary and quinary, then tint in blue and red in red.", caption = "ForegroundStyles in light (left) and dark (right). The hierarchical styles adapt; fixed colours stay the same." }
+gotcha = "`.foregroundColor` is the old name; use `.foregroundStyle`. The same styles work as fills: `Rectangle().fill(.quaternary)` makes a faint divider. `Color.gray` doesn't adapt to dark mode the way `.secondary` does."
 
 [[part.section.entry]]
 id = "frames-aspect-ratio"
