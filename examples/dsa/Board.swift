@@ -42,6 +42,27 @@ func demoGridLines() {
   assert(anti == [[0, 2], [1, 1], [2, 0]])
 }
 
+/// A direction is how row and col change for ONE step: (dr, dc).
+/// Right (0, 1), down (1, 0), down-right (1, 1), down-left (1, -1).
+/// Its opposite negates both. 4 lines = 4 directions x 2 ways.
+func demoGridSteps() {
+  let n = 4
+  let lines = [(0, 1), (1, 0), (1, 1), (1, -1)]
+  let opposites = lines.map { (dr, dc) in (-dr, -dc) }
+  assert(opposites[3] == (-1, 1))  // up-right
+
+  // Walk from (1, 1) until the next step leaves the grid
+  let (dr, dc) = (1, 1)
+  var (row, col) = (1 + dr, 1 + dc)  // start at the NEXT cell
+  var steps = 0
+  while (0..<n).contains(row) && (0..<n).contains(col) {
+    steps += 1
+    row += dr
+    col += dc
+  }
+  assert(steps == 2)  // (2, 2) and (3, 3); the start isn't counted
+}
+
 enum Mark: Equatable {
   case x
   case o

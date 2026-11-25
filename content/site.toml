@@ -721,10 +721,10 @@ use_when = "Storing an n x n board in one array: simpler to copy, compare and in
 [[part.section.entry]]
 id = "grid-lines"
 title = "Grid coordinates: rows, columns & diagonals"
-aliases = ["diagonal", "anti-diagonal", "row == col", "row + col == n - 1", "n - 1 - i", "solve for col", "main diagonal", "coordinates", "grid lines", "3x3 grid"]
-code = ["dsa/Board.swift:demoGridLines"]
+aliases = ["diagonal", "anti-diagonal", "row == col", "row + col == n - 1", "n - 1 - i", "solve for col", "main diagonal", "coordinates", "grid lines", "3x3 grid", "direction vector", "dr dc", "step pairs", "(0, 1) (1, 0) (1, 1) (1, -1)", "opposite direction", "walk until edge", "in bounds walk", "k in a row", "consecutive run"]
+code = ["dsa/Board.swift:demoGridLines", "dsa/Board.swift:demoGridSteps"]
 use_when = "Any n x n grid question: a cell is on the main diagonal when row == col, on the anti-diagonal when row + col == n - 1."
-gotcha = "Write n - 1, not 2: the formulas must hold for any board size. Only the centre of an odd-sized board is on both diagonals."
+gotcha = "Write n - 1, not 2: the formulas must hold for any board size. Only the centre of an odd-sized board is on both diagonals. A walk starts at the NEXT cell, so the start is counted once, never once per direction. `(row + i, col + i)` is only one of the four line directions."
 
 [[part.section.entry]]
 id = "tic-tac-toe"
