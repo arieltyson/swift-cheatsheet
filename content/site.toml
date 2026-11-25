@@ -1290,11 +1290,11 @@ gotcha = "Both take a binding (`$`) because the sheet sets it back (false or nil
 [[part.section.entry]]
 id = "child-to-parent"
 title = "Sending data back from a child or sheet"
-aliases = ["pass data back", "child to parent", "callback", "closure property", "onSave", "completion handler", "@escaping", "non-escaping parameter", "sheet returns a value", "Binding vs closure", "pass the model", "delegate in SwiftUI"]
+aliases = ["pass data back", "closure runs when", "passing vs calling a closure", "who calls onSave", "child to parent", "callback", "closure property", "onSave", "completion handler", "@escaping", "non-escaping parameter", "sheet returns a value", "Binding vs closure", "pass the model", "delegate in SwiftUI"]
 code = ["swiftui/ChildToParent.swift:Contact", "swiftui/ChildToParent.swift:ContactBook", "swiftui/ChildToParent.swift:ContactsScreen", "swiftui/ChildToParent.swift:ContactForm", "swiftui/ChildToParent.swift:FavouriteField", "swiftui/ChildToParent.swift:ContactCount", "swiftui/ChildToParent.swift:RenameForm"]
 availability = "iOS 17+"
 use_when = "A form in a sheet must give its result to the screen that opened it. A closure (`onSave: (Item) -> Void`) is the usual choice: the child stays reusable and the parent decides what Save means."
-gotcha = "A stored closure property needs no init: `ContactForm { contact in ... }` uses the memberwise init. Write your own init and the parameter needs `@escaping`. A `@Binding` suits one value the parent owns; passing the whole model is shortest but ties the child to it."
+gotcha = "Passing a closure does NOT run it: `ContactForm { contact in book.add(contact) }` hands over instructions, like a Button's action. They run only when the child calls `onSave(contact)` (from its Save button), so the parent never knows when, only what to do. A stored closure property needs no init: `ContactForm { contact in ... }` uses the memberwise init. Write your own init and the parameter needs `@escaping`. A `@Binding` suits one value the parent owns; passing the whole model is shortest but ties the child to it."
 
 [[part.section.entry]]
 id = "tap-location"
