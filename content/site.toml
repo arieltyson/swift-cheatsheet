@@ -1236,6 +1236,16 @@ figure = { src = "figures/title-display-modes.png", alt = "Two phones. Left: .la
 gotcha = "`.navigationTitle`, `.navigationBarTitleDisplayMode` and `.toolbar` go on a view INSIDE the `NavigationStack`, not on the stack: on the stack they are silently ignored. `.automatic` uses the previous screen's mode, which is `.large` at the root. A bare `.toolbar { Button }` goes top trailing; use `ToolbarItem(placement:)` to choose."
 
 [[part.section.entry]]
+id = "toolbar-placements"
+title = "ToolbarItem placements, Cancel/Save & dismiss"
+aliases = ["ToolbarItem", "ToolbarItemGroup", "placement", "cancellationAction", "confirmationAction", "principal", "bottomBar", "keyboard toolbar", "topBarLeading", "topBarTrailing", "Cancel button", "Save button", "dismiss", "Environment dismiss", "close sheet", "toolbar syntax"]
+code = ["swiftui/Toolbar.swift:ToolbarPlacements", "swiftui/Toolbar.swift:ToolbarSides"]
+availability = "iOS 17+"
+use_when = "Any button in the nav bar or bottom bar. In a sheet or form: `.cancellationAction` + `.confirmationAction`. Elsewhere: `.topBarLeading` / `.topBarTrailing`."
+figure = { src = "figures/toolbar-placements.png", alt = "Two phones. Left: a form sheet with Cancel at top left, Principal in the centre, a greyed Save at top right, and a trash button and bottomBar label at the bottom. Right: a list with Edit at top left, Sides title, and a plus at top right.", caption = "ToolbarPlacements (left): semantic placements plus .principal and .bottomBar. ToolbarSides (right): explicit leading and trailing." }
+gotcha = "Shape: `.toolbar { ToolbarItem(placement: .x) { Button(...) } }`. One view per `ToolbarItem`; several need `ToolbarItemGroup`. Put a `Button`, not a `Text`, inside or nothing is tappable. `dismiss` is read with `@Environment(\\.dismiss) private var dismiss` and CALLED with `dismiss()` (it is a value you call, like a function). In Save, hand the data back first (`onSave(item)`), then `dismiss()`. The toolbar needs the sheet's own `NavigationStack`."
+
+[[part.section.entry]]
 id = "icon-buttons"
 title = "Icon buttons: Label, SF Symbols & labelStyle"
 aliases = ["Label", "systemImage", "SF Symbol", "plus button", "icon button", "Image systemName", "labelStyle", "iconOnly", "titleOnly", "titleAndIcon", "button with icon", "accessibilityLabel"]
