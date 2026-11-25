@@ -1245,6 +1245,16 @@ table = { header = ["Need", "Use", "Notes"], rows = [
 use_when = "Choosing how screens connect. Pushes go on a stack (Back button, swipe back); sheets and covers sit on top and are dismissed."
 
 [[part.section.entry]]
+id = "sheet-basics"
+title = "Presenting sheets: isPresented, item, detents & dismiss"
+aliases = ["sheet", "sheet(isPresented:)", "sheet(item:)", "present a form", "modal", "presentationDetents", "half sheet", "medium sheet", "dismiss", "Environment dismiss", "close sheet", "fullScreenCover", "interactiveDismissDisabled", "sheet not showing", "open sheet from toolbar"]
+code = ["swiftui/Sheets.swift:Memo", "swiftui/Sheets.swift:SheetBasics", "swiftui/Sheets.swift:NoteForm"]
+availability = "iOS 17+"
+use_when = "A short task on top of the current screen: a create or edit form, a picker. `isPresented:` with a `Bool` for one fixed form; `item:` with an optional for \"the form for this item\"."
+figure = { src = "figures/sheet-medium.png", alt = "A Notes list dimmed behind a half-height sheet titled New Note, with Cancel on the left, Save on the right and a form row reading Fields go here.", caption = "SheetBasics after tapping plus: a .medium detent sheet with its own NavigationStack for Cancel and Save." }
+gotcha = "Both take a binding (`$`) because the sheet sets it back when swiped down. Give the sheet its own `NavigationStack` for a title and toolbar. Inside it, close with `@Environment(\\.dismiss)`; don't pass the Bool down. `.fullScreenCover` has the same API but no swipe to dismiss; `.interactiveDismissDisabled()` blocks the swipe on a sheet with unsaved changes."
+
+[[part.section.entry]]
 id = "navigation-links-paths"
 title = "NavigationLink by value & a path you control"
 aliases = ["NavigationLink(value:)", "navigationDestination(for:)", "path", "programmatic navigation", "push from code", "pop to root", "removeAll", "back stack", "deep link", "Hashable route", "navigate after save"]
