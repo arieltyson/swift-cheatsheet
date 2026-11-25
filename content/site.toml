@@ -1225,6 +1225,15 @@ figure = { src = "figures/greedy-controls.png", alt = "Three grey boxes the widt
 gotcha = "A stack centres a child only when the child is narrower than the stack. `Stepper`, `Toggle`, `TextField`, `Slider`, `Color` and shapes are greedy: they take the full width, so \"centred\" is edge to edge. `.padding()` is the usual fix (it insets everything); `.fixedSize()` makes the control hug its content so the stack can centre it."
 
 [[part.section.entry]]
+id = "conditional-styling"
+title = "Conditional backgrounds & styles"
+aliases = ["conditional background", "conditional modifier", "ternary in modifier", "highlight selected", "highlight cells", "background if", "selected state", "Set contains", "mismatching types in ternary", "AnyShapeStyle"]
+code = ["swiftui/Frames.swift:HighlightedRow"]
+availability = "iOS 17+"
+use_when = "A view's colour, weight or border depends on state: a selected day, a winning cell, an error field. Keep the set of highlighted ids in the model and ask `contains` in the view."
+gotcha = "Both sides of the ternary must be the same type: `isOn ? Color.green : .clear` works, `isOn ? Color.green : .tint` doesn't (wrap in `AnyShapeStyle` if you must mix). Avoid `if isOn { view.background(...) } else { view }`: the two branches are different views, so SwiftUI resets their state and can't animate between them."
+
+[[part.section.entry]]
 id = "day-timeline"
 title = "Position views by data: a scrolling day timeline"
 aliases = ["calendar day view", "timeline", "offset", "ZStack alignment", "topLeading", "ScrollViewReader", "scrollTo", "GeometryReader", "TimelineView", "now line", "hour grid", "minutes to points", "position", "List vs ScrollView"]

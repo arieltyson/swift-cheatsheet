@@ -111,3 +111,29 @@ struct GreedyControls: View {
     }
   }
 }
+
+/// Conditional styling: pick the VALUE with a ternary and keep one
+/// modifier, rather than `if selected { view.background(...) }`.
+struct HighlightedRow: View {
+  let items = ["Mon", "Tue", "Wed", "Thu", "Fri"]
+  @State private var picked: Set<Int> = [1, 3]
+
+  var body: some View {
+    HStack {
+      ForEach(items.indices, id: \.self) { index in
+        let isOn = picked.contains(index)
+        Button {
+          if isOn { picked.remove(index) } else { picked.insert(index) }
+        } label: {
+          Text(items[index])
+            .frame(maxWidth: .infinity, minHeight: 44)
+            // Both branches must be the same type (Color here)
+            .background(isOn ? Color.green.opacity(0.4) : .clear)
+            .foregroundStyle(isOn ? .primary : .secondary)
+            .fontWeight(isOn ? .bold : .regular)
+        }
+      }
+    }
+    .padding()
+  }
+}
