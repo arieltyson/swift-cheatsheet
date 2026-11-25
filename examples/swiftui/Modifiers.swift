@@ -81,3 +81,29 @@ struct OffsetDirections: View {
       }
   }
 }
+
+/// Two different alignments. The STACK's alignment lines its
+/// children up with each other; the FRAME's alignment places the
+/// whole stack inside the frame. A left-aligned block needs both.
+struct StackVsFrameAlignment: View {
+  var body: some View {
+    VStack(spacing: 12) {
+      card("VStack { }", stack: .center)  // default: centred lines
+      card("VStack(alignment: .leading)", stack: .leading)
+    }
+    .padding()
+  }
+
+  private func card(_ name: String, stack: HorizontalAlignment)
+    -> some View
+  {
+    VStack(alignment: stack) {
+      Text("Morning run").font(.headline)
+      Text("7 AM – 8 AM").font(.caption).foregroundStyle(.secondary)
+      Text(name).font(.caption2.monospaced())
+    }
+    .padding(6)
+    .frame(maxWidth: .infinity, alignment: .topLeading)
+    .background(.blue.opacity(0.15))
+  }
+}

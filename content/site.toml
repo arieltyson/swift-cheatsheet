@@ -1386,6 +1386,16 @@ figure = { src = "figures/foreground-styles.png", alt = "The same list in light 
 gotcha = "`.foregroundColor` is the old name; use `.foregroundStyle`. The same styles work as fills: `Rectangle().fill(.quaternary)` makes a faint divider. `Color.gray` doesn't adapt to dark mode the way `.secondary` does."
 
 [[part.section.entry]]
+id = "stack-vs-frame-alignment"
+title = "Stack alignment vs frame alignment"
+aliases = ["VStack alignment", "VStack(alignment: .leading)", "HorizontalAlignment", "text centred in VStack", "second line centered", "lines not left aligned", "left align two texts", "alignment leading", "frame alignment not working", "align text left"]
+code = ["swiftui/Modifiers.swift:StackVsFrameAlignment"]
+availability = "iOS 17+"
+use_when = "Any block of stacked lines (title + subtitle) that should be left-aligned: `VStack(alignment: .leading)` for the lines, `.frame(maxWidth: .infinity, alignment: .leading)` to push the block left."
+figure = { src = "figures/stack-vs-frame-alignment.png", alt = "Two blue cards, each with Morning run, 7 AM – 8 AM and a code label. Top card: the shorter lines are centred under the title. Bottom card: all lines start at the left edge.", caption = "Both cards use .frame(alignment: .topLeading). Only the bottom one also sets the VStack's alignment." }
+gotcha = "A `VStack` is as wide as its widest child and centres the others inside that width by default. The frame's alignment only moves the whole stack, so shorter lines still sit centred under the longest. Set both: `VStack(alignment: .leading)` (horizontal only: `.leading`, `.center`, `.trailing`) and the frame's `.topLeading`. HStack's alignment is vertical (`.top`, `.firstTextBaseline`)."
+
+[[part.section.entry]]
 id = "background-vs-style"
 title = "background vs backgroundStyle"
 aliases = ["background", "backgroundStyle", "background color", "background in shape", "capsule background", "rounded background", "background not showing", "fill behind text"]
