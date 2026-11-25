@@ -1221,6 +1221,50 @@ use_when = "A button shown as a symbol. Prefer `Button(\"Add\", systemImage: \"p
 figure = { src = "figures/icon-buttons.png", alt = "Three bordered buttons stacked: a plus with the word Add, then two plus-only buttons, then the text Added 0.", caption = "IconButtons: the shorthand shows title and icon; .iconOnly and a bare Image show just the symbol." }
 gotcha = "A bare `Image(systemName:)` has no text, so VoiceOver reads the symbol name; add `.accessibilityLabel`. Toolbars show a `Label` as its icon automatically, so no `.labelStyle` is needed there. A `Void` action needs no `return`: leave it empty while prototyping."
 
+[[part.section.entry]]
+id = "navigation-choose"
+title = "Which navigation API, when"
+aliases = ["NavigationView deprecated", "NavigationStack vs NavigationSplitView", "NavigationLink destination", "NavigationLink value", "navigationDestination", "NavigationPath", "push vs sheet", "fullScreenCover", "modern navigation", "iOS 16 navigation"]
+table = { header = ["Need", "Use", "Notes"], rows = [
+  ["Drill down on iPhone", "`NavigationStack` + `NavigationLink(_:value:)` + `.navigationDestination(for:)`", "The modern pattern (iOS 16+). The link carries data; the destination is declared once per type."],
+  ["Push or pop from code (after Save, deep link, pop to root)", "`NavigationStack(path: $path)` with `@State var path: [Route]`", "`append` pushes, `removeLast()` pops, `removeAll()` pops to root."],
+  ["Routes of different types on one stack", "`NavigationPath()`", "Type-erased; same `append`/`removeLast`. Use `[Route]` when one type (often an enum) covers every screen."],
+  ["Sidebar + detail on iPad and Mac", "`NavigationSplitView`", "Two or three columns; collapses to a stack on iPhone. Drive it with a `List(selection:)`."],
+  ["A quick edit or form that returns", "`.sheet(item:)` or `.sheet(isPresented:)`", "Not part of the back stack; give the sheet its own `NavigationStack` for Cancel and Save."],
+  ["A full-screen flow (onboarding, camera)", "`.fullScreenCover`", "No swipe to dismiss; provide a Close button."],
+  ["Older code", "`NavigationView`, `NavigationLink(destination:)`", "Deprecated. Fine to read; write the stack versions."],
+] }
+use_when = "Choosing how screens connect. Pushes go on a stack (Back button, swipe back); sheets and covers sit on top and are dismissed."
+
+[[part.section.entry]]
+id = "navigation-links-paths"
+title = "NavigationLink by value & a path you control"
+aliases = ["NavigationLink(value:)", "navigationDestination(for:)", "path", "programmatic navigation", "push from code", "pop to root", "removeAll", "back stack", "deep link", "Hashable route", "navigate after save"]
+code = ["swiftui/Routes.swift:Recipe", "swiftui/Routes.swift:RecipesScreen", "swiftui/Routes.swift:RecipeDetail"]
+availability = "iOS 16+"
+use_when = "Any drill-down. Bind the stack to a path only when code needs to push or pop; tapping links updates the path for you."
+figure = { src = "figures/navigation-push.png", alt = "Left: a Recipes list with Pasta, Curry and Tacos, each with a chevron, and an Open first button. Right: the pushed Pasta screen with a back button, an inline Pasta title and a Back to all recipes link.", caption = "RecipesScreen before and after tapping Pasta (or Open first, which appends to the path)." }
+gotcha = "Values in the path must be `Hashable`. Put `.navigationDestination` on the stack's content, once per type, never inside a `List` row or a lazy container, or SwiftUI may not find it. A link whose type has no destination does nothing."
+
+[[part.section.entry]]
+id = "navigation-path-mixed"
+title = "NavigationPath: routes of different types"
+aliases = ["NavigationPath", "type erased path", "mixed routes", "multiple destinations", "removeLast", "path.count"]
+code = ["swiftui/Routes.swift:MixedRoutesScreen"]
+availability = "iOS 16+"
+use_when = "One stack that pushes several unrelated types. With a single `enum Route: Hashable`, a plain `[Route]` is simpler and easier to test."
+gotcha = "`removeLast()` on an empty path crashes: check `isEmpty` first. Each type needs its own `.navigationDestination(for:)`."
+
+[[part.section.entry]]
+id = "navigation-split"
+title = "NavigationSplitView: sidebar & detail"
+aliases = ["NavigationSplitView", "sidebar", "master detail", "iPad layout", "two column", "three column", "List selection", "ContentUnavailableView", "empty detail"]
+code = ["swiftui/Routes.swift:RecipeSplitView"]
+availability = "iOS 17+"
+use_when = "iPad or Mac apps with a list beside its detail (mail, notes, settings). On iPhone it becomes a stack, so one view serves both."
+figure = { src = "figures/navigation-split.png", alt = "An iPad in portrait. A sidebar lists Pasta, Curry and Tacos with Curry highlighted; the detail column shows the Curry screen.", caption = "RecipeSplitView on iPad with Curry selected. On iPhone the same code shows the list, then pushes the detail." }
+gotcha = "The selection drives the detail column, so `NavigationLink(_:value:)` inside `List(selection:)` sets it; no `navigationDestination` is needed. Show a placeholder (`ContentUnavailableView`) when nothing is selected."
+
 [[part.section]]
 id = "layout"
 title = "Layout & accessibility"
@@ -1281,6 +1325,25 @@ code = ["swiftui/Frames.swift:HighlightedRow"]
 availability = "iOS 17+"
 use_when = "A view's colour, weight or border depends on state: a selected day, a winning cell, an error field. Keep the set of highlighted ids in the model and ask `contains` in the view."
 gotcha = "Both sides of the ternary must be the same type: `isOn ? Color.green : .clear` works, `isOn ? Color.green : .tint` doesn't (wrap in `AnyShapeStyle` if you must mix). Avoid `if isOn { view.background(...) } else { view }`: the two branches are different views, so SwiftUI resets their state and can't animate between them."
+
+[[part.section.entry]]
+id = "row-gaps"
+title = "Gaps between rows: stack spacing"
+aliases = ["gaps between rows", "spacing 0", "VStack spacing", "ScrollView spacing", "rows not touching", "default spacing", "exact row height", "remove gap"]
+code = ["swiftui/Scrolling.swift:RowGaps"]
+availability = "iOS 17+"
+use_when = "Rows must touch, or sit at exact positions (a timeline of 60 pt hours). Set `spacing: 0` on the stack and add lines yourself."
+figure = { src = "figures/row-gaps.png", alt = "Two columns of five blue rows. Left, VStack with default spacing: white gaps between rows. Right, spacing 0: the rows touch.", caption = "RowGaps: default stack spacing (left) and `spacing: 0` (right)." }
+gotcha = "A `ScrollView` with several children stacks them in an implicit `VStack` with default spacing, so wrap them in your own `VStack(spacing: 0)` or `LazyVStack(spacing: 0)`. `List` adds its own insets and separators; use a `ScrollView` when you need exact geometry."
+
+[[part.section.entry]]
+id = "scroll-essentials"
+title = "ScrollView essentials: lazy, pinned, scrollTo, paging"
+aliases = ["ScrollView", "LazyVStack", "LazyHStack", "pinnedViews", "sticky header", "sectionHeaders", "ScrollViewReader", "scrollTo", "scroll to row", "scrollIndicators", "hide scroll bar", "contentMargins", "horizontal scroll", "carousel", "scrollTargetBehavior", "paging", "snap"]
+code = ["swiftui/Scrolling.swift:ScrollEssentials", "swiftui/Scrolling.swift:CardStrip"]
+availability = "iOS 17+"
+use_when = "Custom scrolling content. `VStack` builds every row up front (fine for 24); `LazyVStack` builds rows as they appear (needed for hundreds)."
+gotcha = "`scrollTo` needs a matching `.id(...)` on the target and must run after layout, as in `.onAppear`. `.scrollTargetBehavior(.viewAligned)` needs `.scrollTargetLayout()` on the stack inside. A header outside the ScrollView never scrolls; `pinnedViews` makes section headers stick while their section scrolls."
 
 [[part.section.entry]]
 id = "day-timeline"
