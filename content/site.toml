@@ -1196,10 +1196,10 @@ title = "Lists & navigation"
 [[part.section.entry]]
 id = "navigation-stack"
 title = "List, NavigationStack & sheets"
-aliases = ["NavigationStack", "navigationDestination", "path", "sheet", "Identifiable", "dismiss", "List"]
+aliases = ["NavigationStack", "navigationDestination", "path", "sheet", "Identifiable", "dismiss", "List", "toolbar", "toolbar not showing", "plus button in nav bar", "navigationTitle", "navigationBarTitleDisplayMode", "inline title", "header vs nav bar"]
 code = ["swiftui/Navigation.swift:StudyTopic", "swiftui/Navigation.swift:TopicsScreen", "swiftui/Navigation.swift:TopicSheet"]
 availability = "iOS 16+"
-gotcha = "List rows need a stable `id`. Using an array index as the id breaks animations and state when rows move."
+gotcha = "List rows need a stable `id`. Using an array index as the id breaks animations and state when rows move. `.toolbar` and `.navigationTitle` only show inside a `NavigationStack` (or a sheet that has its own). Without one, nothing appears and there is no error. With a plain `VStack` header, put the button in the header: `HStack { Text(title); Spacer(); Button(...) }`."
 
 [[part.section]]
 id = "layout"
