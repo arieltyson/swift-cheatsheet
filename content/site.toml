@@ -1201,6 +1201,26 @@ code = ["swiftui/Navigation.swift:StudyTopic", "swiftui/Navigation.swift:TopicsS
 availability = "iOS 16+"
 gotcha = "List rows need a stable `id`. Using an array index as the id breaks animations and state when rows move. `.toolbar` and `.navigationTitle` only show inside a `NavigationStack` (or a sheet that has its own). Without one, nothing appears and there is no error. With a plain `VStack` header, put the button in the header: `HStack { Text(title); Spacer(); Button(...) }`."
 
+[[part.section.entry]]
+id = "title-display-modes"
+title = "Navigation title display modes & toolbar buttons"
+aliases = ["navigationBarTitleDisplayMode", "display mode", "large title", "inline title", "automatic", "small title", "centered title", "navigationTitle not showing", "toolbar not showing", "modifier on NavigationStack", "ToolbarItem placement", "topBarTrailing"]
+code = ["swiftui/Toolbar.swift:TitleModeScreen"]
+availability = "iOS 17+"
+use_when = "Every screen inside a NavigationStack. `.large` for a top-level list, `.inline` for detail screens, sheets and anything where vertical space matters."
+figure = { src = "figures/title-display-modes.png", alt = "Two phones. Left: .large, a big bold Inbox title under the bar, with a plus button at the top right. Right: .inline, a small Inbox title centred in the bar next to the same plus button.", caption = "TitleModeScreen with .large (left) and .inline (right). A .large title shrinks into the inline style once the list scrolls." }
+gotcha = "`.navigationTitle`, `.navigationBarTitleDisplayMode` and `.toolbar` go on a view INSIDE the `NavigationStack`, not on the stack: on the stack they are silently ignored. `.automatic` uses the previous screen's mode, which is `.large` at the root. A bare `.toolbar { Button }` goes top trailing; use `ToolbarItem(placement:)` to choose."
+
+[[part.section.entry]]
+id = "icon-buttons"
+title = "Icon buttons: Label, SF Symbols & labelStyle"
+aliases = ["Label", "systemImage", "SF Symbol", "plus button", "icon button", "Image systemName", "labelStyle", "iconOnly", "titleOnly", "titleAndIcon", "button with icon", "accessibilityLabel"]
+code = ["swiftui/Toolbar.swift:IconButtons"]
+availability = "iOS 17+"
+use_when = "A button shown as a symbol. Prefer `Button(\"Add\", systemImage: \"plus\") { ... }`: one line, and the title still reaches VoiceOver and overflow menus even when only the icon shows."
+figure = { src = "figures/icon-buttons.png", alt = "Three bordered buttons stacked: a plus with the word Add, then two plus-only buttons, then the text Added 0.", caption = "IconButtons: the shorthand shows title and icon; .iconOnly and a bare Image show just the symbol." }
+gotcha = "A bare `Image(systemName:)` has no text, so VoiceOver reads the symbol name; add `.accessibilityLabel`. Toolbars show a `Label` as its icon automatically, so no `.labelStyle` is needed there. A `Void` action needs no `return`: leave it empty while prototyping."
+
 [[part.section]]
 id = "layout"
 title = "Layout & accessibility"
