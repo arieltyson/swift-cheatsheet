@@ -1306,6 +1306,36 @@ figure = { src = "figures/foreground-styles.png", alt = "The same list in light 
 gotcha = "`.foregroundColor` is the old name; use `.foregroundStyle`. The same styles work as fills: `Rectangle().fill(.quaternary)` makes a faint divider. `Color.gray` doesn't adapt to dark mode the way `.secondary` does."
 
 [[part.section.entry]]
+id = "background-vs-style"
+title = "background vs backgroundStyle"
+aliases = ["background", "backgroundStyle", "background color", "background in shape", "capsule background", "rounded background", "background not showing", "fill behind text"]
+code = ["swiftui/Modifiers.swift:BackgroundVsStyle"]
+availability = "iOS 16+"
+use_when = "Colouring behind a view: `.background(.blue)`, or `.background(.blue, in: .rect(cornerRadius: 8))` for a shape. `.backgroundStyle` is for setting one style that `.background()` and some controls pick up."
+figure = { src = "figures/background-vs-style.png", alt = "Four lines of text. background yellow: a yellow rectangle. background yellow in capsule: a yellow pill. backgroundStyle yellow alone: no colour at all. background() plus backgroundStyle: a yellow rectangle.", caption = "BackgroundVsStyle: `.backgroundStyle` by itself draws nothing." }
+gotcha = "Put `.padding` BEFORE `.background` so the colour includes the padding. A background is sized to the view, so it never makes the view bigger."
+
+[[part.section.entry]]
+id = "targeted-padding"
+title = "Padding on chosen edges"
+aliases = ["padding", "padding leading", "padding(.leading", "padding top", "horizontal padding", "vertical padding", "padding edges", "Edge.Set", "inset one side", "EdgeInsets", "indent"]
+code = ["swiftui/Modifiers.swift:TargetedPadding"]
+availability = "iOS 13+"
+use_when = "Space on some sides only: `.padding(.leading, 58)` to clear a label column, `.padding(.horizontal)` for screen margins, `.padding(.vertical, 8)` for row height."
+figure = { src = "figures/targeted-padding.png", alt = "Five mint boxes, each with code text inside. padding(): space on all sides. leading 40: space only on the left. horizontal 40: space left and right. vertical 16: space above and below. top and trailing 24: space above and to the right.", caption = "TargetedPadding: the mint box is the size after padding." }
+gotcha = "Edges: `.top`, `.bottom`, `.leading`, `.trailing`, `.horizontal`, `.vertical`, `.all`, or a set like `[.top, .leading]`. Use leading/trailing, not left/right, so right-to-left languages flip correctly. With no number, the system picks a standard amount (about 16)."
+
+[[part.section.entry]]
+id = "offset-directions"
+title = "offset: move a view without moving its neighbours"
+aliases = ["offset", "offset x", "offset y", "move view", "shift view", "negative offset", "offset vs padding", "offset vs position", "nudge"]
+code = ["swiftui/Modifiers.swift:OffsetDirections"]
+availability = "iOS 13+"
+use_when = "Placing views from data (an event at y = start x 60) inside a top-leading ZStack, or nudging something. Positive x is right, positive y is DOWN; negative goes left or up."
+figure = { src = "figures/offset-directions.png", alt = "Five orange chips with dashed outlines at their original spots. x 40 moved right, x minus 20 moved left, y 12 down, y minus 12 up, and x 40 y 12 right and down.", caption = "OffsetDirections: the dashed box is where layout put each chip; the colour is where it is drawn." }
+gotcha = "Offset doesn't change layout: neighbours stay put and the view can overlap them or leave a gap. To push neighbours, use `.padding`. `.position(x:y:)` sets the view's CENTRE in its parent instead."
+
+[[part.section.entry]]
 id = "frames-aspect-ratio"
 title = "Frame tuning & aspectRatio"
 aliases = ["frame", "maxWidth", "maxHeight", "minWidth", "minHeight", ".infinity", "fill width", "full width", "fixed size", "fixedSize", "frame alignment", "aspectRatio", "contentMode", ".fit", ".fill", "scaledToFit", "scaledToFill", "square", "16:9", "clipped", "resizable", "cells too big", "layout overflows screen", "not square", "maxHeight value", "what does infinity mean", "hugging", "takes only the space it needs", "modifier order"]
