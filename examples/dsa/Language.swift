@@ -66,6 +66,28 @@ func demoClosures() {
   // Names declared inside a closure don't exist outside it.
 }
 
+/// static: belongs to the TYPE, not to one value. Call it on the
+/// type name (`Workout.minutesLabel(90)`); no instance needed.
+struct Workout {
+  var name: String
+  var minutes: Int
+
+  static let sample = Workout(name: "Run", minutes: 45)  // shared
+  static func minutesLabel(_ total: Int) -> String {  // a helper
+    total < 60 ? "\(total) min" : "\(total / 60) h \(total % 60) min"
+  }
+  // Instance code reaches statics through `Self.` (or the type name)
+  var label: String { "\(name), \(Self.minutesLabel(minutes))" }
+}
+
+func demoStatic() {
+  assert(Workout.minutesLabel(90) == "1 h 30 min")  // on the type
+  assert(Workout.sample.label == "Run, 45 min")
+  // Workout.sample.minutesLabel(5): error, statics aren't on values
+  // A free function (top level, outside any type) also works:
+  // shorter calls, but it fills the global namespace.
+}
+
 /// Argument labels: the name before the parameter is what the CALLER
 /// writes. `_` means "no label". Reading a property is not calling.
 final class SongQueue {

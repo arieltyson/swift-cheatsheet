@@ -37,6 +37,14 @@ code = ["dsa/Language.swift:demoClosures", "dsa/Language.swift:demoTuples"]
 gotcha = "A multi-line closure needs an explicit `return`. In an `if`/`guard`/`while` condition, write `xs.allSatisfy({ ... })` or store it in a `let` first: a trailing closure there looks like the statement's body. Tuples destructure with `let (a, b) = pair`; arrays don't."
 
 [[part.section.entry]]
+id = "static-members"
+title = "static func, static let & Self"
+aliases = ["static", "static func", "static let", "static var", "type method", "class method", "Self.", "helper function shared between views", "share a function between files", "free function", "global function", "sample data", "static member cannot be used on instance", "instance member cannot be used on type"]
+code = ["dsa/Language.swift:Workout", "dsa/Language.swift:demoStatic"]
+use_when = "A helper or constant that needs no instance: a formatter two views share (`Workout.minutesLabel(90)`), `static let sample` for previews, a factory like `Workout.empty`. Put it on the type it is about."
+gotcha = "Call statics on the TYPE: `Workout.minutesLabel(5)`. On a value it errors: \"static member cannot be used on instance\". The reverse (an instance property from a static) errors with \"instance member cannot be used on type\": statics have no `self`. Inside the type, reach a static with `Self.minutesLabel(...)`. Alternative: a free function at file top level, callable as `minutesLabel(5)` from any file; fine for small apps, but a static groups it with its type."
+
+[[part.section.entry]]
 id = "argument-labels"
 title = "Argument labels, `_` & calling a method"
 aliases = ["argument label", "external name", "_ parameter", "underscore parameter", "func add(_", "missing argument label", "extraneous argument label", "call a method", "property vs method", "expression unused", "result unused", "from to labels", "call a closure"]

@@ -7,7 +7,7 @@ import Testing
 @Test(
   arguments: [
     ("AccessControl", demoAccessControl),
-    ("ArgumentLabels", demoArgumentLabels),
+    ("ArgumentLabels", demoArgumentLabels), ("Static", demoStatic),
     ("Arrays", demoArrayOperations), ("BoardIndex", demoBoardIndex),
     ("GridLines", demoGridLines), ("GridSteps", demoGridSteps),
     ("Comprehensions", demoComprehensions),
