@@ -1552,7 +1552,7 @@ header = ["Pattern", "Shape", "Good for", "Watch out for"]
 rows = [
   ["MVC", "View controller owns views and talks to the model", "Small UIKit screens, Apple sample code", "Massive view controllers: networking, formatting and layout in one class"],
   ["MVVM", "View model holds state and logic; the view renders it", "SwiftUI by default (`@Observable` view model); testable without UI", "View models that grow into god objects; split by feature"],
-  ["TCA", "State struct, Action enum, Reducer function, Store; effects return actions", "Large teams wanting one predictable data flow and exhaustive tests (Ramp, among others)", "Third-party library, boilerplate, learning curve"],
+  ["TCA", "State struct, Action enum, Reducer function, Store; effects return actions", "Large teams wanting one predictable data flow and exhaustive tests", "Third-party library, boilerplate, learning curve"],
   ["VIPER", "View, Interactor, Presenter, Entity, Router", "Very large UIKit codebases with strict module boundaries", "Five files per screen; heavy for small features"],
   ["Coordinator", "An object owns navigation flow, not the view controllers", "UIKit apps with deep links and reusable screens", "Extra layer; SwiftUI's `NavigationStack(path:)` covers most needs"],
 ]
