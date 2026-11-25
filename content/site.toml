@@ -143,11 +143,20 @@ use_when = "Several types share a capability. Prefer a protocol over a base clas
 gotcha = "Only methods declared in the protocol dispatch dynamically. A method that exists only in the extension always runs the extension version through `any Describable`, a classic interview question."
 
 [[part.section.entry]]
+id = "trimming"
+title = "trimmingCharacters & CharacterSet"
+aliases = ["trimmingCharacters", "trim", "trim whitespace", "strip", "whitespaces", "whitespacesAndNewlines", ".whitespaces", "CharacterSet", "empty or whitespace", "blank string", "isBlank", "punctuationCharacters", "CharacterSet(charactersIn:)"]
+code = ["dsa/Language.swift:demoTrimming"]
+use_when = "Validating typed text (a title of only spaces is empty) and cleaning input before saving."
+gotcha = "Needs `import Foundation` (SwiftUI imports it). Trims the two ENDS only; spaces in the middle stay. Returns a new String, so assign it or use it inline. `.whitespaces` keeps newlines; `.whitespacesAndNewlines` is the safe default for blank checks (a TextField with `axis: .vertical` can contain newlines). Other sets: `.punctuationCharacters`, `.decimalDigits`, `.letters`, `CharacterSet(charactersIn: \"-_\")`. To remove characters everywhere, use `filter` or `replacing(\" \", with: \"\")`."
+
+[[part.section.entry]]
 id = "extensions"
 title = "Extensions & constrained extensions"
-aliases = ["extension", "extend Int", "where Element ==", "computed property extension", "add method to type"]
-code = ["dsa/Protocols.swift:demoExtensions"]
-gotcha = "Extensions add methods, computed properties and conformances, but never stored properties."
+aliases = ["extension", "extend Int", "where Element ==", "computed property extension", "add method to type", "extension on my type", "extension for validation", "stored property in extension", "organize code", "extension conformance"]
+code = ["dsa/Protocols.swift:demoExtensions", "dsa/Language.swift:Meeting", "dsa/Language.swift:demoValidation"]
+use_when = "Adding helpers to types you don't own (`Int`, `Array`), adding a conformance (`extension Song: Comparable`), or grouping one feature of your own type (validation, formatting) apart from its stored properties."
+gotcha = "Extensions add methods, computed properties, initializers and conformances, but never stored properties (\"extensions must not contain stored properties\"). Inside one, `self` and the type's properties work as in the main body. `where Element == Int` limits it to matching types. An init in an extension keeps the memberwise init; one in the struct body replaces it."
 
 [[part.section.entry]]
 id = "generic-functions"
@@ -1579,6 +1588,16 @@ code = ["swiftui/Forms.swift:SignUpForm"]
 availability = "iOS 15+"
 use_when = "Any input screen. Derive validity from the fields as computed properties instead of storing it."
 gotcha = "Setting the focus state to nil hides the keyboard. `.textContentType` lets the system offer saved emails and strong passwords."
+
+[[part.section.entry]]
+id = "sections-validation"
+title = "Sections (header & footer) and inline validation"
+aliases = ["Section", "section header", "section footer", "Form sections", "group rows", "footer message", "inline error", "validation", "disable Save", "show why save is disabled", "validation message", "red error text", "end after start", "if let in view"]
+code = ["swiftui/FormControls.swift:SectionsAndValidation"]
+availability = "iOS 17+"
+use_when = "Grouping form or list rows, and showing why Save is disabled right under the fields it is about."
+figure = { src = "figures/sections-validation.png", alt = "A form titled Sections with a greyed Save button. First group headed Header text holds a Title field. Second group headed Custom header holds Start and End steppers, with red footer text Add a title. Third group has no header.", caption = "SectionsAndValidation: a String header, a custom header with a red footer message, and a plain section. Save is disabled while problem is non-nil." }
+gotcha = "Three forms: `Section(\"Title\") { rows }`, `Section { rows } header: { View } footer: { View }`, or `Section { rows }` with no header. Headers are small grey text above the group (older iOS shows them in capitals). Keep the rule in ONE computed property returning `String?` (nil = valid) and use it twice: `.disabled(problem != nil)` and `if let problem { Text(problem) }` in the footer. Better still, put it on the model in an extension so it is testable."
 
 [[part.section.entry]]
 id = "edit-copy-sheet"

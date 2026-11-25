@@ -66,6 +66,48 @@ func demoClosures() {
   // Names declared inside a closure don't exist outside it.
 }
 
+/// trimmingCharacters(in:) removes a CharacterSet from BOTH ENDS only
+/// and returns a new String (the original is unchanged).
+func demoTrimming() {
+  let raw = "  Lunch \n"
+  assert(raw.trimmingCharacters(in: .whitespaces) == "Lunch \n")
+  assert(raw.trimmingCharacters(in: .whitespacesAndNewlines) == "Lunch")
+  assert("  a  b ".trimmingCharacters(in: .whitespaces) == "a  b")
+  let dashes = CharacterSet(charactersIn: "-")
+  assert("--note--".trimmingCharacters(in: dashes) == "note")
+  assert("42!?".trimmingCharacters(in: .punctuationCharacters) == "42")
+  // The "blank field" check: nothing left after trimming
+  assert("   ".trimmingCharacters(in: .whitespacesAndNewlines).isEmpty)
+}
+
+/// Extensions on YOUR types: group a feature (validation) apart from
+/// the stored properties. Methods and computed properties only.
+struct Meeting {
+  var title: String
+  var start: Int  // hour
+  var end: Int
+}
+
+extension Meeting {
+  /// nil means valid; otherwise the reason, ready to show the user.
+  var problem: String? {
+    if title.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty {
+      return "Add a title."
+    }
+    if end <= start { return "End must be after start." }
+    return nil
+  }
+  var isValid: Bool { problem == nil }
+}
+
+func demoValidation() {
+  assert(Meeting(title: "Sync", start: 9, end: 10).isValid)
+  let blank = Meeting(title: "  ", start: 9, end: 10)
+  assert(blank.problem == "Add a title.")
+  assert(Meeting(title: "Sync", start: 10, end: 10).problem
+    == "End must be after start.")
+}
+
 /// static: belongs to the TYPE, not to one value. Call it on the
 /// type name (`Workout.minutesLabel(90)`); no instance needed.
 struct Workout {

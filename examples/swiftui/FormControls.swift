@@ -145,3 +145,47 @@ struct ButtonRoles: View {
     }
   }
 }
+
+/// Sections group rows. Header above (small grey), footer below
+/// (small grey): the footer is the natural spot for a validation
+/// message. Save stays disabled until the problem is nil.
+struct SectionsAndValidation: View {
+  @State private var title = ""
+  @State private var start = 10
+  @State private var end = 9
+
+  private var problem: String? {
+    if title.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty {
+      return "Add a title."
+    }
+    return end <= start ? "End must be after start." : nil
+  }
+
+  var body: some View {
+    NavigationStack {
+      Form {
+        Section("Header text") {  // shorthand: a String header
+          TextField("Title", text: $title)
+        }
+        Section {
+          Stepper("Start \(start):00", value: $start, in: 0...23)
+          Stepper("End \(end):00", value: $end, in: 1...24)
+        } header: {
+          Text("Custom header")
+        } footer: {
+          if let problem {  // shows only when invalid
+            Text(problem).foregroundStyle(.red)
+          }
+        }
+        Section {
+          Text("A Section with no header")
+        }
+      }
+      .navigationTitle("Sections")
+      .navigationBarTitleDisplayMode(.inline)
+      .toolbar {
+        Button("Save") {}.disabled(problem != nil)
+      }
+    }
+  }
+}
