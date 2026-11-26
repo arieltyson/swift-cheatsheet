@@ -1849,6 +1849,15 @@ code = ["swiftui/Building.swift:TurnFooter"]
 availability = "iOS 17+ for #Preview"
 gotcha = "`Text(\"a\") + Text(\"b\").bold()` is deprecated in iOS 26; interpolate the styled Text instead. Preview with `#Preview { TurnFooter(player: \"X\", canUndo: false) {} }`."
 
+[[part.section.entry]]
+id = "view-composition"
+title = "Splitting a view: computed view properties, sub-view helpers, @ViewBuilder & extracted subviews"
+aliases = ["extracted subview", "extract subview", "subview", "sub-view helper", "subview helper", "helper function returning a view", "computed view property", "private var header: some View", "func row() -> some View", "inline body", "@ViewBuilder", "ViewBuilder", "some View property", "computed view property", "helper view function", "break up body", "body too long", "the compiler is unable to type-check this expression", "container view", "Content: View", "AnyView", "Group", "reusable view"]
+code = ["swiftui/Composition.swift:ReceiptInline", "swiftui/Composition.swift:ReceiptSplit", "swiftui/Composition.swift:AmountLabel", "swiftui/Composition.swift:Panel", "swiftui/Composition.swift:ReceiptCardScreen"]
+availability = "iOS 15+"
+use_when = "Keep the body inline until it stops fitting on one screen. Then move a piece into its own `struct` when it is reused, has its own state, or deserves its own file and preview; a private computed property or `@ViewBuilder` func is only a way to tidy one long body."
+gotcha = "A `body` is itself a `@ViewBuilder`: that is why it can list several views and use `if` and `switch`. A plain computed property or function that returns `some View` must return ONE view type, so an `if`/`else` returning different views fails to compile until you add `@ViewBuilder` (do not reach for `AnyView`, which hides the type and slows diffing). A computed property re-runs with its parent's body and can't be previewed alone; a subview struct gets its own identity, so SwiftUI can skip redrawing it when its inputs are unchanged. Pass a subview only what it needs (`let cents: Int`, a `Binding` if it edits, a closure for actions), not the whole model. Splitting a very long body also fixes \"the compiler is unable to type-check this expression in reasonable time\"."
+
 [[part.section]]
 id = "updates"
 title = "Re-renders & side effects"
