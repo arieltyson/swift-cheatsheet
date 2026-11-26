@@ -8,6 +8,7 @@ import Testing
   arguments: [
     ("AccessControl", demoAccessControl),
     ("ArgumentLabels", demoArgumentLabels), ("Static", demoStatic),
+    ("SelfKinds", demoSelfKinds),
     ("Trimming", demoTrimming), ("Validation", demoValidation),
     ("Arrays", demoArrayOperations),
     ("RemoveByValue", demoRemoveByValue), ("Existence", demoExistence), ("BoardIndex", demoBoardIndex),

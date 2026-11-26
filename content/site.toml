@@ -45,6 +45,14 @@ use_when = "A helper or constant that needs no instance: a formatter two views s
 gotcha = "Call statics on the TYPE: `Workout.minutesLabel(5)`. On a value it errors: \"static member cannot be used on instance\". The reverse (an instance property from a static) errors with \"instance member cannot be used on type\": statics have no `self`. Inside the type, reach a static with `Self.minutesLabel(...)`. Alternative: a free function at file top level, callable as `minutesLabel(5)` from any file; fine for small apps, but a static groups it with its type."
 
 [[part.section.entry]]
+id = "self-kinds"
+title = "self, Self, Type.self & \\.self"
+aliases = ["self", "Self", ".self", "\\.self", "Self vs self", "id: \\.self", "ForEach id self", "identity key path", "key path", "map(\\.self)", "Int.self", "Type.self", "decode([Item].self", "metatype", ".Type", "\\.Self"]
+code = ["dsa/Language.swift:Score", "dsa/Language.swift:demoSelfKinds"]
+use_when = "`\\.self` when each element is its own ID (`ForEach(0..<24, id: \\.self)`). `Self.` to reach a static from inside the type. `Type.self` when an API wants the type itself (`decode([Item].self, from:)`)."
+gotcha = "Lowercase `self` is always a value: inside a method it is this instance (`self.count` when a parameter has the same name); after a type name, `Int.self` is the type as a value. Capital `Self` is a type: the one the code is written inside, so `Self.hourLabel(9)` calls a static. A key path starts at a value, so only `\\.self` exists; `\\.Self` doesn't compile. `id: \\.self` needs the element to be `Hashable` and unique: two equal strings in a `ForEach` get the same ID."
+
+[[part.section.entry]]
 id = "argument-labels"
 title = "Argument labels, `_` & calling a method"
 aliases = ["argument label", "external name", "_ parameter", "underscore parameter", "func add(_", "missing argument label", "extraneous argument label", "call a method", "property vs method", "expression unused", "result unused", "from to labels", "call a closure"]
@@ -1213,11 +1221,11 @@ title = "State & data flow"
 [[part.section.entry]]
 id = "state-binding"
 title = "@State & @Binding"
-aliases = ["state", "binding", "two way", "child view", "$ projection", "source of truth"]
+aliases = ["state", "binding", "two way", "child view", "$ projection", "source of truth", "@State vs @Binding", "when to use @Binding", "child edits parent", "child changes parent state", "copy not shared", "form header binding"]
 code = ["swiftui/State.swift:CounterScreen", "swiftui/State.swift:CounterControl"]
 availability = "iOS 13+"
 use_when = "Simple values owned by one view. The child gets a `@Binding` to read and write the parent's state."
-gotcha = "Mark `@State` private. Passing a new initial value later does not reset it; the view keeps its own storage."
+gotcha = "One owner per value. The view that owns it uses `@State` (mark it private); every child that must change it takes a `@Binding` and gets `$value`. A child that declares its own `@State` gets a COPY, made once: its edits never reach the parent, and later parent changes never reach it. A child that only reads needs neither: a plain `let`. Passing a new initial value to `@State` later does not reset it; the view keeps its own storage."
 
 [[part.section.entry]]
 id = "observable"
@@ -1288,6 +1296,16 @@ availability = "iOS 17+"
 use_when = "`.destructive` for anything that deletes or discards (Delete Event); `.cancel` for the back-out choice in dialogs and alerts. No role for everything else."
 figure = { src = "figures/button-roles.png", alt = "A form. First section: No role in blue, Delete in red, Cancel in blue. Second section: bordered Plain, bordered red Delete, filled blue Save, filled red Delete. Below: a Show a dialog button.", caption = "ButtonRoles. .destructive turns red in every style; .cancel looks plain in a Form but is placed and bolded apart in dialogs." }
 gotcha = "Syntax: `Button(\"Delete\", role: .destructive) { ... }`; the role comes before the action. A role describes meaning; the system picks the look, so don't also set `.foregroundStyle(.red)`. In `.confirmationDialog` and `.alert`, the `.cancel` button is moved to its own slot automatically, and a `.destructive` one is red. For a delete that can't be undone, confirm with `.confirmationDialog` first."
+
+[[part.section.entry]]
+id = "button-styles"
+title = "Button styles, and why .plain"
+aliases = ["buttonStyle", "plain button style", ".plain", "borderless", "bordered", "borderedProminent", "glass", "glassProminent", "controlSize", "buttonBorderShape", "capsule button", "tint", "whole row tappable", "both buttons fire", "two buttons in a List row", "button turns text blue", "custom button label blue", "NavigationLink blue text", "card button"]
+code = ["swiftui/FormControls.swift:ButtonStyles", "swiftui/FormControls.swift:Card", "swiftui/FormControls.swift:RowButtons"]
+availability = "iOS 15+ (.glass: iOS 26)"
+use_when = "`.borderedProminent` for the one main action (Save), `.bordered` for secondary ones, `.plain` when the label is your own design (a card, a row, a cell) and `.borderless` for several buttons in one List row."
+figure = { src = "figures/button-styles.png", alt = "Buttons stacked: .automatic, .plain in black, .borderless, .bordered on a grey capsule, .borderedProminent filled blue, a large green capsule, and .glassProminent. Below, two Standup cards: the left one with its title and time tinted blue on a pale blue card, the right one keeping black text, a grey time and a grey card.", caption = "ButtonStyles. The two cards at the bottom are the same view: the default style tints the whole label, .plain keeps its colours." }
+gotcha = "Why `.plain` is everywhere: the default style (1) tints EVERY text and image in a custom label with the accent colour, so cards and rows turn blue (also true for a `NavigationLink`), and (2) in a `List` or `Form` row makes the whole row the tap target, so two buttons in one row BOTH fire on any tap. `.plain` fixes both and leaves only a dim on press; `.borderless` fixes the row problem but keeps the tint. Size and shape are separate modifiers: `.controlSize(.large)`, `.buttonBorderShape(.capsule)`, `.tint(.green)`. Put `.buttonStyle` on a container to style every button inside."
 
 [[part.section.entry]]
 id = "navigation-choose"
@@ -1553,6 +1571,16 @@ figure = { src = "figures/picker-tags.png", alt = "A form with an Hour menu row 
 gotcha = "The tag's type must match the selection's type exactly: `.tag(9)` for an `Int`, `.tag(mood)` for a `Mood`. A mismatch (an `Int` tag for an `Int?` selection, say) compiles but the picker never changes. In `ForEach(items, id: \\.self)` SwiftUI tags rows with their id automatically, but writing `.tag` makes it explicit."
 
 [[part.section.entry]]
+id = "text-field-styles"
+title = "TextField styles"
+aliases = ["textFieldStyle", "roundedBorder", "plain TextField", "TextField border", "TextField invisible", "text field box", "TextField background", "automatic text field style"]
+code = ["swiftui/FormControls.swift:TextFieldStyles"]
+availability = "iOS 13+"
+use_when = "A TextField outside a `Form` or `List` (a header, a toolbar, a card): add `.textFieldStyle(.roundedBorder)` so people can see where to type."
+figure = { src = "figures/text-field-styles.png", alt = "Four text fields with captions. The automatic or plain field shows only the words Team Sync with no box. The rounded border field shows Team Sync in a thin rounded box. The empty rounded border field shows a grey Name placeholder. The custom field shows Team Sync on a grey rounded background.", caption = "TextFieldStyles. Outside a Form only .roundedBorder or your own background shows the field's edges." }
+gotcha = "iOS has only three: `.automatic` (the default), `.plain` and `.roundedBorder`. Outside a Form, `.automatic` looks exactly like `.plain`: text with no box, so an empty field is just grey placeholder text. Inside a Form or List the row is the box, so leave the style alone. For a custom look, apply `.padding()` then `.background(..., in: .rect(cornerRadius:))` to the field, in that order. The style can go on a container (`VStack { ... }.textFieldStyle(.roundedBorder)`) and applies to every field inside it."
+
+[[part.section.entry]]
 id = "text-field-kinds"
 title = "TextField: text, multi-line & numbers"
 aliases = ["TextField", "text field", "placeholder", "multiline TextField", "axis vertical", "TextEditor", "lineLimit", "number field", "TextField value format", "keyboardType", "autocapitalization", "SecureField", "Binding<String?> to Binding<String>", "optional String TextField"]
@@ -1564,12 +1592,12 @@ gotcha = "The first argument is a placeholder, shown only while empty. Check `ti
 [[part.section.entry]]
 id = "previews"
 title = "Previews: #Preview from scratch"
-aliases = ["#Preview", "preview", "canvas", "preview not showing", "add a preview", "PreviewProvider", "Previewable", "preview with binding", "preview sample data", "preview in NavigationStack", "preview environment", "multiple previews", "preview crashed", "preview closure", "preview not building", "preview build failed", "missing argument in call", "error in another file"]
+aliases = ["#Preview", "preview", "canvas", "preview not showing", "add a preview", "PreviewProvider", "Previewable", "preview with binding", "preview sample data", "preview in NavigationStack", "preview environment", "multiple previews", "preview crashed", "preview closure", "@Previewable", "@Previewable @State", "State in preview", "preview Binding constant", ".constant", "preview not building", "preview build failed", "missing argument in call", "error in another file"]
 table = { header = ["Need", "Write", "Notes"], rows = [
   ["A preview in any file", "`#Preview { MyView() }`", "At file scope, outside every type. Canvas: Editor > Canvas (Opt-Cmd-Return); refresh with Opt-Cmd-P."],
   ["Several, named", "`#Preview(\"Empty\") { ... }` twice", "Each gets a tab in the canvas."],
   ["Custom data", "`#Preview { EventRow(event: Event(title: \"Standup\", start: 9, end: 10)) }`", "Build the values right there, or add a `static let sample` on the type."],
-  ["A view that takes a Binding", "`@Previewable @State var on = true` then `Toggle(\"x\", isOn: $on)`", "Xcode 16+. Older: `.constant(true)` (read-only)."],
+  ["A view that takes a Binding", "`@Previewable @State var on = true` then `Toggle(\"x\", isOn: $on)`", "Why: the `#Preview` body is a closure, not a View, so a bare `@State` there has nowhere to live. `@Previewable` (Xcode 16) wraps the body in a hidden View that owns it. Put those lines first. Not needed when the view owns its own `@State` or takes plain values. `.constant(true)` also compiles, but it never changes, so pickers and fields look frozen."],
   ["An `@Observable` model the view reads", "`MyView().environment(Store())`", "Pass exactly what the app passes, or the preview crashes."],
   ["A view that takes a closure (`let onSave: (Song) -> Void`)", "`#Preview { SongForm(onSave: { _ in }) }` or `SongForm { _ in }`", "A do-nothing closure: `_` ignores the input. To see it fire: `{ print($0) }`."],
   ["Preview won't build but its file looks fine", "Fix the errors in OTHER files (Issue navigator, Cmd-5)", "The canvas compiles the whole app target, so one error anywhere (often a call site you just broke by adding a parameter) stops every preview."],

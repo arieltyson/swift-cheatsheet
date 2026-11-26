@@ -97,6 +97,98 @@ struct TextFieldKinds: View {
   }
 }
 
+/// TextField styles on iOS: .automatic (the default), .plain and
+/// .roundedBorder. Outside a Form, the default draws NO box at all.
+struct TextFieldStyles: View {
+  @State private var name = "Team Sync"
+  @State private var empty = ""
+
+  var body: some View {
+    VStack(alignment: .leading, spacing: 8) {
+      Text(".automatic / .plain: no box").font(.caption)
+      TextField("Name", text: $name)
+      Text(".roundedBorder").font(.caption)
+      TextField("Name", text: $name).textFieldStyle(.roundedBorder)
+      Text(".roundedBorder, empty: placeholder").font(.caption)
+      TextField("Name", text: $empty).textFieldStyle(.roundedBorder)
+      Text("Custom: padding + background").font(.caption)
+      TextField("Name", text: $name)
+        .padding(10)
+        .background(.quaternary, in: .rect(cornerRadius: 10))
+    }
+    .padding()
+  }
+}
+
+/// Button styles. In a List or Form row, the default style turns the
+/// WHOLE row into the tap target; .borderless or .plain limits a
+/// button to its own frame. .plain also keeps a custom label's own
+/// colours instead of tinting all of it.
+struct ButtonStyles: View {
+  @State private var taps = 0
+
+  var body: some View {
+    VStack(alignment: .leading, spacing: 10) {
+      Button(".automatic") { taps += 1 }
+      Button(".plain") { taps += 1 }.buttonStyle(.plain)
+      Button(".borderless") { taps += 1 }.buttonStyle(.borderless)
+      Button(".bordered") { taps += 1 }.buttonStyle(.bordered)
+      Button(".borderedProminent") { taps += 1 }
+        .buttonStyle(.borderedProminent)
+      Button("Large capsule") { taps += 1 }
+        .buttonStyle(.borderedProminent)
+        .controlSize(.large)
+        .buttonBorderShape(.capsule)
+        .tint(.green)
+      if #available(iOS 26, *) {
+        Button(".glassProminent") { taps += 1 }
+          .buttonStyle(.glassProminent)
+      }
+      Text("A custom label").font(.caption).padding(.top)
+      HStack {
+        Button { taps += 1 } label: { Card() }  // tinted: all blue
+        Button { taps += 1 } label: { Card() }.buttonStyle(.plain)
+      }
+    }
+    .padding()
+  }
+}
+
+private struct Card: View {
+  var body: some View {
+    VStack(alignment: .leading) {
+      Image(systemName: "star.fill").foregroundStyle(.orange)
+      Text("Standup").font(.headline)
+      Text("9 AM").foregroundStyle(.secondary)
+    }
+    .padding(10)
+    .background(.quaternary, in: .rect(cornerRadius: 10))
+  }
+}
+
+/// Two buttons in one List row: with the default style, a tap
+/// anywhere in the row runs BOTH actions.
+struct RowButtons: View {
+  @State private var likes = 0
+  @State private var shares = 0
+
+  var body: some View {
+    List {
+      HStack {  // broken: one tap = likes + 1 AND shares + 1
+        Button("Like") { likes += 1 }
+        Spacer()
+        Button("Share") { shares += 1 }
+      }
+      HStack {  // fixed: each button only answers its own taps
+        Button("Like") { likes += 1 }.buttonStyle(.borderless)
+        Spacer()
+        Button("Share") { shares += 1 }.buttonStyle(.borderless)
+      }
+      Text("Likes \(likes), shares \(shares)")
+    }
+  }
+}
+
 // Previews: Xcode renders each #Preview in the canvas. Several per
 // file are fine; give them names to tell them apart.
 #Preview("Form") { FormBasics() }
@@ -108,8 +200,9 @@ struct TextFieldKinds: View {
 }
 
 #Preview("Bindings") {
-  // @Previewable lets a preview own state for a view that takes a
-  // Binding (Xcode 16+)
+  // A #Preview body is a closure, not a View, so it has nowhere to
+  // keep @State. @Previewable wraps it in a hidden View that does.
+  // Needed only when the view under preview takes a Binding.
   @Previewable @State var on = true
   Toggle("Live", isOn: $on).padding()
 }

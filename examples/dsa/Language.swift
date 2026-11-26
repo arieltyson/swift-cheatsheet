@@ -137,6 +137,31 @@ func demoStatic() {
   // shorter calls, but it fills the global namespace.
 }
 
+/// Lowercase `self` is a VALUE: this instance, or after a type name
+/// the type itself as a value. Capital `Self` is a TYPE: the type
+/// these lines are written inside.
+struct Score {
+  var count = 0
+  static func zero() -> Self { Self(count: 0) }  // Self == Score
+  mutating func add(_ count: Int) {
+    self.count += count  // self.count: the property, not the param
+  }
+}
+
+func demoSelfKinds() {
+  var score = Score.zero()
+  score.add(2)
+  assert(score.count == 2)
+  // \.self: the identity key path. Each element IS its own value,
+  // which is what ForEach(0..<24, id: \.self) uses as the ID.
+  assert([3, 1, 2].map(\.self) == [3, 1, 2])
+  // Type.self: the type passed as a value (decoders, adaptors)
+  let data = Data("[1, 2]".utf8)
+  let numbers = try? JSONDecoder().decode([Int].self, from: data)
+  assert(numbers == [1, 2])
+  // \.Self doesn't exist: Self is a type, not a property of a value
+}
+
 /// Argument labels: the name before the parameter is what the CALLER
 /// writes. `_` means "no label". Reading a property is not calling.
 final class SongQueue {
