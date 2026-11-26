@@ -30,6 +30,16 @@ function markCurrentSection() {
   }
 }
 
+// The sticky header's height changes when its links wrap or the font
+// size changes. The observer runs only then, never while scrolling.
+function trackHeaderHeight() {
+  const root = document.documentElement;
+  new ResizeObserver(([entry]) => {
+    const height = entry.borderBoxSize[0].blockSize;
+    root.style.setProperty("--header-height", `${height}px`);
+  }).observe(document.querySelector(".site-header"));
+}
+
 function jumpTo(id) {
   const target = document.getElementById(id);
   if (!target) return;
@@ -218,6 +228,7 @@ function setUpThemeToggle() {
   label();
 }
 
+trackHeaderHeight();
 markCurrentSection();
 setUpJumpList();
 addCopyButtons();

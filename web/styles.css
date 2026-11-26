@@ -25,6 +25,8 @@
   --space-12: 3rem;
   --radius-small: 4px;
   --radius-code: 6px;
+  /* app.js replaces this with the measured height. */
+  --header-height: 4.25rem;
 }
 
 :root[data-theme="light"] {
@@ -82,6 +84,7 @@ a {
   gap: var(--space-3);
   padding: var(--space-3) var(--space-4);
   border-bottom: 1px solid var(--border);
+  background: var(--bg);
 }
 
 .brand {
@@ -183,9 +186,26 @@ h4 {
   margin: var(--space-12) 0 var(--space-4);
 }
 
+/* Off-screen sections skip style, layout and paint until they near
+   the viewport. Cmd+F and the jump list still reach them. Each section
+   is its own layout box, so margins can't collapse through its edges:
+   the gap above a section sits on the section, and its last child has
+   none. The inline padding gives focus outlines and the jump highlight
+   room so the section's paint clip never cuts them. */
+.section {
+  content-visibility: auto;
+  contain-intrinsic-size: auto 3000px;
+  margin-top: var(--space-12);
+  padding-inline: var(--space-2);
+  margin-inline: calc(-1 * var(--space-2));
+}
+.section > :last-child {
+  margin-bottom: 0;
+}
+
 .section > h3 {
   font-size: 1.5rem;
-  margin: var(--space-12) 0 var(--space-2);
+  margin: 0 0 var(--space-2);
   padding-top: var(--space-4);
   border-top: 1px solid var(--border);
 }
@@ -437,12 +457,25 @@ td:first-child {
   font-weight: 600;
 }
 
+/* Wide screens keep the header in view. It's opaque on purpose: a
+   blurred see-through bar would be re-blurred on every scroll frame.
+   Phones keep it in the flow, where the links wrap onto two lines. */
 @media (min-width: 68.75rem) {
-  .toc {
+  html {
+    scroll-padding-top: var(--header-height);
+  }
+
+  .site-header {
     position: sticky;
     top: 0;
+    z-index: 1;
+  }
+
+  .toc {
+    position: sticky;
+    top: var(--header-height);
     align-self: start;
-    max-height: 100vh;
+    max-height: calc(100vh - var(--header-height));
     overflow-y: auto;
     padding-bottom: var(--space-6);
   }
@@ -578,6 +611,9 @@ dialog::backdrop {
   }
   .part > h2 {
     break-before: page;
+  }
+  .section {
+    content-visibility: visible;
   }
   pre,
   table {
