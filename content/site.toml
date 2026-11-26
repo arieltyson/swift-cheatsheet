@@ -25,9 +25,9 @@ gotcha = "Never force-unwrap (`!`) a value that can legitimately be missing. Use
 [[part.section.entry]]
 id = "value-semantics"
 title = "struct vs class"
-aliases = ["value type", "reference type", "copy on write", "identity", "==="]
+aliases = ["value type", "reference type", "copy on write", "identity", "===", "return a copy", "reads return copies", "model struct store class", "encapsulation"]
 code = ["dsa/Language.swift:demoValueSemantics"]
-gotcha = "Arrays, dictionaries, sets and strings are values: copying is O(1) until one copy is mutated, then O(n)."
+gotcha = "Arrays, dictionaries, sets and strings are values: copying is O(1) until one copy is mutated, then O(n). A common design is a struct for each record and a class for the one store that owns them. Returning a struct (or an array of them) hands the caller a copy, so changing it can't touch the store, and the only way to change real data is to call one of the store's methods."
 
 [[part.section.entry]]
 id = "closures"
@@ -90,6 +90,23 @@ code = ["dsa/Language.swift:Tally", "dsa/Language.swift:demoAccessControl"]
 gotcha = "A method the view calls (a button's `undo()`) can't be `private`. Keep helpers private, and use `private(set)` for state the view reads but must not change. A yes/no question is a computed property named for when it is true (`var canUndo: Bool { !moves.isEmpty }`), negated at the call site: `.disabled(!game.canUndo)`. Prefer `isEmpty` over `count > 0`."
 
 [[part.section.entry]]
+id = "public-interface"
+title = "Designing a class's public interface"
+aliases = ["public interface", "API design", "design a class", "where to start", "read write interface", "methods vs properties", "mutations", "derived values", "computed property", "nouns verbs", "state the interface first"]
+
+[part.section.entry.table]
+header = ["Look in the prompt for", "It becomes", "Example: a to-do list"]
+rows = [
+  ["Nouns (the things)", "Types: a struct per record, a class for the owner", "`struct Task`, `final class TodoList`"],
+  ["Facts about each thing", "Stored `let` properties", "`id`, `title`, `due`"],
+  ["Verbs (what callers do)", "Methods that change state", "`add(title:due:)`, `complete(id:)`"],
+  ["Questions callers ask", "Read-only computed properties", "`var overdue: [Task]`, `var openCount: Int`"],
+  ["Ways an action fails", "An `Error` enum, methods marked `throws`", "`case emptyTitle, unknownID`"],
+  ["Who makes IDs", "The owner generates them", "`UUID()` inside `add`"],
+  ["The stored data itself", "`private` or `private(set)`", "`private(set) var tasks`"],
+]
+
+[[part.section.entry]]
 id = "comparable"
 title = "A Comparable, Hashable type"
 aliases = ["Comparable", "Hashable", "custom sort", "tuple comparison", "<", "protocol conformance"]
@@ -104,11 +121,11 @@ group = "Syntax"
 [[part.section.entry]]
 id = "custom-errors"
 title = "Custom errors: enum, throw & LocalizedError"
-aliases = ["Error enum", "custom error", "throw", "throws", "typed throws", "LocalizedError", "errorDescription", "localizedDescription"]
+aliases = ["Error enum", "custom error", "throw", "throws", "typed throws", "LocalizedError", "errorDescription", "localizedDescription", "exception", "invalid operation", "throws vs Bool vs optional", "reject bad input"]
 code = ["dsa/Errors.swift:TransferError", "dsa/Errors.swift:parseCents", "dsa/Errors.swift:withdraw"]
 availability = "Typed throws need Swift 6"
 use_when = "An enum conforming to `Error` lists every way an operation fails; associated values carry the details."
-gotcha = "Plain `throws` is the default and easiest to evolve. Use `throws(MyError)` when callers must handle one exact error type."
+gotcha = "Plain `throws` is the default and easiest to evolve. Use `throws(MyError)` when callers must handle one exact error type. Swift calls these errors, not exceptions: a throwing function is marked `throws`, every call is marked `try`, and the error is an ordinary return path rather than a stack unwind, so say \"it throws an error\". For a bad input that the caller should hear about, throw. Return an optional when \"not found\" is normal and needs no reason, and use `precondition` only for a programmer mistake that should crash."
 
 [[part.section.entry]]
 id = "do-catch"
@@ -341,9 +358,10 @@ gotcha = "`String(format: \"%.2f\", x)` works, but FormatStyle handles currency 
 [[part.section.entry]]
 id = "money-in-cents"
 title = "Store money as integer cents or Decimal"
-aliases = ["float precision", "0.1 + 0.2", "Decimal", "cents to dollars", "quotientAndRemainder"]
+aliases = ["float precision", "0.1 + 0.2", "Decimal", "cents to dollars", "quotientAndRemainder", "why not Double for money", "floating point error", "binary fraction", "amountCents", "Decimal literal"]
 code = ["dsa/Formatting.swift:demoCents"]
 use_when = "Any calculation with money. Never use Double for amounts you add up."
+gotcha = "A `Double` stores a number in binary, and most decimal fractions such as 0.1 have no exact binary form (just as 1/3 has no exact decimal form), so it keeps the nearest value it can. That tiny error makes `0.1 + 0.2 == 0.3` false and grows as you add thousands of amounts. Integer cents (`1234` for $12.34) are exact, fast and `Comparable`, so they are the simplest choice in an interview; turn them into dollars only for display. `Decimal` stores base-10 digits and is exact too, but `let d: Decimal = 0.1` is built from a Double literal and can carry the error, so write `Decimal(string: \"0.1\")!`."
 
 [[part.section.entry]]
 id = "number-formats"
@@ -2193,10 +2211,10 @@ group = "Swift concurrency"
 [[part.section.entry]]
 id = "actor"
 title = "actor: shared state without data races"
-aliases = ["actor", "data race", "thread safe", "isolation", "reentrancy", "Sendable"]
+aliases = ["actor", "data race", "thread safe", "isolation", "reentrancy", "Sendable", "single-threaded", "single threaded", "multithreaded", "concurrent access", "lock", "thread"]
 code = ["concurrency/Isolation.swift:BankAccount", "concurrency/Isolation.swift:demoActor"]
 availability = "iOS 13+"
-gotcha = "Actors are re-entrant: state can change at every `await` inside an actor method. Re-check conditions after awaiting."
+gotcha = "Actors are re-entrant: state can change at every `await` inside an actor method. Re-check conditions after awaiting. A thread is one line of execution, and an app runs several at once. Single-threaded means only one thread ever touches an object (in an app, usually the main thread), so a plain class needs no protection. If two threads can write the same property at the same moment, that is a data race and can corrupt it; an actor fixes that by letting one caller in at a time."
 
 [[part.section.entry]]
 id = "actor-init"
