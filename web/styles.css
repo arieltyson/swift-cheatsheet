@@ -381,9 +381,12 @@ table {
   font-size: 0.9375rem;
 }
 
+/* break-word keeps whole words together, so each column is at least
+   as wide as its longest word ("Value", never "Valu / e"). Only a
+   phone, where that could push the table off screen, may split. */
 th,
 td {
-  overflow-wrap: anywhere;
+  overflow-wrap: break-word;
   padding: var(--space-2) var(--space-3);
   text-align: left;
   vertical-align: top;
@@ -395,10 +398,20 @@ th {
   border-bottom-color: var(--border-strong);
 }
 
-/* Row labels are short words: keep them whole, never "Patte rn". */
-th:first-child,
-td:first-child {
+th :not(pre) > code,
+td :not(pre) > code,
+th > code,
+td > code {
   overflow-wrap: break-word;
+}
+
+@media (max-width: 40rem) {
+  th:not(:first-child),
+  td:not(:first-child),
+  th:not(:first-child) code,
+  td:not(:first-child) code {
+    overflow-wrap: anywhere;
+  }
 }
 
 /* Table of contents */
