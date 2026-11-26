@@ -97,3 +97,37 @@ func demoMainActor() async {
   assert(model.results == ["hash map"])
   assert(model.isLoading == false)
 }
+
+/// Sendable: safe to hand to another task or actor. Structs and enums
+/// whose stored values are all Sendable get it automatically inside
+/// their module; writing it out makes it part of the public promise.
+struct Receipt: Sendable, Equatable {
+  let merchant: String
+  let cents: Int
+}
+
+enum ReceiptError: Error, Equatable, Sendable {
+  case empty
+}
+
+/// A class is Sendable only if it is final and every stored property
+/// is a constant (let) of a Sendable type.
+final class Settings: Sendable {
+  let currency: String
+  init(currency: String) { self.currency = currency }
+}
+
+func demoSendable() async {
+  let receipt = Receipt(merchant: "Cafe", cents: 450)
+  let settings = Settings(currency: "USD")
+  // Both cross into a new task: allowed because both are Sendable
+  let label = await Task.detached {
+    "\(receipt.merchant) \(receipt.cents) \(settings.currency)"
+  }.value
+  assert(label == "Cafe 450 USD")
+  // A closure that runs elsewhere is marked @Sendable and may only
+  // capture Sendable values
+  let double: @Sendable (Int) -> Int = { $0 * 2 }
+  assert(double(receipt.cents) == 900)
+  assert(ReceiptError.empty == .empty)
+}

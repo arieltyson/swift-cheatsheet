@@ -15,6 +15,7 @@ ALLOWED_IMPORTS = {
     "app": {"Foundation", "Observation"},
     "uikit": {"UIKit", "Foundation", "SwiftUI"},
     "concurrency": {"Foundation", "Dispatch", "Combine", "Synchronization"},
+    "testing": {"Testing", "Foundation"},
 }
 DECLARATIONS = {"func", "struct", "class", "enum", "protocol", "typealias"}
 MAX_LINE_LENGTH = 72

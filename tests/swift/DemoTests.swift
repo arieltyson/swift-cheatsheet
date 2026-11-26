@@ -55,6 +55,9 @@ import Testing
     ("Transforms", demoTransforms),
     ("Trie", demoTrie), ("UnionFind", demoUnionFind),
     ("ValueSemantics", demoValueSemantics),
+    ("Equatable", demoEquatable),
+    ("DiscardableResult", demoDiscardableResult),
+    ("ReadOnlyViews", demoReadOnlyViews),
     ("VectorLength", demoVectorLength),
   ] as [(String, @Sendable () -> Void)])
 func demoRuns(name: String, demo: @Sendable () -> Void) {

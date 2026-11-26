@@ -8,6 +8,7 @@ import Testing
 @Test func asyncDemosRun() async {
   await demoAsyncAwait()
   await demoTasks()
+  await demoSendable()
   await demoCancellation()
   await demoTimeout()
   await demoAsyncStream()

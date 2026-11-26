@@ -136,9 +136,10 @@ class BuiltPageTests(unittest.TestCase):
         )
 
     def test_icon_tile_is_swift_orange(self) -> None:
-        # The link and highlight tokens are derived from this colour
+        # The link and highlight tokens are derived from this colour,
+        # which ends the tile's orange gradient behind the white swift
         icon = (WEB / "favicon.svg").read_text(encoding="utf-8")
-        self.assertIn('fill="#F05138"', icon)
+        self.assertIn('stop-color="#F05138"', icon)
 
     def test_link_previews_name_the_site(self) -> None:
         # Without og:title, Safari's Reading List titles a #fragment

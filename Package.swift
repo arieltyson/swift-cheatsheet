@@ -21,6 +21,7 @@ let package = Package(
       dependencies: ["ConcurrencyExamples"],
       path: "tests/concurrency"
     ),
+    .testTarget(name: "TestingExamples", path: "examples/testing"),
     .testTarget(
       name: "AppExamplesTests",
       dependencies: ["AppExamples"],

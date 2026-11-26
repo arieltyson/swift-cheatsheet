@@ -341,3 +341,69 @@ func demoComparable() {
   assert(jobs.min()?.name == "plan")
   assert(jobs.sorted().map(\.name) == ["plan", "write"])
 }
+
+/// Identifiable says which record this is; Equatable says whether
+/// two values match right now. All stored properties are Equatable,
+/// so Swift writes == for free.
+struct Note: Identifiable, Equatable, Hashable {
+  let id: Int
+  var text: String
+}
+
+func demoEquatable() {
+  let saved = Note(id: 1, text: "Milk")
+  var draft = saved
+  assert(draft == saved)  // every property matches
+  draft.text = "Oat milk"
+  assert(draft.id == saved.id)  // same record...
+  assert(draft != saved)  // ...but its values changed
+  // Arrays of Equatable values compare element by element, in order
+  assert([saved, draft] != [draft, saved])
+  // Hashable (which includes Equatable) allows Set and Dictionary
+  let unique: Set<Note> = [saved, saved, draft]
+  assert(unique.count == 2)
+}
+
+/// Callers may ignore the returned value without a warning.
+final class Clicker {
+  private(set) var count = 0
+
+  @discardableResult
+  func click() -> Int {
+    count += 1
+    return count
+  }
+}
+
+func demoDiscardableResult() {
+  let clicker = Clicker()
+  clicker.click()  // no "result unused" warning
+  let latest = clicker.click()
+  assert(latest == 2 && clicker.count == 2)
+  // Without the attribute you'd write: _ = clicker.click()
+}
+
+/// Two ways to let callers read stored data but never change it.
+struct Shelf {
+  // 1. private(set): callers read the array exactly as stored
+  private(set) var titles: [String] = []
+  // 2. private storage + computed property: callers get a new value
+  //    built on every read, so the stored shape can stay hidden
+  private var pages: [String: Int] = [:]
+  var totalPages: Int { pages.values.reduce(0, +) }
+
+  mutating func add(_ title: String, pages count: Int) {
+    titles.append(title)
+    pages[title] = count
+  }
+}
+
+func demoReadOnlyViews() {
+  var shelf = Shelf()
+  shelf.add("Dune", pages: 412)
+  shelf.add("Emma", pages: 474)
+  assert(shelf.titles == ["Dune", "Emma"])
+  assert(shelf.totalPages == 886)
+  // shelf.titles = []    // error: setter is private
+  // shelf.pages          // error: 'pages' is inaccessible
+}

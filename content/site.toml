@@ -14,6 +14,28 @@ title = "Language essentials"
 group = "Syntax"
 
 [[part.section.entry]]
+id = "swift-types"
+title = "Swift's kinds of types at a glance"
+aliases = ["types", "all types", "kinds of types", "which type should I use", "struct enum class actor protocol", "value vs reference", "tuple", "typealias", "function type", "Optional", "collection types", "Int Double Decimal Bool"]
+
+[part.section.entry.table]
+header = ["Type", "Semantics", "Best for", "Nuances"]
+rows = [
+  ["`struct`", "Value", "Data records: a transaction, a point, a draft in a form. The default choice", "Free memberwise `init`. Methods that change it are `mutating`. A `let` struct can't change at all. No inheritance"],
+  ["`enum`", "Value", "A fixed set of choices or states: `.loading`, `.loaded`, `.failed`; error reasons", "Associated values carry data per case. `switch` must cover every case. Raw values (`String`, `Int`) or associated values, never both"],
+  ["`class`", "Reference", "One object with identity that many parts of the app hold: a store, a view model, a service", "Needs an `init` unless every property has a default. Mark it `final` unless you mean to subclass. `===` checks same object. Watch for retain cycles"],
+  ["`actor`", "Reference", "Mutable state touched from several tasks at once: a cache, a counter, a download queue", "Runs one caller at a time, so outside calls need `await`. Re-entrant: state can change across an `await` inside it"],
+  ["`protocol`", "A contract", "Describing what a type can do, so code depends on the ability: `Identifiable`, a `RepoService` you can fake in tests", "Default methods via `extension`. `some P` is one hidden concrete type (fast); `any P` is a box that can hold any conforming type"],
+  ["Tuple `(Int, String)`", "Value", "Returning two or three values from a function: `(min, max)`", "Not `Hashable`, can't conform to protocols, so use a struct as a dictionary key or anything long-lived"],
+  ["Function type `(Int) -> Bool`", "Reference", "Passing behaviour around: `sorted(by:)`, `onSave` callbacks", "Closures capture variables by reference; `[weak self]` avoids retain cycles. `@escaping` when stored for later, `@Sendable` when run in another task"],
+  ["`Optional<T>`, written `T?`", "Value (an enum)", "A value that may be missing: `first`, a dictionary lookup, a failed parse", "Really `enum { case none, some(T) }`. Unwrap with `if let`, `guard let`, `??`. Avoid `!`"],
+  ["`Array`, `Dictionary`, `Set`", "Value, copy on write", "Ordered list, key to value lookup, unique members", "Copying is free until one copy changes. Dictionary and Set need `Hashable` elements and have no order"],
+  ["`Int`, `Double`, `Decimal`, `Bool`, `String`", "Value", "`Int` for counts and money in cents, `Double` for measurements, `Decimal` for exact base-10 money, `String` for text", "All are structs. `Double` can't store 0.1 exactly. `String` indexes aren't `Int`: use `Array(s)` for index-heavy work"],
+  ["`typealias`", "Same as original", "A shorter or clearer name: `typealias Cents = Int`", "Not a new type, so the compiler still lets an `Int` go where `Cents` is expected"],
+  ["Generic `<T>`", "Depends on `T`", "One function or type that works for many types: `Stack<Element>`", "Constrain with `where T: Comparable`. Swift makes a specialised version, so it costs nothing at runtime"],
+]
+
+[[part.section.entry]]
 id = "optionals"
 title = "Optionals, if let & guard"
 aliases = ["nil", "unwrap", "nil coalescing", "??", "guard let", "optional binding", "Int from String", "guard direction", "popLast optional", "value of optional type must be unwrapped", "guard order", "side effect in guard"]
@@ -60,6 +82,14 @@ code = ["dsa/Language.swift:SongQueue", "dsa/Language.swift:demoArgumentLabels"]
 gotcha = "The caller writes the label, not the parameter name: `func add(_ song:)` is called `add(x)`; `func add(song:)` is called `add(song: x)`. Wrong label errors read \"missing/extraneous argument label\". Writing `store.items` in a closure just reads the array (an unused-value warning, no change); to change it, call the method: `store.add(item)`. Calling a closure variable takes no labels: `onSave(item)`."
 
 [[part.section.entry]]
+id = "discardable-result"
+title = "@discardableResult"
+aliases = ["@discardableResult", "discardable result", "result of call is unused", "unused result warning", "_ =", "ignore return value", "return value from mutating method"]
+code = ["dsa/Language.swift:Clicker", "dsa/Language.swift:demoDiscardableResult"]
+use_when = "A method that mainly DOES something (records, inserts, saves) and also returns a handy value, such as the new item, that many callers won't need."
+gotcha = "Without it, ignoring a non-Void result gives the warning \"result of call to 'click()' is unused\", and callers have to write `_ = clicker.click()`. It only silences that warning: the function still runs, and if it `throws`, callers still need `try`. Leave it off pure questions such as `total()` or `sorted()`, because ignoring their result is almost always a bug the warning should catch."
+
+[[part.section.entry]]
 id = "enums"
 title = "Enums with associated values"
 aliases = ["enum", "switch", "pattern matching", "associated value", "computed property", "if case", "guard case", "case let", "Equatable enum", "raw value", "rawValue", "enum String", "CaseIterable", "allCases", "init rawValue"]
@@ -85,9 +115,9 @@ gotcha = "Observers don't run for assignments inside `init`, so an init still ha
 [[part.section.entry]]
 id = "access-control"
 title = "private, private(set) & internal"
-aliases = ["private", "private(set)", "fileprivate", "internal", "public", "access control", "inaccessible due to private protection level", "computed property vs function", "Bool naming", "isEmpty vs count"]
-code = ["dsa/Language.swift:Tally", "dsa/Language.swift:demoAccessControl"]
-gotcha = "A method the view calls (a button's `undo()`) can't be `private`. Keep helpers private, and use `private(set)` for state the view reads but must not change. A yes/no question is a computed property named for when it is true (`var canUndo: Bool { !moves.isEmpty }`), negated at the call site: `.disabled(!game.canUndo)`. Prefer `isEmpty` over `count > 0`."
+aliases = ["private", "private(set)", "fileprivate", "internal", "public", "access control", "read-only property", "private(set) vs computed property", "hide storage", "read only from outside", "inaccessible due to private protection level", "computed property vs function", "Bool naming", "isEmpty vs count"]
+code = ["dsa/Language.swift:Tally", "dsa/Language.swift:demoAccessControl", "dsa/Language.swift:Shelf", "dsa/Language.swift:demoReadOnlyViews"]
+gotcha = "`private(set) var items` lets callers read the stored value exactly as it is but only the type can assign it; it is the simplest choice when the stored data is already what callers want. `private var storage` plus a computed `var items: [Item] { ... }` hides how data is stored and builds the answer on each read (sorted, filtered, summed), so you can change the storage later (an array to a dictionary) without changing callers; the cost is that the work runs on every read. Either way callers of a struct get a copy. A method the view calls (a button's `undo()`) can't be `private`. Keep helpers private, and use `private(set)` for state the view reads but must not change. A yes/no question is a computed property named for when it is true (`var canUndo: Bool { !moves.isEmpty }`), negated at the call site: `.disabled(!game.canUndo)`. Prefer `isEmpty` over `count > 0`."
 
 [[part.section.entry]]
 id = "public-interface"
@@ -113,6 +143,14 @@ aliases = ["Comparable", "Hashable", "custom sort", "tuple comparison", "<", "pr
 code = ["dsa/Language.swift:Job", "dsa/Language.swift:demoComparable"]
 gotcha = "Tuples compare element by element, so `(a.priority, a.name) < (b.priority, b.name)` breaks ties for free."
 
+[[part.section.entry]]
+id = "equatable"
+title = "Equatable, Identifiable & Hashable"
+aliases = ["Equatable", "==", "!=", "synthesized ==", "Identifiable vs Equatable", "same id different values", "onChange requires Equatable", "compare structs", "Hashable", "has the form changed", "dirty check"]
+code = ["dsa/Language.swift:Note", "dsa/Language.swift:demoEquatable"]
+use_when = "Equatable whenever you compare two values with `==`: a draft against the saved copy, expected against actual in a test, or a value SwiftUI watches. Identifiable when SwiftUI must track the same record across edits. Hashable for Set members, Dictionary keys and `id: \\.self`."
+gotcha = "Swift writes `==` for you when every stored property (or every associated value) is Equatable; otherwise you write `static func ==`. Identifiable asks \"is this the same record?\" (same `id`) while Equatable asks \"are the values identical right now?\", so an edited copy has the same id but is not `==`. SwiftUI's `.onChange(of:)` needs an Equatable value, because it compares old and new to decide whether to run. Error enums usually add Equatable too, so tests can write `#expect(throws: MyError.someCase)`. Hashable includes Equatable, so `: Hashable` alone gives you both."
+
 [[part.section]]
 id = "errors"
 title = "Error handling"
@@ -121,11 +159,11 @@ group = "Syntax"
 [[part.section.entry]]
 id = "custom-errors"
 title = "Custom errors: enum, throw & LocalizedError"
-aliases = ["Error enum", "custom error", "throw", "throws", "typed throws", "LocalizedError", "errorDescription", "localizedDescription", "exception", "invalid operation", "throws vs Bool vs optional", "reject bad input"]
+aliases = ["Error enum", "custom error", "throw", "throws", "typed throws", "throws(MyError)", "Error protocol", "Error Equatable", "any Error", "LocalizedError", "errorDescription", "localizedDescription", "exception", "invalid operation", "throws vs Bool vs optional", "reject bad input"]
 code = ["dsa/Errors.swift:TransferError", "dsa/Errors.swift:parseCents", "dsa/Errors.swift:withdraw"]
 availability = "Typed throws need Swift 6"
 use_when = "An enum conforming to `Error` lists every way an operation fails; associated values carry the details."
-gotcha = "Plain `throws` is the default and easiest to evolve. Use `throws(MyError)` when callers must handle one exact error type. Swift calls these errors, not exceptions: a throwing function is marked `throws`, every call is marked `try`, and the error is an ordinary return path rather than a stack unwind, so say \"it throws an error\". For a bad input that the caller should hear about, throw. Return an optional when \"not found\" is normal and needs no reason, and use `precondition` only for a programmer mistake that should crash."
+gotcha = "Only a type that conforms to `Error` can be thrown, so `throw MyError.x` won't compile without `: Error`. Plain `throws` means \"throws `any Error`\", so a `catch` only knows it has some error. Typed throws, `func parse() throws(TransferError)`, promise exactly one error type, so in `catch` the `error` is already a `TransferError` and you can `switch` on it with no casting, and `throw .invalidAmount(text)` can drop the type name. Plain `throws` is still the default because it is easier to change later; use typed throws for a small module whose failures are a closed list. Add `Equatable` so tests and code can compare errors with `==`, and `Sendable` when the error crosses tasks or actors (an enum with Sendable associated values gets it automatically). Swift calls these errors, not exceptions: a throwing function is marked `throws`, every call is marked `try`, and the error is an ordinary return path rather than a stack unwind, so say \"it throws an error\". For a bad input that the caller should hear about, throw. Return an optional when \"not found\" is normal and needs no reason, and use `precondition` only for a programmer mistake that should crash."
 
 [[part.section.entry]]
 id = "do-catch"
@@ -1957,38 +1995,6 @@ use_when = "Anything a view model talks to that is slow, random or external: net
 gotcha = "Pass dependencies through `init`, not a global singleton: the test can then hand in a fake, and the type's needs are visible in its signature."
 
 [[part.section]]
-id = "testing"
-title = "Testing"
-group = "Structure"
-
-[[part.section.entry]]
-id = "fake-service"
-title = "Test a view model with a fake"
-aliases = ["unit test", "fake", "mock", "stub", "test double", "test view model", "async test"]
-code = ["app/Services.swift:FakeRepoService", "app/Services.swift:demoViewModelWithFake"]
-availability = "iOS 17+"
-gotcha = "In a test target, the same checks read `@MainActor @Test func showsError() async { ...; #expect(model.errorMessage != nil) }`. Test both the success and the failure path."
-
-[[part.section.entry]]
-id = "testing-syntax"
-title = "Swift Testing & XCTest"
-aliases = ["Swift Testing", "XCTest", "@Test", "#expect", "#require", "XCTAssertEqual", "XCTestCase", "parameterized test", "confirmation", "expectation", "setUp", "UI test"]
-
-[part.section.entry.table]
-header = ["Task", "Swift Testing (Xcode 16+)", "XCTest"]
-rows = [
-  ["Declare a test", "`import Testing` then `@Test func adds() { }`", "`final class MathTests: XCTestCase { func testAdds() { } }`"],
-  ["Check a value", "`#expect(total == 6)`", "`XCTAssertEqual(total, 6)`"],
-  ["Stop if nil", "`let user = try #require(users.first)`", "`let user = try XCTUnwrap(users.first)`"],
-  ["Expect an error", "`#expect(throws: TransferError.self) { try f() }`", "`XCTAssertThrowsError(try f())`"],
-  ["Async code", "`@Test func loads() async throws { }`", "`func testLoads() async throws { }`"],
-  ["Many inputs", "`@Test(arguments: [1, 2, 3]) func valid(n: Int)`", "Loop inside one test"],
-  ["Setup and teardown", "`init()` and `deinit` of a `@Suite struct` or class", "`setUp()` and `tearDown()`"],
-  ["Callback fired", "`await confirmation { done in ... done() }`", "`expectation(description:)`, `fulfillment(of:timeout:)`"],
-  ["UI tests", "Not supported: use XCTest", "`XCUIApplication().launch()`, `app.buttons[\"Save\"].tap()`"],
-]
-
-[[part.section]]
 id = "persistence"
 title = "Saving data"
 group = "Data"
@@ -2226,6 +2232,14 @@ use_when = "Use a plain `init` when setting properties is enough. Use `init(...)
 gotcha = "Calling an actor method from a plain `init` fails to compile: \"call to actor-isolated instance method in a synchronous nonisolated context\". Make the `init` async, or call the method after creating the actor."
 
 [[part.section.entry]]
+id = "sendable"
+title = "Sendable: values safe to share across tasks"
+aliases = ["Sendable", "@Sendable", "sendable closure", "non-sendable type", "capture of non-sendable", "crossing isolation", "Task.detached", "final class Sendable", "@unchecked Sendable", "strict concurrency"]
+code = ["concurrency/Isolation.swift:Receipt", "concurrency/Isolation.swift:ReceiptError", "concurrency/Isolation.swift:Settings", "concurrency/Isolation.swift:demoSendable"]
+use_when = "A value passes into a `Task`, an actor, or a `@MainActor` view model from somewhere else. Swift 6 checks this at compile time."
+gotcha = "Structs and enums whose stored values are all Sendable are Sendable automatically, unless they are `public`, where you must write it. Actors are always Sendable. A class is Sendable only if it is `final` and has only `let` properties of Sendable types; an `@Observable` class with `var`s is not, so keep it on `@MainActor` instead. `@unchecked Sendable` turns the check off and makes you responsible for locking, so avoid it. Errors like \"capture of non-Sendable type in a @Sendable closure\" mean a mutable class is leaking into another task."
+
+[[part.section.entry]]
 id = "rolling-window"
 title = "Rolling time window in an actor"
 aliases = ["rolling window", "time window", "last N seconds", "expire old", "evict old", "purge old data", "thread safe buffer", "timestamps", "keep arrival order", "callback to actor", "backpressure", "threshold check"]
@@ -2399,4 +2413,84 @@ rows = [
   ["View missing, clipped or covered", "View Hierarchy Debugger", "Debug bar, Debug View Hierarchy; rotate the 3D stack"],
   ["SwiftUI view updates too often", "`Self._printChanges()`, SwiftUI instrument", "Call it in `body`; it prints which property changed"],
   ["Slow or stuttering", "Instruments: Time Profiler, Hangs", "Find the heaviest stack on the main thread"],
+]
+
+# ---------------------------------------------------------------------
+[[part]]
+id = "testing"
+title = "Testing"
+
+[[part.section]]
+id = "swift-testing"
+title = "Swift Testing"
+group = "Unit tests"
+intro = "Swift Testing ships with Xcode 16 and Swift 6. Run tests with Cmd-U in Xcode or `swift test` in Terminal. Each check below is a real test that runs in this site's own `swift test`."
+
+[[part.section.entry]]
+id = "first-test-file"
+title = "A test file from scratch"
+aliases = ["write a test", "first test", "test file", "how to start testing", "@Test", "#expect", "#require", "@Suite", "import Testing", "@testable import", "test target", "fresh instance per test", "display name", "test naming"]
+code = ["testing/Pantry.swift:Pantry", "testing/Pantry.swift:PantryError", "testing/PantryTests.swift:PantryTests"]
+use_when = "Any type with logic: write the test right after each method, one `@Test` per behaviour."
+gotcha = "The file needs `import Testing`, plus `@testable import YourModule` to reach `internal` types in the library target. `@Test` marks a function as a test, and `#expect(condition)` records a failure but keeps going, while `try #require(...)` stops the test (use it to unwrap an optional you need for later checks). Add `throws` to a test that calls throwing code, so an unexpected error fails it. A stored property in a `@Suite` struct is recreated for every test, so tests can't leak state into each other. Name tests for the behaviour (`rejectsCountsBelowOne`), or pass a sentence: `@Test(\"An empty pantry has nothing in it\")`."
+
+[[part.section.entry]]
+id = "what-to-test"
+title = "What to test: a checklist"
+aliases = ["edge cases", "what should I test", "test cases", "happy path", "boundary", "empty case", "ties", "invalid input", "test plan"]
+
+[part.section.entry.table]
+header = ["Case", "Ask", "Example check"]
+rows = [
+  ["Empty", "What does a brand-new object report?", "`#expect(list.items.isEmpty)`, totals are 0"],
+  ["One", "Does a single item round-trip exactly?", "Add one, read it back, `#expect(item == expected)`"],
+  ["Many, out of order", "Is the order you promised really the order?", "Add 3 in shuffled order, compare the whole array"],
+  ["Ties", "When two items sort equally, which comes first, and is it stable?", "Two items with the same key, check both positions"],
+  ["Boundaries", "What happens at 0, 1, the limit, and just past it?", "`@Test(arguments: [0, 1, 99, 100])`"],
+  ["Invalid input", "Is bad input rejected AND is nothing stored?", "`#expect(throws: MyError.x) { ... }` then check state is unchanged"],
+  ["Exactness", "Do sums come out exact (money in cents)?", "`#expect(total == 30)` after adding 10 and 20"],
+  ["Encapsulation", "Can callers change data without the API?", "Mutate a returned copy, check the original didn't change"],
+  ["Derived values", "Do computed values update after every change?", "Add, edit, delete, then check the total after each"],
+]
+
+[[part.section.entry]]
+id = "expect-errors"
+title = "Checking errors"
+aliases = ["#expect(throws:)", "test throws", "expect error", "assert throws", "test error case", "throws specific error", "#expect(throws: Never.self)"]
+
+[part.section.entry.table]
+header = ["Goal", "Swift Testing", "Needs"]
+rows = [
+  ["Exactly this case was thrown", "`#expect(throws: PantryError.nonPositiveCount) { try p.add(\"x\", count: 0) }`", "The error type is `Equatable`"],
+  ["Any error of this type", "`#expect(throws: PantryError.self) { try ... }`", "Nothing extra"],
+  ["Any error at all", "`#expect(throws: (any Error).self) { try ... }`", "Nothing extra"],
+  ["No error is thrown", "Mark the test `throws` and call `try` directly; or `#expect(throws: Never.self) { try ... }`", "Nothing extra"],
+  ["Inspect the error's details", "`let error = #expect(throws: TransferError.self) { try ... }` then check `error`", "Swift 6.1+"],
+]
+
+[[part.section.entry]]
+id = "fake-service"
+title = "Test a view model with a fake"
+aliases = ["unit test", "fake", "mock", "stub", "test double", "test view model", "async test"]
+code = ["app/Services.swift:FakeRepoService", "app/Services.swift:demoViewModelWithFake"]
+availability = "iOS 17+"
+gotcha = "In a test target, the same checks read `@MainActor @Test func showsError() async { ...; #expect(model.errorMessage != nil) }`. Test both the success and the failure path."
+
+[[part.section.entry]]
+id = "testing-syntax"
+title = "Swift Testing & XCTest"
+aliases = ["Swift Testing", "XCTest", "@Test", "#expect", "#require", "XCTAssertEqual", "XCTestCase", "parameterized test", "confirmation", "expectation", "setUp", "UI test"]
+
+[part.section.entry.table]
+header = ["Task", "Swift Testing (Xcode 16+)", "XCTest"]
+rows = [
+  ["Declare a test", "`import Testing` then `@Test func adds() { }`", "`final class MathTests: XCTestCase { func testAdds() { } }`"],
+  ["Check a value", "`#expect(total == 6)`", "`XCTAssertEqual(total, 6)`"],
+  ["Stop if nil", "`let user = try #require(users.first)`", "`let user = try XCTUnwrap(users.first)`"],
+  ["Expect an error", "`#expect(throws: TransferError.self) { try f() }`", "`XCTAssertThrowsError(try f())`"],
+  ["Async code", "`@Test func loads() async throws { }`", "`func testLoads() async throws { }`"],
+  ["Many inputs", "`@Test(arguments: [1, 2, 3]) func valid(n: Int)`", "Loop inside one test"],
+  ["Setup and teardown", "`init()` and `deinit` of a `@Suite struct` or class", "`setUp()` and `tearDown()`"],
+  ["Callback fired", "`await confirmation { done in ... done() }`", "`expectation(description:)`, `fulfillment(of:timeout:)`"],
+  ["UI tests", "Not supported: use XCTest", "`XCUIApplication().launch()`, `app.buttons[\"Save\"].tap()`"],
 ]
