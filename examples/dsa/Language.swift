@@ -78,6 +78,13 @@ func demoTrimming() {
   assert("42!?".trimmingCharacters(in: .punctuationCharacters) == "42")
   // The "blank field" check: nothing left after trimming
   assert("   ".trimmingCharacters(in: .whitespacesAndNewlines).isEmpty)
+  // Whitespace INSIDE the string: trimming can't reach it
+  let spaced = "Team   Sync\t"
+  // Remove all of it (Character.isWhitespace: space, tab, newline)
+  assert(spaced.filter { !$0.isWhitespace } == "TeamSync")
+  // Collapse runs to one space (also trims both ends)
+  let words = spaced.split(whereSeparator: \.isWhitespace)
+  assert(words.joined(separator: " ") == "Team Sync")
 }
 
 /// Extensions on YOUR types: group a feature (validation) apart from

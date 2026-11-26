@@ -145,10 +145,10 @@ gotcha = "Only methods declared in the protocol dispatch dynamically. A method t
 [[part.section.entry]]
 id = "trimming"
 title = "trimmingCharacters & CharacterSet"
-aliases = ["trimmingCharacters", "trim", "trim whitespace", "strip", "whitespaces", "whitespacesAndNewlines", ".whitespaces", "CharacterSet", "empty or whitespace", "blank string", "isBlank", "punctuationCharacters", "CharacterSet(charactersIn:)"]
+aliases = ["trimmingCharacters", "trim", "trim whitespace", "strip", "whitespaces", "whitespacesAndNewlines", ".whitespaces", "CharacterSet", "empty or whitespace", "blank string", "isBlank", "punctuationCharacters", "CharacterSet(charactersIn:)", "remove all whitespace", "remove spaces inside string", "isWhitespace", "collapse spaces", "multiple spaces to one", "split whereSeparator"]
 code = ["dsa/Language.swift:demoTrimming"]
 use_when = "Validating typed text (a title of only spaces is empty) and cleaning input before saving."
-gotcha = "Needs `import Foundation` (SwiftUI imports it). Trims the two ENDS only; spaces in the middle stay. Returns a new String, so assign it or use it inline. `.whitespaces` keeps newlines; `.whitespacesAndNewlines` is the safe default for blank checks (a TextField with `axis: .vertical` can contain newlines). Other sets: `.punctuationCharacters`, `.decimalDigits`, `.letters`, `CharacterSet(charactersIn: \"-_\")`. To remove characters everywhere, use `filter` or `replacing(\" \", with: \"\")`."
+gotcha = "Needs `import Foundation` (SwiftUI imports it). Trims the two ENDS only; spaces in the middle stay. Returns a new String, so assign it or use it inline. `.whitespaces` keeps newlines; `.whitespacesAndNewlines` is the safe default for blank checks (a TextField with `axis: .vertical` can contain newlines). Other sets: `.punctuationCharacters`, `.decimalDigits`, `.letters`, `CharacterSet(charactersIn: \"-_\")`. Inside the string: `filter { !$0.isWhitespace }` removes every space, tab and newline; `split(whereSeparator: \\.isWhitespace).joined(separator: \" \")` collapses each run to one space and trims the ends too."
 
 [[part.section.entry]]
 id = "extensions"
