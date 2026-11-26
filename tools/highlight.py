@@ -79,3 +79,20 @@ def highlight(source: str) -> str:
             f'<span class="line i{level}">{"".join(parts)}</span>'
         )
     return "".join(rendered)
+
+
+def highlight_inline(source: str) -> str:
+    """Return one line of Swift with tokens wrapped, for inline code."""
+    parts = []
+    previous = ""
+    for token in tokenize(source):
+        css_class = classify(token, previous)
+        if token.kind not in {"whitespace", "comment"}:
+            previous = token.text
+        escaped = html.escape(token.text, quote=False)
+        parts.append(
+            f'<span class="{css_class}">{escaped}</span>'
+            if css_class
+            else escaped
+        )
+    return "".join(parts)

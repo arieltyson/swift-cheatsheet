@@ -4,6 +4,13 @@
 /* Subset to ASCII plus the few symbols the page uses, ligatures
    removed so != and -> show exactly as typed. */
 @font-face {
+  font-family: "Fira Code";
+  src: url("fonts/fira-code-subset.woff2") format("woff2");
+  font-weight: 400;
+  font-display: swap;
+}
+
+@font-face {
   font-family: "JetBrains Mono";
   src: url("fonts/jetbrains-mono-subset.woff2") format("woff2");
   font-weight: 400;
@@ -637,3 +644,21 @@ dialog::backdrop {
     text-decoration: none;
   }
 }
+
+/* Type names in the Swift types table look like Xcode with the
+   Dracula theme and Fira Code, ligatures on (-> becomes an arrow). */
+td > code.xcode {
+  font-family: "Fira Code", var(--mono);
+  font-variant-ligatures: contextual;
+  white-space: nowrap;
+  color: var(--xcode-fg);
+  background: var(--xcode-bg);
+}
+code.xcode .kw {
+  color: var(--xcode-kw);
+}
+code.xcode .bi,
+code.xcode .fn {
+  color: var(--xcode-type);
+}
+

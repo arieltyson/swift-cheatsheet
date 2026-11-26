@@ -19,6 +19,7 @@ title = "Swift's kinds of types at a glance"
 aliases = ["types", "all types", "kinds of types", "which type should I use", "struct enum class actor protocol", "value vs reference", "tuple", "typealias", "function type", "Optional", "collection types", "Int Double Decimal Bool"]
 
 [part.section.entry.table]
+swift_first_column = true
 header = ["Type", "Semantics", "Best for", "Nuances"]
 rows = [
   ["`struct`", "Value", "Data records: a transaction, a point, a draft in a form. The default choice", "Free memberwise `init`. Methods that change it are `mutating`. A `let` struct can't change at all. No inheritance"],

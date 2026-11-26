@@ -9,7 +9,7 @@ import re
 import shutil
 from pathlib import Path
 
-from tools.highlight import highlight
+from tools.highlight import highlight, highlight_inline
 from tools.manifest import (
     CodeRef,
     Entry,
@@ -35,6 +35,8 @@ ASSETS = [
     "og-image.png",
     "fonts/jetbrains-mono-subset.woff2",
     "fonts/OFL.txt",
+    "fonts/fira-code-subset.woff2",
+    "fonts/FiraCode-OFL.txt",
 ]
 PAGE_BUDGET_GZIP = 150_000
 SCRIPT_BUDGET_GZIP = 4_096
@@ -87,11 +89,28 @@ def inline(text: str) -> str:
     return INLINE_CODE.sub(r"<code>\1</code>", html.escape(text))
 
 
+def inline_swift(text: str) -> str:
+    """Like inline(), but colour the code the way Xcode would."""
+    pieces = INLINE_CODE.split(text)
+    return "".join(
+        f'<code class="xcode">{highlight_inline(piece)}</code>'
+        if index % 2
+        else html.escape(piece)
+        for index, piece in enumerate(pieces)
+    )
+
+
 def render_code(ref: CodeRef) -> str:
     source = extract(SNIPPETS, ref)
     if ref.is_demo:
         source = asserts_as_results(source)
     return f"<pre><code>{highlight(source)}</code></pre>"
+
+
+def cell_html(table: Table, column: int, cell: str) -> str:
+    if column == 0 and table.swift_first_column:
+        return inline_swift(cell)
+    return inline(cell)
 
 
 def render_table(table: Table) -> str:
@@ -100,7 +119,10 @@ def render_table(table: Table) -> str:
     )
     rows = "".join(
         "<tr>"
-        + "".join(f"<td>{inline(cell)}</td>" for cell in row)
+        + "".join(
+            f"<td>{cell_html(table, column, cell)}</td>"
+            for column, cell in enumerate(row)
+        )
         + "</tr>"
         for row in table.rows
     )

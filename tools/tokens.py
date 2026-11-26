@@ -12,7 +12,7 @@ def load_tokens(path: Path) -> dict[str, tuple[str, str]]:
     with path.open("rb") as tokens_file:
         data = tomllib.load(tokens_file)
     tokens: dict[str, tuple[str, str]] = {}
-    for group in ("color", "syntax"):
+    for group in ("color", "syntax", "dracula"):
         for name, pair in data[group].items():
             if len(pair) != 2 or not all(map(HEX_COLOR.match, pair)):
                 raise ValueError(f"{name}: expected [light, dark] hex")

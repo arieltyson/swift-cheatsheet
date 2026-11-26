@@ -26,3 +26,11 @@ num = ["#94560A", "#F0B46A"]
 com = ["#66665E", "#9A988F"]
 fn = ["#1F5FA8", "#8CBDF5"]
 bi = ["#00717A", "#72D3D8"]
+
+# Xcode's Dracula theme, used only for the type names in the Swift
+# types table. It is the same in both themes, like Xcode itself.
+[dracula]
+xcode-bg = ["#282A36", "#282A36"]
+xcode-fg = ["#F8F8F2", "#F8F8F2"]
+xcode-kw = ["#FF79C6", "#FF79C6"]
+xcode-type = ["#8BE9FD", "#8BE9FD"]
