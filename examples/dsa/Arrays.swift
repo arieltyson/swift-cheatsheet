@@ -193,3 +193,71 @@ func demoSlices() {
   assert(Array(values.suffix(1)) == [40])
   assert(Array(values.dropFirst()) == [20, 30, 40])
 }
+
+/// A small record for the reduce and key path examples.
+struct Purchase {
+  let item: String
+  let cents: Int
+  var isReturned = false
+}
+
+func demoReduce() {
+  let cart = [Purchase(item: "Tea", cents: 300),
+              Purchase(item: "Jam", cents: 450)]
+  // reduce(start, combine): combine runs once per element and gets
+  // (the running result so far, the next element), then returns the
+  // new running result. Xcode's placeholder names them
+  // partialResult and the element type; name them yourself.
+  let longhand = cart.reduce(0) { partialResult, purchase in
+    partialResult + purchase.cents
+  }
+  // Same thing: $0 is the running result, $1 the next element
+  let shorthand = cart.reduce(0) { $0 + $1.cents }
+  // Or map to the numbers first, then pass the + operator itself
+  let operatorForm = cart.map(\.cents).reduce(0, +)
+  assert(longhand == 750 && shorthand == 750 && operatorForm == 750)
+  // Steps: 0 + 300 = 300, then 300 + 450 = 750
+  assert([Purchase]().reduce(0) { $0 + $1.cents } == 0)  // empty
+}
+
+func demoKeyPathMap() {
+  let cart = [Purchase(item: "Tea", cents: 300),
+              Purchase(item: "Jam", cents: 450, isReturned: true)]
+  // map makes a NEW array by transforming every element, in order
+  let closure = cart.map { purchase in purchase.item }
+  let shorthand = cart.map { $0.item }
+  // A key path \.item names a property; Swift turns it into the
+  // closure { $0.item }. Its type is KeyPath<Purchase, String>.
+  let keyPath = cart.map(\.item)
+  assert(closure == ["Tea", "Jam"] && shorthand == keyPath)
+  // Works anywhere a (Element) -> Value closure is expected
+  assert(cart.filter(\.isReturned).map(\.item) == ["Jam"])
+  assert(cart.contains(where: \.isReturned))
+  assert(cart.map(\.item.count) == [3, 3])  // paths chain
+  // A key path can also read from a single value
+  let path = \Purchase.cents
+  assert(cart[0][keyPath: path] == 300)
+}
+
+func demoSortedInsert() {
+  var scores = [90, 70, 50]  // kept high to low
+  // firstIndex(of:) finds an exact value (elements must be Equatable)
+  assert(scores.firstIndex(of: 70) == 1)
+  assert(scores.firstIndex(of: 60) == nil)
+  // firstIndex(where:) finds the first element passing a test
+  assert(scores.firstIndex { $0 <= 60 } == 2)
+  assert(scores.firstIndex { $0 <= 10 } == nil)
+  // insert(_:at:) puts the value AT that index and shifts the rest
+  // right. Valid indexes are 0...endIndex; endIndex (== count) is
+  // one past the last element, so inserting there appends.
+  scores.insert(
+    60, at: scores.firstIndex { $0 <= 60 } ?? scores.endIndex)
+  assert(scores == [90, 70, 60, 50])
+  scores.insert(
+    10, at: scores.firstIndex { $0 <= 10 } ?? scores.endIndex)
+  assert(scores == [90, 70, 60, 50, 10])
+  // <= puts a new tie BEFORE old equals (newest first); < after
+  scores.insert(
+    70, at: scores.firstIndex { $0 <= 70 } ?? scores.endIndex)
+  assert(scores.firstIndex(of: 70) == 1)
+}

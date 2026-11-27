@@ -92,3 +92,26 @@ func demoResult() {
   let doubled = results[0].map { $0 * 2 }
   assert((try? doubled.get()) == 200)
 }
+
+func demoResultMore() {
+  // A typed failure: Result<Success, Failure> with a concrete Error
+  let ok: Result<Int, TransferError> = .success(250)
+  let bad: Result<Int, TransferError> = .failure(.accountLocked)
+  // map changes the success value; failures pass through untouched
+  assert(ok.map { $0 / 100 } == .success(2))
+  assert(bad.map { $0 / 100 } == .failure(.accountLocked))
+  // flatMap chains a step that can itself fail
+  let checked = ok.flatMap { cents in
+    cents > 1_000
+      ? .failure(.insufficientFunds(needed: 1)) : .success(cents)
+  }
+  assert(checked == .success(250))
+  // mapError swaps the error type; get() turns it back into throws
+  let wrapped = bad.mapError { _ in TransferError.invalidAmount("?") }
+  assert(wrapped == .failure(.invalidAmount("?")))
+  do {
+    _ = try bad.get()
+  } catch {
+    assert(error == .accountLocked)  // typed: no cast needed
+  }
+}

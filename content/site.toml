@@ -189,9 +189,10 @@ code = ["dsa/Errors.swift:demoDefer"]
 [[part.section.entry]]
 id = "result-type"
 title = "Result<Success, Failure>"
-aliases = ["Result", "success failure", "get()", "completion Result", "store an error"]
-code = ["dsa/Errors.swift:demoResult"]
+aliases = ["Result", "success failure", "get()", "completion Result", "store an error", "Result map", "flatMap", "mapError", "Result catching", "Result vs throws", "typed Result", "Result<Int, Error>", "Result<Void"]
+code = ["dsa/Errors.swift:demoResult", "dsa/Errors.swift:demoResultMore"]
 use_when = "Storing an outcome or passing it to a completion handler. In async code, prefer `throws`."
+gotcha = "`Result` is an enum with two cases, `.success(value)` and `.failure(error)`, so it turns a thrown error into a value you can keep in an array, a property or a callback. `Result { try f() }` (the catching initializer) captures either outcome; `.get()` turns it back into a throw. `map` changes only the success value, `flatMap` chains a step that can fail, and `mapError` changes the error. `Failure` must conform to `Error`; use `any Error` when anything can fail, or your own enum for a closed list. Result is `Equatable` when both its types are. For a function you call and handle right away, `throws` reads better: Result is mainly for completion handlers and stored outcomes."
 
 [[part.section]]
 id = "protocols"
@@ -258,6 +259,16 @@ code = ["dsa/Arrays.swift:demoArrayOperations", "dsa/Arrays.swift:demoRemoveByVa
 gotcha = "`removeLast()` crashes on an empty array; `popLast()` returns nil. `removeFirst()` and `insert(_:at: 0)` are O(n). `remove(at:)` takes an INDEX and crashes if it is out of range; there is no `remove(value)`. To remove by value or id: `firstIndex(where:)` + `remove(at:)` (first match), or `removeAll { $0.id == id }` (all matches, no optional to unwrap)."
 
 [[part.section.entry]]
+id = "sorted-insert"
+title = "firstIndex(of:) vs firstIndex(where:), insert(_:at:) & endIndex"
+aliases = ["firstIndex(of:)", "firstIndex(where:)", "firstIndex", "insert(_:at:)", "insert at index", "endIndex", "startIndex", "keep array sorted", "sorted insert", "insert in order", "?? endIndex", "newest first insert", "stable ties", "index of element", "one past the end"]
+code = ["dsa/Arrays.swift:demoSortedInsert"]
+time = "O(n) find + O(n) shift"
+space = "O(1)"
+use_when = "Keeping an array always in order as items arrive, so reading it is free. If items arrive in bulk, append them all and sort once instead."
+gotcha = "`firstIndex(of: x)` looks for a value equal to `x` and needs Equatable elements. `firstIndex(where:)` (usually written `firstIndex { ... }`) returns the index of the first element whose test is true. Both return an `Int?`, nil when nothing matches. `insert(x, at: i)` puts `x` at position `i` and moves everything from `i` onward one place right; `i` may be anything from `0` to `endIndex`. `endIndex` equals `count`, one past the last element, so `firstIndex { ... } ?? endIndex` means \"before the first element that should come after me, or at the end if none does\". With `<=` a new item goes before existing equal ones; with `<` after them, which fixes how ties are ordered."
+
+[[part.section.entry]]
 id = "sort"
 title = "sorted & sort"
 aliases = ["sort descending", "sort strings", "case insensitive", "reversed"]
@@ -276,6 +287,26 @@ title = "map, filter, reduce & compactMap"
 aliases = ["flatMap", "reduce into", "sum", "transform", "parse ints"]
 code = ["dsa/Arrays.swift:demoTransforms"]
 gotcha = "Use `reduce(into:)` to build arrays or dictionaries. `reduce` with `+ [x]` copies on every step: O(n^2)."
+
+[[part.section.entry]]
+id = "reduce"
+title = "reduce step by step: partialResult, $0 & $1"
+aliases = ["reduce", "partialResult", "$0 + $1", "sum a property", "total of array", "reduce(0, +)", "running total", "accumulator", "fold", "Xcode reduce placeholder", "anonymous closure arguments"]
+code = ["dsa/Arrays.swift:Purchase", "dsa/Arrays.swift:demoReduce"]
+time = "O(n)"
+space = "O(1)"
+use_when = "Combining every element into ONE value: a total, a maximum, a count. To build an array or dictionary instead, use `reduce(into:)`."
+gotcha = "`reduce(start) { running, element in ... }` starts the running result at `start`, then for each element calls your closure with (the result so far, that element) and keeps what you return. When Xcode autocompletes it as `{ partialResult, Transaction in code }`, those are placeholders: `partialResult` is the running total and `Transaction` stands for the element, so rename it to a lowercase name such as `purchase` (leaving the type name there won't compile as intended). `$0` and `$1` are Swift's automatic names for a closure's first and second parameters, so `{ $0 + $1.cents }` is the same closure without naming them. An empty array returns `start` untouched."
+
+[[part.section.entry]]
+id = "key-path-map"
+title = "map & key paths: map(\\.name)"
+aliases = ["map", "key path", "keypath", "\\.", "map(\\.merchant)", "map key path", "KeyPath", "keyPath:", "transform each element", "extract property from array", "pluck", "filter(\\.isDone)", "projection"]
+code = ["dsa/Arrays.swift:demoKeyPathMap"]
+time = "O(n)"
+space = "O(n) for the new array"
+use_when = "Pulling one property out of every element, such as all the names, so one `==` can check a whole array and its order in a test."
+gotcha = "`map` always returns a NEW array of the same length and order, with each element transformed; the original is untouched. A key path `\\.item` is a reference to a property, checked at compile time, and Swift lets you pass it wherever a closure `(Element) -> Value` is expected, so `map(\\.item)` means `map { $0.item }`. It works with `filter`, `contains(where:)`, `sorted(using:)`, `min(by:)` only when the shape fits (a `Bool` path for `filter`). Paths chain (`\\.item.count`). If the transform needs logic, write a closure instead."
 
 [[part.section.entry]]
 id = "comprehensions"
@@ -418,9 +449,9 @@ code = ["dsa/Formatting.swift:demoPaddingAndRadix"]
 [[part.section.entry]]
 id = "rounding"
 title = "Rounding"
-aliases = ["round half", "round to 2 decimals", "floor", "ceil", "truncate", "toNearestOrEven"]
+aliases = ["round half", "round to 2 decimals", "floor", "ceil", "truncate", "toNearestOrEven", "Int(Double)", "Int(0.30)", "convert Double to Int", "dollars to cents", "drops the decimal"]
 code = ["dsa/Formatting.swift:demoRounding"]
-gotcha = "`rounded()` rounds half away from zero (2.5 to 3); Python and banking round half to even."
+gotcha = "`rounded()` rounds half away from zero (2.5 to 3); Python and banking round half to even. `Int(someDouble)` doesn't round: it drops everything after the point, so `Int(0.30)` is `0` and `Int(2.9)` is `2`. To turn dollars into cents, multiply by 100 and round first: `Int((dollars * 100).rounded())`. Better still, keep cents as `Int` from the start so no conversion is needed."
 
 [[part.section]]
 id = "numbers"
@@ -472,6 +503,15 @@ title = "Date math with TimeInterval"
 aliases = ["Date", "TimeInterval", "addingTimeInterval", "timeIntervalSince", "seconds ago", "time cutoff", "subtract time", "timestamp"]
 code = ["dsa/Dates.swift:demoDateMath"]
 gotcha = "`Date` follows the wall clock, which can jump when the system time changes. To add calendar days, use `Calendar`, not multiples of 86,400 seconds."
+
+[[part.section.entry]]
+id = "fixed-dates"
+title = "Fixed dates: timeIntervalSince1970 & the Unix epoch"
+aliases = ["timeIntervalSince1970", "Date(timeIntervalSince1970:)", "1970", "Unix epoch", "epoch", "86_400", "86400", "seconds in a day", "fixed date for tests", "deterministic dates", "Date.now in tests", "test dates", "UTC"]
+code = ["dsa/Dates.swift:demoFixedDates"]
+availability = "Foundation"
+use_when = "Tests and sample data that must give the same answer every run. Never `Date()` or `Date.now` in a test: the result would depend on when it runs."
+gotcha = "A `Date` is just a count of seconds from a fixed zero point, the Unix epoch (1 January 1970, 00:00 UTC, a Thursday), so `timeIntervalSince1970: 0` is that moment and `86_400` (24 x 60 x 60) is one day later. The `_` in `86_400` is only a digit separator. Adding raw seconds ignores time zones and daylight saving, where a local day can be 23 or 25 hours, so real calendar features use `Calendar` (`date(byAdding:value:to:)`, `startOfDay(for:)`) with an explicit `TimeZone`."
 
 [[part.section.entry]]
 id = "elapsed-time"
@@ -2439,10 +2479,51 @@ intro = "Swift Testing ships with Xcode 16 and Swift 6. Run tests with Cmd-U in 
 [[part.section.entry]]
 id = "first-test-file"
 title = "A test file from scratch"
-aliases = ["write a test", "first test", "test file", "how to start testing", "@Test", "#expect", "#require", "@Suite", "import Testing", "@testable import", "test target", "fresh instance per test", "display name", "test naming"]
+aliases = ["write a test", "first test", "test file", "how to start testing", "@Test", "#expect", "#require", "@Suite", "import Testing", "arguments", "@Test(arguments:)", "parameterized", "@testable import", "test target", "fresh instance per test", "display name", "test naming"]
 code = ["testing/Pantry.swift:Pantry", "testing/Pantry.swift:PantryError", "testing/PantryTests.swift:PantryTests"]
 use_when = "Any type with logic: write the test right after each method, one `@Test` per behaviour."
 gotcha = "The file needs `import Testing`, plus `@testable import YourModule` to reach `internal` types in the library target. `@Test` marks a function as a test, and `#expect(condition)` records a failure but keeps going, while `try #require(...)` stops the test (use it to unwrap an optional you need for later checks). Add `throws` to a test that calls throwing code, so an unexpected error fails it. A stored property in a `@Suite` struct is recreated for every test, so tests can't leak state into each other. Name tests for the behaviour (`rejectsCountsBelowOne`), or pass a sentence: `@Test(\"An empty pantry has nothing in it\")`."
+
+[[part.section.entry]]
+id = "suite"
+title = "@Suite: what it gives you"
+aliases = ["@Suite", "suite", "test struct", "group tests", "shared setup", "setUp", "fresh state per test", "test isolation", "init in tests", "deinit teardown", "nested suite", ".serialized", "traits", ".disabled", ".tags"]
+
+[part.section.entry.table]
+header = ["Feature", "How", "Why it matters"]
+rows = [
+  ["Grouping", "Put related `@Test` functions inside one `struct`", "The Test navigator and the report show them together under one name"],
+  ["A readable name", "`@Suite(\"Ledger recording\") struct LedgerTests`", "The report shows the sentence instead of the type name"],
+  ["Shared setup", "Stored properties (`let ledger = Ledger()`) or an `init()`", "Every test starts from the same known state without repeating the setup lines"],
+  ["Fresh state per test", "Swift Testing creates a NEW suite instance for every test (and every argument)", "One test's data can never leak into another, so order doesn't matter"],
+  ["Teardown", "Make the suite a `final class` or `actor` and write `deinit`", "Cleanup after each test, like XCTest's `tearDown()`"],
+  ["Optional", "A `struct` with `@Test` methods is a suite even without `@Suite`", "Write `@Suite` when you want a name or traits"],
+  ["Traits", "`@Suite(.serialized)`, `@Test(.disabled(\"reason\"))`, `.tags(.money)`", "Run tests one at a time, skip one with a reason, or filter by tag"],
+  ["Nesting", "A `struct` inside a suite is a sub-suite", "Group by feature: `LedgerTests.Recording`, `LedgerTests.Totals`"],
+]
+
+[[part.section.entry]]
+id = "try-in-tests"
+title = "try in tests"
+aliases = ["try in tests", "throws test", "test throws", "why try in test", "try! in tests", "do catch in tests", "throwing setup", "@Test throws"]
+
+[part.section.entry.table]
+header = ["Situation", "Write", "What happens"]
+rows = [
+  ["Setup calls a throwing function you expect to succeed", "Mark the test `throws`, then `try ledger.record(...)`", "If it throws, the test fails and the report shows the error; no `do`/`catch` needed"],
+  ["Checking that a call DOES throw", "`#expect(throws: MyError.someCase) { try f() }`", "Passes only for that error; the test itself doesn't need `throws` for this"],
+  ["Unwrapping something later checks need", "`let first = try #require(items.first)`", "Stops this test right there if it is nil, instead of crashing"],
+  ["Async throwing code", "`@Test func loads() async throws { try await ... }`", "Same rules, plus `await`"],
+  ["Avoid", "`try!` and `try?` in tests", "`try!` crashes the whole test run; `try?` silently hides the failure you wanted to see"],
+]
+
+[[part.section.entry]]
+id = "parameterized-tests"
+title = "Parameterized tests: @Test(arguments:)"
+aliases = ["arguments", "@Test(arguments:)", "parameterized test", "parametrized", "test many inputs", "test cases", "zip arguments", "two argument lists", "data driven test", "pytest parametrize", "argument syntax"]
+code = ["testing/ArgumentsTests.swift:ArgumentsTests"]
+use_when = "The same check should hold for several inputs: boundaries such as 0 and -1, or a table of inputs and expected outputs."
+gotcha = "Order inside `@Test(...)`: the display name string first, then `arguments:`. The function gets one parameter per argument collection, and its type must match the elements: `arguments: [0, -1]` needs `func f(count: Int)`. Two collections run every combination (2 x 3 = 6 cases); wrap them in `zip(a, b)` to pair them one to one. Each value runs as its own test case on a fresh suite instance, and the report names the value that failed. Enums work well: `arguments: Category.allCases`."
 
 [[part.section.entry]]
 id = "what-to-test"
@@ -2458,7 +2539,8 @@ rows = [
   ["Ties", "When two items sort equally, which comes first, and is it stable?", "Two items with the same key, check both positions"],
   ["Boundaries", "What happens at 0, 1, the limit, and just past it?", "`@Test(arguments: [0, 1, 99, 100])`"],
   ["Invalid input", "Is bad input rejected AND is nothing stored?", "`#expect(throws: MyError.x) { ... }` then check state is unchanged"],
-  ["Exactness", "Do sums come out exact (money in cents)?", "`#expect(total == 30)` after adding 10 and 20"],
+  ["Exactness", "Do sums come out exact (money in cents)?", "`#expect(total == 30)` after adding 10 and 20, in the same unit (cents), never `Int(0.30)`"],
+  ["Fixed inputs", "Will this test give the same answer tomorrow?", "Dates from `Date(timeIntervalSince1970:)`, never `Date()` or `Date.now`"],
   ["Encapsulation", "Can callers change data without the API?", "Mutate a returned copy, check the original didn't change"],
   ["Derived values", "Do computed values update after every change?", "Add, edit, delete, then check the total after each"],
 ]

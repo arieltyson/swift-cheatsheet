@@ -127,8 +127,9 @@ def render_table(table: Table) -> str:
         for row in table.rows
     )
     return (
-        f"<table><thead><tr>{header}</tr></thead>"
-        f"<tbody>{rows}</tbody></table>"
+        f'<div class="table-scroll"><table>'
+        f"<thead><tr>{header}</tr></thead>"
+        f"<tbody>{rows}</tbody></table></div>"
     )
 
 

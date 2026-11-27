@@ -63,6 +63,8 @@ func demoRounding() {
   assert((2.5).rounded(.toNearestOrEven) == 2)
   assert((2.7).rounded(.down) == 2)
   assert((2.1).rounded(.up) == 3)
-  assert(Int(-2.9) == -2)
+  // Int(someDouble) drops the fraction (toward zero), never rounds
+  assert(Int(2.9) == 2 && Int(-2.9) == -2 && Int(0.30) == 0)
+  assert(Int((0.30 * 100).rounded()) == 30)  // dollars to cents
   assert((1234.5678 * 100).rounded() / 100 == 1234.57)
 }

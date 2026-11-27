@@ -389,8 +389,7 @@ table {
 }
 
 /* break-word keeps whole words together, so each column is at least
-   as wide as its longest word ("Value", never "Valu / e"). Only a
-   phone, where that could push the table off screen, may split. */
+   as wide as its longest word ("Value", never "Valu / e"). */
 th,
 td {
   overflow-wrap: break-word;
@@ -412,13 +411,11 @@ td > code {
   overflow-wrap: break-word;
 }
 
-@media (max-width: 40rem) {
-  th:not(:first-child),
-  td:not(:first-child),
-  th:not(:first-child) code,
-  td:not(:first-child) code {
-    overflow-wrap: anywhere;
-  }
+/* A table never splits a word. When a window is too narrow for its
+   longest words, the table scrolls sideways inside this box instead
+   of the page. */
+.table-scroll {
+  overflow-x: auto;
 }
 
 /* Table of contents */

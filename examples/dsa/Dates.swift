@@ -113,3 +113,22 @@ func demoMonthGrid() {
   let next = calendar.date(byAdding: .month, value: 1, to: monthStart)!
   assert(calendar.component(.month, from: next) == 3)
 }
+
+func demoFixedDates() {
+  // Date stores seconds since the Unix epoch:
+  // 1 January 1970, 00:00:00 UTC, which is second 0
+  let epoch = Date(timeIntervalSince1970: 0)
+  let oneDayLater = Date(timeIntervalSince1970: 86_400)  // 24*60*60
+  assert(oneDayLater.timeIntervalSince(epoch) == 86_400)
+  assert(epoch < oneDayLater)  // Dates are Comparable
+  // Same input, same Date, on every run and every machine, which is
+  // why tests use them instead of Date() or Date.now
+  assert(Date(timeIntervalSince1970: 0) == epoch)
+  // Calendar days aren't always 86,400 seconds (daylight saving),
+  // so real day math goes through Calendar with an explicit zone
+  var calendar = Calendar(identifier: .gregorian)
+  calendar.timeZone = TimeZone(identifier: "UTC")!
+  let next = calendar.date(byAdding: .day, value: 1, to: epoch)
+  assert(next == oneDayLater)
+  assert(calendar.component(.weekday, from: epoch) == 5)  // Thursday
+}
