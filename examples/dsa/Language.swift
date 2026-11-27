@@ -407,3 +407,22 @@ func demoReadOnlyViews() {
   // shelf.titles = []    // error: setter is private
   // shelf.pages          // error: 'pages' is inaccessible
 }
+
+/// Optional parameters that default to nil: callers pass only what
+/// changes, and nil means "keep the current value".
+struct Profile {
+  var name: String
+  var city: String
+
+  func updated(name: String? = nil, city: String? = nil) -> Profile {
+    Profile(name: name ?? self.name, city: city ?? self.city)
+  }
+}
+
+func demoOptionalParameters() {
+  let ada = Profile(name: "Ada", city: "London")
+  let moved = ada.updated(city: "Paris")
+  assert(moved.name == "Ada")
+  assert(moved.city == "Paris")
+  assert(ada.updated().city == "London")  // nothing passed
+}

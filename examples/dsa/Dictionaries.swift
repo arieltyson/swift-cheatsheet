@@ -74,3 +74,22 @@ func demoHashableKeys() {
   let seenPairs: Set<[Int]> = [[0, 1]]
   assert(seenPairs.contains([0, 1]))
 }
+
+func demoSumByKey() {
+  let sales = [("Food", 450), ("Travel", 1200), ("Food", 300)]
+  // dict[key, default: 0] reads 0 for a missing key, so += works
+  // the first time a key appears
+  var totals: [String: Int] = [:]
+  for (category, cents) in sales {
+    totals[category, default: 0] += cents
+  }
+  assert(totals == ["Food": 750, "Travel": 1200])
+  // The same in one expression
+  let viaInit = Dictionary(sales, uniquingKeysWith: +)
+  assert(viaInit == totals)
+  // mapValues transforms every value and keeps the keys
+  assert(totals.mapValues { $0 / 100 } == ["Food": 7, "Travel": 12])
+  // Remove a key entirely, rather than leaving a 0 behind
+  totals["Travel"] = nil
+  assert(totals == ["Food": 750])
+}

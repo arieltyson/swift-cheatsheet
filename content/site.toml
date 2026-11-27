@@ -91,6 +91,14 @@ use_when = "A method that mainly DOES something (records, inserts, saves) and al
 gotcha = "Without it, ignoring a non-Void result gives the warning \"result of call to 'click()' is unused\", and callers have to write `_ = clicker.click()`. It only silences that warning: the function still runs, and if it `throws`, callers still need `try`. Leave it off pure questions such as `total()` or `sorted()`, because ignoring their result is almost always a bug the warning should catch."
 
 [[part.section.entry]]
+id = "optional-parameters"
+title = "Optional parameters: pass only what changes"
+aliases = ["optional parameter", "default nil", "String? = nil", "nil means unchanged", "partial update", "edit some fields", "default parameter value", "?? self.name", "update method signature"]
+code = ["dsa/Language.swift:Profile", "dsa/Language.swift:demoOptionalParameters"]
+use_when = "An edit where the caller may change any subset of fields: `edit(id:merchant:category:)` with each one optional."
+gotcha = "`name: String? = nil` makes the argument optional to write AND lets it be nil, so callers skip it entirely. Inside, `name ?? self.name` keeps the old value when nothing was passed. This can't express \"set this field to nil\"; if a field is itself optional, take a whole new value instead. With many fields, passing a full edited copy of the struct is often simpler."
+
+[[part.section.entry]]
 id = "enums"
 title = "Enums with associated values"
 aliases = ["enum", "switch", "pattern matching", "associated value", "computed property", "if case", "guard case", "case let", "Equatable enum", "raw value", "rawValue", "enum String", "CaseIterable", "allCases", "init rawValue"]
@@ -254,8 +262,8 @@ gotcha = "On a 2D array, `allSatisfy`/`contains` hand the closure a whole row. N
 [[part.section.entry]]
 id = "array-operations"
 title = "append, remove & insert"
-aliases = ["push", "pop", "popLast", "removeFirst", "insert at", "swapAt", "reverse", "reverse array", "reverse list", "remove(at:)", "remove at index", "remove by value", "removeAll(where:)", "delete by id", "remove element"]
-code = ["dsa/Arrays.swift:demoArrayOperations", "dsa/Arrays.swift:demoRemoveByValue"]
+aliases = ["update by id", "edit by id", "replace element", "update in place", "items[index] =", "change an element", "array subscript assign", "push", "pop", "popLast", "removeFirst", "insert at", "swapAt", "reverse", "reverse array", "reverse list", "remove(at:)", "remove at index", "remove by value", "removeAll(where:)", "delete by id", "remove element"]
+code = ["dsa/Arrays.swift:demoArrayOperations", "dsa/Arrays.swift:demoRemoveByValue", "dsa/Arrays.swift:demoUpdateInPlace"]
 gotcha = "`removeLast()` crashes on an empty array; `popLast()` returns nil. `removeFirst()` and `insert(_:at: 0)` are O(n). `remove(at:)` takes an INDEX and crashes if it is out of range; there is no `remove(value)`. To remove by value or id: `firstIndex(where:)` + `remove(at:)` (first match), or `removeAll { $0.id == id }` (all matches, no optional to unwrap)."
 
 [[part.section.entry]]
@@ -383,7 +391,7 @@ group = "Syntax"
 [[part.section.entry]]
 id = "dictionary"
 title = "Dictionary"
-aliases = ["hash map", "default value", "removeValue", "keys", "values", "map"]
+aliases = ["hash map", "default value", "removeValue", "keys", "values", "map", "[key, default: 0]", "default:", "dict default", "missing key"]
 code = ["dsa/Dictionaries.swift:demoDictionary"]
 gotcha = "Iteration order is random and changes between runs. Sort keys before printing or comparing."
 
@@ -392,6 +400,15 @@ id = "counting"
 title = "Count occurrences"
 aliases = ["frequency", "counter", "histogram", "most common", "top k frequent", "uniquingKeysWith"]
 code = ["dsa/Dictionaries.swift:demoCounting"]
+
+[[part.section.entry]]
+id = "sum-by-key"
+title = "Sum by key, mapValues & removing a key"
+aliases = ["sum by key", "total per category", "totals by group", "group and sum", "default: 0 +=", "mapValues", "uniquingKeysWith", "remove key", "dict[key] = nil", "no zero entries"]
+code = ["dsa/Dictionaries.swift:demoSumByKey"]
+time = "O(n)"
+space = "O(k) for k keys"
+gotcha = "`dict[key, default: 0] += x` reads 0 when the key is missing, so the first add needs no special case. Setting `dict[key] = nil` deletes the key; storing `0` instead leaves an entry behind. `mapValues` keeps every key and changes the values. Dictionaries have no order, so compare them with `==` (order doesn't matter) or sort the keys before showing them."
 
 [[part.section.entry]]
 id = "grouping"

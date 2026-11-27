@@ -286,3 +286,25 @@ func demoSortedInsert() {
     70, at: scores.firstIndex { $0 <= 70 } ?? scores.endIndex)
   assert(scores.firstIndex(of: 70) == 1)
 }
+
+func demoUpdateInPlace() {
+  struct Song {
+    let id: Int
+    var title: String
+  }
+  var songs = [Song(id: 1, title: "Hey"), Song(id: 2, title: "Yo")]
+  // Find the position by id, then write through the subscript.
+  // The element keeps its index, so the order doesn't change.
+  if let index = songs.firstIndex(where: { $0.id == 2 }) {
+    songs[index].title = "Yo!"  // change one var property
+  }
+  assert(songs.map(\.title) == ["Hey", "Yo!"])
+  // Or replace the whole element (needed when fields are let)
+  if let index = songs.firstIndex(where: { $0.id == 1 }) {
+    songs[index] = Song(id: 1, title: "Hello")
+  }
+  assert(songs.map(\.title) == ["Hello", "Yo!"])
+  assert(songs.count == 2)  // updated, not duplicated
+  // An unknown id finds nothing, so nothing changes
+  assert(songs.firstIndex(where: { $0.id == 9 }) == nil)
+}
