@@ -474,20 +474,38 @@ td > code {
   font-weight: 600;
 }
 
-/* Wide screens keep the header in view. It's opaque on purpose: a
+/* The header stays in view at every width. It's opaque on purpose: a
    blurred see-through bar would be re-blurred on every scroll frame.
-   Phones keep it in the flow, where the links wrap onto two lines. */
-@media (min-width: 68.75rem) {
-  html {
-    scroll-padding-top: var(--header-height);
-  }
+   Narrow windows keep it to two rows: the brand and buttons, then the
+   section links in one row that scrolls sideways. */
+html {
+  scroll-padding-top: var(--header-height);
+}
 
+.site-header {
+  position: sticky;
+  top: 0;
+  z-index: 1;
+}
+
+@media (max-width: 68.6875rem) {
   .site-header {
-    position: sticky;
-    top: 0;
-    z-index: 1;
+    row-gap: var(--space-1);
+    padding-bottom: var(--space-1);
   }
 
+  .part-nav {
+    order: 1;
+    flex: 1 0 100%;
+    flex-wrap: nowrap;
+    margin-left: 0;
+    overflow-x: auto;
+    scrollbar-width: none;
+    white-space: nowrap;
+  }
+}
+
+@media (min-width: 68.75rem) {
   .toc {
     position: sticky;
     top: var(--header-height);

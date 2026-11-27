@@ -94,3 +94,16 @@ Consequence: in headless Chrome at 1280 px, the first layout fell from
 about 106 ms to 13 ms and a theme switch from 15 ms to 0.3 ms. A
 section is its own layout box, so its top gap sits on the section and
 an 8 px inline padding keeps outlines and highlights from clipping.
+
+## 10: The header stays in view at every width
+
+Context: decision 09 made the header sticky only from 68.75rem up, so
+in a half-width window the section links scrolled away, and the links
+wrapped onto three rows that would have covered too much if pinned.
+Decision: the header is sticky at every width. Below 68.75rem it is
+two rows, the brand with the buttons and then the section links in a
+single row that scrolls sideways. `--header-height` already tracks
+the height, so jumps still land below it.
+Consequence: a narrow window loses about 90 px to the header but
+never loses the section links.
+
