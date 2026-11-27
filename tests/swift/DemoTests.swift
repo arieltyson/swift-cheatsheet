@@ -55,7 +55,7 @@ import Testing
     ("Transforms", demoTransforms),
     ("Trie", demoTrie), ("UnionFind", demoUnionFind),
     ("ValueSemantics", demoValueSemantics),
-    ("Reduce", demoReduce), ("KeyPathMap", demoKeyPathMap),
+    ("Reduce", demoReduce), ("Zip", demoZip), ("KeyPathMap", demoKeyPathMap),
     ("SortedInsert", demoSortedInsert), ("ResultMore", demoResultMore),
     ("FixedDates", demoFixedDates),
     ("Equatable", demoEquatable),

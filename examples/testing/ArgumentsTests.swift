@@ -16,7 +16,8 @@ struct ArgumentsTests {
     #expect(pantry.names.isEmpty)
   }
 
-  // zip pairs each input with its expected result: 3 runs
+  // zip pairs the lists one to one, so this runs 3 cases:
+  // (extra: 1, expected: 2), (2, 3) and (5, 6)
   @Test(arguments: zip([1, 2, 5], [2, 3, 6]))
   func addsToOne(extra: Int, expected: Int) throws {
     let pantry = Pantry()
@@ -25,7 +26,8 @@ struct ArgumentsTests {
     #expect(pantry.count(of: "tea") == expected)
   }
 
-  // Two separate collections run EVERY combination: 2 x 2 = 4 runs
+  // Two separate lists run EVERY combination, 2 x 2 = 4 cases:
+  // ("rice", 1), ("rice", 3), ("tea", 1), ("tea", 3)
   @Test(arguments: ["rice", "tea"], [1, 3])
   func storesAnyItem(name: String, count: Int) throws {
     let pantry = Pantry()

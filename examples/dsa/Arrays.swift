@@ -171,15 +171,38 @@ func demoSearchArrays() {
 
 func demoIteration() {
   let names = ["ada", "bo"]
-  for (index, name) in names.enumerated() {
-    assert(names[index] == name)
+  // enumerated() pairs each element with its position
+  let numbered = names.enumerated().map {
+    "\($0.offset): \($0.element)"
   }
-  let pairs = Array(zip(names, [90, 85]))
-  assert(pairs.map(\.1) == [90, 85])
+  assert(numbered == ["0: ada", "1: bo"])
+  assert(Array(names.indices) == [0, 1])
   assert(Array(stride(from: 0, to: 6, by: 2)) == [0, 2, 4])
   assert(Array(stride(from: 3, through: 0, by: -1)) == [3, 2, 1, 0])
-  assert(Array(names.indices) == [0, 1])
   assert(Array((0..<3).reversed()) == [2, 1, 0])
+}
+
+func demoZip() {
+  let names = ["ada", "bo"]
+  let scores = [90, 85, 70]
+  // zip walks two sequences side by side, one pair per step:
+  // ("ada", 90), then ("bo", 85). It stops at the SHORTER one,
+  // so 70 has no partner and is left out.
+  var lines: [String] = []
+  for (name, score) in zip(names, scores) {
+    lines.append("\(name) scored \(score)")
+  }
+  assert(lines == ["ada scored 90", "bo scored 85"])
+  // Each pair is a tuple: .0 from the first sequence, .1 the second
+  let firstPair = Array(zip(names, scores))[0]
+  assert(firstPair.0 == "ada")
+  assert(firstPair.1 == 90)
+  // Pairs straight into a dictionary
+  let byName = Dictionary(uniqueKeysWithValues: zip(names, scores))
+  assert(byName == ["ada": 90, "bo": 85])
+  // Neighbours: zip an array with itself shifted by one
+  let gaps = zip(scores, scores.dropFirst()).map { $0 - $1 }
+  assert(gaps == [5, 15])
 }
 
 func demoSlices() {
@@ -223,20 +246,22 @@ func demoReduce() {
 func demoKeyPathMap() {
   let cart = [Purchase(item: "Tea", cents: 300),
               Purchase(item: "Jam", cents: 450, isReturned: true)]
-  // map makes a NEW array by transforming every element, in order
-  let closure = cart.map { purchase in purchase.item }
-  let shorthand = cart.map { $0.item }
-  // A key path \.item names a property; Swift turns it into the
-  // closure { $0.item }. Its type is KeyPath<Purchase, String>.
-  let keyPath = cart.map(\.item)
-  assert(closure == ["Tea", "Jam"] && shorthand == keyPath)
-  // Works anywhere a (Element) -> Value closure is expected
+  // map builds a NEW array: one output per element, in the same
+  // order. These three all mean "give me each purchase's item".
+  assert(cart.map { purchase in purchase.item } == ["Tea", "Jam"])
+  assert(cart.map { $0.item } == ["Tea", "Jam"])
+  assert(cart.map(\.item) == ["Tea", "Jam"])
+  // \.item is a key path: a name for the item property. Swift
+  // accepts it wherever the closure { $0.item } would go.
+  assert(cart.map(\.cents) == [300, 450])
+  // A Bool property works with filter and contains(where:)
   assert(cart.filter(\.isReturned).map(\.item) == ["Jam"])
   assert(cart.contains(where: \.isReturned))
-  assert(cart.map(\.item.count) == [3, 3])  // paths chain
-  // A key path can also read from a single value
-  let path = \Purchase.cents
-  assert(cart[0][keyPath: path] == 300)
+  // Paths chain: the character count of each item
+  assert(cart.map(\.item.count) == [3, 3])
+  // Store a key path, then read one value through it
+  let price = \Purchase.cents
+  assert(cart[0][keyPath: price] == 300)
 }
 
 func demoSortedInsert() {

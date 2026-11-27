@@ -326,8 +326,9 @@ gotcha = "`allSatisfy` on an empty collection is `true`. Guard against empty inp
 [[part.section.entry]]
 id = "iteration"
 title = "enumerated, zip & stride"
-aliases = ["loop with index", "indices", "reverse loop", "step", "pairs"]
-code = ["dsa/Arrays.swift:demoIteration"]
+aliases = ["loop with index", "indices", "reverse loop", "step", "pairs", "zip", "zip two arrays", "pair up arrays", "enumerated", "offset element", "adjacent pairs", "neighbours", "tuple .0 .1"]
+code = ["dsa/Arrays.swift:demoIteration", "dsa/Arrays.swift:demoZip"]
+gotcha = "`zip(a, b)` gives pairs `(a[0], b[0]), (a[1], b[1]), ...` and stops at the shorter sequence without any error, so check lengths first if every element must have a partner. Each pair is a tuple, read with `.0` and `.1` or unpacked in `for (x, y) in zip(a, b)`. `zip(xs, xs.dropFirst())` gives each element with its next neighbour."
 
 [[part.section.entry]]
 id = "slices"

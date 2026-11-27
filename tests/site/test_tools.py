@@ -174,6 +174,25 @@ class ResultsTests(unittest.TestCase):
         )
 
 
+    def test_and_splits_into_one_result_per_line(self) -> None:
+        self.assertEqual(
+            asserts_as_results("assert(a == 1 && b.isEmpty)").splitlines(),
+            ["a          // 1", "b.isEmpty  // true"],
+        )
+
+    def test_negation_shows_false(self) -> None:
+        self.assertEqual(
+            asserts_as_results("assert(!seen.contains(3))"),
+            "seen.contains(3)  // false",
+        )
+
+    def test_trailing_note_moves_above(self) -> None:
+        self.assertEqual(
+            asserts_as_results("  assert(x == 2)  // why").splitlines(),
+            ["  // why", "  x  // 2"],
+        )
+
+
 class HighlightTests(unittest.TestCase):
     def plain(self, rendered: str) -> list[str]:
         lines = re.findall(
